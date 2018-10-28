@@ -121,6 +121,8 @@ namespace Din
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info {Title = "DinApi", Version = "v1"});
+                c.OperationFilter<RemoveVersionFromParameter>();
+                c.DocumentFilter<ReplaceVersionWithExactValueInPath>();
             });
         }
 
