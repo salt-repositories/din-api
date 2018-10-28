@@ -31,6 +31,10 @@ namespace Din.Controllers
 
         #region endpoints
 
+        /// <summary>
+        /// Get system queue
+        /// </summary>
+        /// <returns>Collection of queue items</returns>
         [Authorize, HttpGet]
         public async Task<IActionResult> GetQueue()
         {

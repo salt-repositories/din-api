@@ -28,6 +28,11 @@ namespace Din.Controllers
 
         #region endpoints
 
+        /// <summary>
+        /// Get token
+        /// </summary>
+        /// <param name="data">Client ID and Secret</param>
+        /// <returns>Status response/ token</returns>
         [AllowAnonymous, HttpPost]
         public IActionResult GetToken([FromBody] TokenRequestDto data)
         {

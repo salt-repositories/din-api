@@ -29,6 +29,11 @@ namespace Din.Controllers
 
         #region endpoints
 
+        /// <summary>
+        /// Login
+        /// </summary>
+        /// <param name="credentials">Login Credentials</param>
+        /// <returns>Status response</returns>
         [Authorize, HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] CredentialsDto credentials)
         {
@@ -40,6 +45,10 @@ namespace Din.Controllers
             return BadRequest(new {loginResult.message});
         }
 
+        /// <summary>
+        /// Logout
+        /// </summary>
+        /// <returns>Status response</returns>
         [Authorize, HttpGet]
         public async Task<IActionResult> LogoutAsync()
         {

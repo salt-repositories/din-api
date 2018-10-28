@@ -13,25 +13,49 @@ namespace Din.Controllers
     [ApiController]
     public class MovieController : ControllerBase
     {
+        #region injectons
+
         private readonly IMovieService _service;
+
+        #endregion injections
+
+        #region constructors
 
         public MovieController(IMovieService service)
         {
             _service = service;
         }
 
+        #endregion constructors
+
+        #region endpoints
+
+        /// <summary>
+        /// Get all movies
+        /// </summary>
+        /// <returns>Collection of movies</returns>
         [Authorize, HttpGet]
         public async Task<IActionResult> GetAllMovies()
         {
             return Ok(await _service.GetAllMoviesAsync());
         }
 
+        /// <summary>
+        /// Get movie by ID
+        /// </summary>
+        /// <param name="id">system ID</param>
+        /// <returns>Single movie</returns>
         [Authorize, HttpGet("{id}")]
         public async Task<IActionResult> GetMovieById([FromRoute] int id)
         {
             return Ok(await _service.GetMovieByIdAsync(id));
         }
 
+        /// <summary>
+        /// Search moviedatabase for movie
+        /// </summary>
+        /// <param name="query">Searchquery</param>
+        /// <returns>Collection of results</returns>
         [HttpGet("search/{query}"), Authorize]
         public async Task<IActionResult> SearchMovie([FromRoute] string query)
         {
@@ -40,6 +64,11 @@ namespace Din.Controllers
             return Ok(await _service.SearchMovieAsync(query));
         }
 
+        /// <summary>
+        /// Add movie to system
+        /// </summary>
+        /// <param name="movieData">Movie to add</param>
+        /// <returns>Status response</returns>
         [HttpPost, Authorize]
         public async Task<IActionResult> AddMovieAsync(string movieData)
         {
@@ -56,5 +85,7 @@ namespace Din.Controllers
                 return BadRequest();
             }
         }
+
+        #endregion endpoints
     }
 }

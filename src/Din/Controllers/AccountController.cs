@@ -52,7 +52,7 @@ namespace Din.Controllers
         }
 
         /// <summary>
-        /// Create a account
+        /// Create account
         /// </summary>
         /// <param name="account">Account model</param>
         /// <returns>Created account</returns>

@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
 using Din.Config;
 using Din.Data;
 using Din.Service.BackgroundServices.Concrete;
@@ -123,6 +126,10 @@ namespace Din
                 c.SwaggerDoc("v1", new Info {Title = "DinApi", Version = "v1"});
                 c.OperationFilter<RemoveVersionFromParameter>();
                 c.DocumentFilter<ReplaceVersionWithExactValueInPath>();
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 

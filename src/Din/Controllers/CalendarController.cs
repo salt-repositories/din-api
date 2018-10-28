@@ -33,6 +33,10 @@ namespace Din.Controllers
 
         #region endpoints
 
+        /// <summary>
+        /// Get content release calendar
+        /// </summary>
+        /// <returns>Release calendar</returns>
         [Authorize, HttpGet]
         public async Task<IActionResult> GetReleaseCalendarAsync()
         {

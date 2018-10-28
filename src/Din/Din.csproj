@@ -32,4 +32,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Din.Service\Din.Service.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="appsettings-beta.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
