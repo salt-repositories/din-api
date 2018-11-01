@@ -40,6 +40,7 @@ namespace Din.Controllers
         [Authorize, HttpGet]
         public async Task<IActionResult> GetReleaseCalendarAsync()
         {
+            //TODO except date range as query
             var calendarDto = new CalendarDto
             {
                 Items = (await _movieService.GetMovieCalendarAsync()).Concat(

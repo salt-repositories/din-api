@@ -56,8 +56,8 @@ namespace Din.Controllers
         /// </summary>
         /// <param name="query">Searchquery</param>
         /// <returns>Collection of results</returns>
-        [HttpGet("search/{query}"), Authorize]
-        public async Task<IActionResult> SearchMovie([FromRoute] string query)
+        [HttpGet("search"), Authorize]
+        public async Task<IActionResult> SearchMovie([FromQuery] string query)
         {
             if (string.IsNullOrEmpty(query)) return BadRequest(new {message = "query can not be empty"});
 
@@ -70,7 +70,7 @@ namespace Din.Controllers
         /// <param name="movieData">Movie to add</param>
         /// <returns>Status response</returns>
         [HttpPost, Authorize]
-        public async Task<IActionResult> AddMovieAsync(string movieData)
+        public async Task<IActionResult> AddMovieAsync([FromBody] string movieData)
         {
             try
             {

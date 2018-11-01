@@ -34,7 +34,7 @@ namespace Din.Controllers
         /// </summary>
         /// <param name="credentials">Login Credentials</param>
         /// <returns>Status response</returns>
-        [Authorize, HttpPost]
+        [AllowAnonymous, HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] CredentialsDto credentials)
         {
             var result = await _service.LoginAsync(credentials);

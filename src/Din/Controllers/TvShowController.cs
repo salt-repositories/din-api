@@ -57,7 +57,7 @@ namespace Din.Controllers
         /// <param name="query">Searchquery</param>
         /// <returns>Collection of results</returns>
         [HttpPost("search"), Authorize]
-        public async Task<IActionResult> SearchTvShowAsync(string query)
+        public async Task<IActionResult> SearchTvShowAsync([FromQuery] string query)
         {
             if (string.IsNullOrEmpty(query)) return BadRequest();
 
@@ -70,7 +70,7 @@ namespace Din.Controllers
         /// <param name="tvShowData">Tvshow to add</param>
         /// <returns>Status response</returns>
         [HttpPost, Authorize]
-        public async Task<IActionResult> AddTvShowAsync(string tvShowData)
+        public async Task<IActionResult> AddTvShowAsync([FromBody] string tvShowData)
         {
             try
             {

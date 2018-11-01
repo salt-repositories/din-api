@@ -69,7 +69,7 @@ namespace Din.Controllers
         /// <param name="data">updated data/ properties</param>
         /// <returns>Updated Account</returns>
         [Authorize, HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody]JsonPatchDocument<AccountDto> data)
+        public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] JsonPatchDocument<AccountDto> data)
         {
             return Ok(await _service.UpdateAccountAsync(id, data));
         }
