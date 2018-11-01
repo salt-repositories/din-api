@@ -6,15 +6,11 @@ namespace Din.Service.Config.Concrete
     {
         public string Issuer { get; }
         public string Key { get; }
-        public string ClientId { get; }
-        public string Secret { get; }
 
-        public TokenConfig(string issuer, string key, string clientId, string secret)
+        public TokenConfig(string issuer, string key)
         {
             Issuer = issuer;
             Key = key;
-            ClientId = clientId;
-            Secret = secret;
         }
     }
 }

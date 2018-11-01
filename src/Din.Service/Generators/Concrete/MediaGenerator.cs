@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Din.Service.Clients.Concrete;
 using Din.Service.Clients.Interfaces;
 using Din.Service.Clients.ResponseObjects;
-using Din.Service.Dto;
 using Din.Service.Generators.Interfaces;
 
 namespace Din.Service.Generators.Concrete
@@ -22,7 +21,7 @@ namespace Din.Service.Generators.Concrete
             _unsplashData.DateGenerated = DateTime.Now;
         }
 
-        public async Task<MediaDto> GenerateBackgroundImages()
+        public async Task<IEnumerable<UnsplashItem>> GenerateBackgroundImages()
         {
             var now = DateTime.Now;
 
@@ -32,18 +31,13 @@ namespace Din.Service.Generators.Concrete
                 _unsplashData.Collection = await _unsplashClient.GetBackgroundCollection();
             }
 
-            return new MediaDto
-            {
-                BackgroundImageCollection = _unsplashData.Collection
-            };
+            return _unsplashData.Collection;
         }
 
-        public async Task<MediaDto> GenerateGif(GiphyTag tag)
+        public async Task<GiphyItem> GenerateGif(GiphyTag tag)
         {
-            return new MediaDto
-            {
-                Gif = await _giphyClient.GetRandomGifAsync(tag)
-            };
+            return await _giphyClient.GetRandomGifAsync(tag);
+
         }
     }
 }

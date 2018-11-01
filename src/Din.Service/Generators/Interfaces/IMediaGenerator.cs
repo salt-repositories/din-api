@@ -1,12 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Din.Service.Clients.Concrete;
-using Din.Service.Dto;
+using Din.Service.Clients.ResponseObjects;
 
 namespace Din.Service.Generators.Interfaces
 {
     public interface IMediaGenerator
     {
-        Task<MediaDto> GenerateBackgroundImages();
-        Task<MediaDto> GenerateGif(GiphyTag tag);
+        Task<IEnumerable<UnsplashItem>> GenerateBackgroundImages();
+        Task<GiphyItem> GenerateGif(GiphyTag tag);
     }
 }

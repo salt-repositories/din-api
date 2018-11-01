@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Din.Data;
@@ -8,7 +7,6 @@ using Din.Data.Entities;
 using Din.Service.Clients.Interfaces;
 using Din.Service.Clients.RequestObjects;
 using Din.Service.Config.Interfaces;
-using Din.Service.Dto;
 using Din.Service.Dto.Content;
 using Din.Service.DTO.Content;
 using Din.Service.Services.Abstractions;
@@ -40,16 +38,12 @@ namespace Din.Service.Services.Concrete
             return Mapper.Map<TvShowDto>(await _tvShowClient.GetTvShowByIdAsync(id));
         }
 
-        public async Task<SearchResultDto<string, SearchTv>> SearchTvShowAsync(string query)
+        public async Task<IEnumerable<SearchTv>> SearchTvShowAsync(string query)
         {
-            return new SearchResultDto<string, SearchTv>
-            {
-                CurrentCollection = (await _tvShowClient.GetCurrentTvShowsAsync()).Select(t => t.Title.ToLower()),
-                QueryCollection = (await new TMDbClient(_tmdbKey).SearchTvShowAsync(query)).Results
-            };
+            return (await new TMDbClient(_tmdbKey).SearchTvShowAsync(query)).Results;
         }
 
-        public async Task<ResultDto> AddTvShowAsync(SearchTv tvShow, int id)
+        public async Task<(bool success, SearchTv tvShow)> AddTvShowAsync(SearchTv tvShow, int id)
         {
             var tmdbClient = new TMDbClient(_tmdbKey);
             var showDate = Convert.ToDateTime(tvShow.FirstAirDate);
@@ -75,16 +69,10 @@ namespace Din.Service.Services.Concrete
             {
                 await LogContentAdditionAsync(tvShow.Name, id, ContentType.TvShow, Convert.ToInt32(requestObj.TvShowId), response.systemId);
 
-                return GenerateResultDto("Tv Show Added Successfully",
-                    "The Movie has been added 🤩\nYou can track the progress under your account content tab.",
-                    ResultDtoStatus.Successful);
+                return (true, tvShow);
             }
-            else
-            {
-                return GenerateResultDto("Failed At adding Tv Show",
-                    "Something went wrong 😵\nTry again later!",
-                    ResultDtoStatus.Unsuccessful);
-            }
+
+            return (false, tvShow);
         }
 
         public async Task<IEnumerable<CalendarItemDto>> GetTvShowCalendarAsync()

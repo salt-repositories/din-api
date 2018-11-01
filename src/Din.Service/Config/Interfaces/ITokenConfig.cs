@@ -4,7 +4,5 @@
     {
         string Issuer { get; }
         string Key { get; }
-        string ClientId { get; }
-        string Secret { get; }
     }
 }

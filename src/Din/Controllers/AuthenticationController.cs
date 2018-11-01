@@ -37,12 +37,14 @@ namespace Din.Controllers
         [Authorize, HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] CredentialsDto credentials)
         {
-            var loginResult = await _service.LoginAsync(credentials);
+            var result = await _service.LoginAsync(credentials);
 
-            if (loginResult.status)
-                return Ok(new {loginResult.message});
+            if (result.status)
+            {
+                return Ok(result);
+            }
 
-            return BadRequest(new {loginResult.message});
+            return BadRequest(result);
         }
 
         /// <summary>

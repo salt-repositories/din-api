@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using AutoMapper;
 using Din.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,16 +16,14 @@ namespace Din.Controllers
         #region injections
 
         private readonly ITvShowService _service;
-        private readonly IMapper _mapper;
 
         #endregion injections
 
         #region constructors
 
-        public TvShowController(ITvShowService service, IMapper mapper)
+        public TvShowController(ITvShowService service)
         {
             _service = service;
-            _mapper = mapper;
         }
 
         #endregion constructors

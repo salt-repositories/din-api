@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Din.Service.Dto.Context;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Din.Service.Services.Interfaces
 {
@@ -19,6 +20,6 @@ namespace Din.Service.Services.Interfaces
 
         Task<AccountDto> CreateAccountAsync(AccountDto account);
 
-        Task UpdateAccountAsync(AccountDto account);
+        Task<AccountDto> UpdateAccountAsync(int id, JsonPatchDocument<AccountDto> data);
     }
 }

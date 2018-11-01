@@ -2,8 +2,10 @@
 using System.IO;
 using System.Reflection;
 using System.Text;
+using AutoMapper;
 using Din.Config;
 using Din.Data;
+using Din.Mapping;
 using Din.Service.BackgroundServices.Concrete;
 using Din.Service.Clients.Concrete;
 using Din.Service.Clients.Interfaces;
@@ -11,8 +13,6 @@ using Din.Service.Config.Concrete;
 using Din.Service.Config.Interfaces;
 using Din.Service.Generators.Concrete;
 using Din.Service.Generators.Interfaces;
-using Din.Service.Mapping.Profiles.Concrete;
-using Din.Service.Mapping.Profiles.Interfaces;
 using Din.Service.Services.Concrete;
 using Din.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -82,7 +82,7 @@ namespace Din
 
             //Inject Configurations
             services.AddSingleton<ITokenConfig>(new TokenConfig(Configuration["Jwt:Issuer"],
-                Configuration["Jwt:Key"], Configuration["Jwt:ClientId"], Configuration["Jwt:Secret"]));
+                Configuration["Jwt:Key"]));
             services.AddSingleton<IGiphyClientConfig>(new GiphyClientConfig(Configuration["GiphyClient:Url"],
                 Configuration["GiphyClient:Key"]));
             services.AddSingleton<IIpStackClientConfig>(new IpStackClientConfig(Configuration["IpStackClient:Url"],
@@ -96,12 +96,10 @@ namespace Din
             services.AddSingleton<ITMDBClientConfig>(new TMDBClientConfig(Configuration["TMDBClient:Key"]));
 
             //Inject Services
-            services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IMovieService, MovieService>();
             services.AddTransient<ITvShowService, TvShowService>();
             services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<IStatusCodeService, StatusCodeService>();
 
             //Injecting Clients
             services.AddTransient<IGiphyClient, GiphyClient>();
@@ -116,8 +114,12 @@ namespace Din
             //Background Services
             services.AddSingleton<IHostedService, ContentUpdateService>();
 
-            //Initialize Mapper Profiles
-            services.AddSingleton<IAccountMapProfile>(new AccountMapProfile());
+            //Initialize Mapper
+            var mapper = new Mapper(new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfile());
+            }));
+            services.AddSingleton<IMapper>(mapper);
 
 
             //Swagger
@@ -130,10 +132,17 @@ namespace Din
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme.",
+                    Name = "Authorization",
+                    In = "header"
+                });
             });
         }
 
-// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -149,10 +158,7 @@ namespace Din
             app.UseForwardedHeaders();
             app.UseMvc();
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DinApi V1");
-            });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "DinApi V1"); });
         }
     }
 }

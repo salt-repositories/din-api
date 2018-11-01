@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Din.Service.Services.Abstractions
 {
-    public abstract class ContentService : BaseService
+    public abstract class ContentService
     {
         private readonly DinContext _context;
         protected readonly IMapper Mapper;

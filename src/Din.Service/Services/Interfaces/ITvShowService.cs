@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Din.Service.Dto;
 using Din.Service.Dto.Content;
 using Din.Service.DTO.Content;
 using TMDbLib.Objects.Search;
@@ -18,7 +17,7 @@ namespace Din.Service.Services.Interfaces
         /// </summary>
         /// <param name="query">The Tv Show title or a part of it.</param>
         /// <returns>ViewModel containing collections of existing movies and query results.</returns>
-        Task<SearchResultDto<string, SearchTv>> SearchTvShowAsync(string query);
+        Task<IEnumerable<SearchTv>> SearchTvShowAsync(string query);
 
         /// <summary>
         /// Adds TvShow to the system.
@@ -26,9 +25,9 @@ namespace Din.Service.Services.Interfaces
         /// <param name="tvShow">The TvShow object that needs to be added.</param>
         /// <param name="id">The account id of the current session.</param>
         /// <returns>The status result.</returns>
-        Task<ResultDto> AddTvShowAsync(SearchTv tvShow, int id);
+        Task<(bool success, SearchTv tvShow)> AddTvShowAsync(SearchTv tvShow, int id);
         /// <summary>
-        /// Get the MediaSystem tvshow release calendar.
+        /// Get the MediaSystem tvShow release calendar.
         /// </summary>
         /// <returns>ViewModel containing calendar data.</returns>
         Task<IEnumerable<CalendarItemDto>> GetTvShowCalendarAsync();

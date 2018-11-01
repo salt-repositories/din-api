@@ -4,23 +4,22 @@ using AutoMapper;
 using Din.Data;
 using Din.Data.Entities;
 using Din.Service.Dto.Context;
-using Din.Service.Mapping.Profiles.Interfaces;
-using Din.Service.Services.Abstractions;
 using Din.Service.Services.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace Din.Service.Services.Concrete
 {
     /// <inheritdoc cref="IAccountService" />
-    public class AccountService : BaseService, IAccountService
+    public class AccountService : IAccountService
     {
         private readonly DinContext _context;
         private readonly IMapper _mapper;
 
-        public AccountService(DinContext context, IAccountMapProfile mapProfile)
+        public AccountService(DinContext context, IMapper mapper)
         {
             _context = context;
-            _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile(mapProfile.GetType())));
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<AccountDto>> GetAccountsAsync()
@@ -42,10 +41,17 @@ namespace Din.Service.Services.Concrete
             return account;
         }
 
-        public async Task UpdateAccountAsync(AccountDto account)
+        public async Task<AccountDto> UpdateAccountAsync(int id, JsonPatchDocument<AccountDto> data)
         {
-            _context.Account.Update(_mapper.Map<AccountEntity>(account));
+            var account = await _context.Account.Include(a => a.User).Include(a => a.Image)
+                .FirstAsync(a => a.Id.Equals(id));
+            var entityData = _mapper.Map<JsonPatchDocument<AccountEntity>>(data);
+
+            entityData.ApplyTo(account);
+
             await _context.SaveChangesAsync();
+
+            return _mapper.Map<AccountDto>(account);
         }    
     }
 }

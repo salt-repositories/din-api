@@ -8,7 +8,6 @@ using Din.Service.Clients.Interfaces;
 using Din.Service.Clients.RequestObjects;
 using Din.Service.Clients.RequestObjects.Abstractions;
 using Din.Service.Config.Interfaces;
-using Din.Service.Dto;
 using Din.Service.Dto.Content;
 using Din.Service.DTO.Content;
 using Din.Service.Services.Abstractions;
@@ -46,7 +45,7 @@ namespace Din.Service.Services.Concrete
             return Mapper.Map<IEnumerable<SearchMovie> >((await new TMDbClient(_tmdbKey).SearchMovieAsync(query)).Results);
         }
 
-        public async Task<ResultDto> AddMovieAsync(SearchMovie movie, int accountId)
+        public async Task<(bool success, SearchMovie movie)> AddMovieAsync(SearchMovie movie, int accountId)
         {
             var movieDate = Convert.ToDateTime(movie.ReleaseDate);
             var requestObj = new McRequest
@@ -78,16 +77,10 @@ namespace Din.Service.Services.Concrete
             {
                 await LogContentAdditionAsync(movie.Title, accountId, ContentType.Movie, movie.Id, result.systemId);
 
-                return GenerateResultDto("Movie Added Successfully",
-                    "The Movie has been added 🤩\nYou can track the progress under your account content tab.",
-                    ResultDtoStatus.Successful);
+                return (true, movie);
             }
-            else
-            {
-                return GenerateResultDto("Failed At adding Movie",
-                    "Something went wrong 😵 Try again later!",
-                    ResultDtoStatus.Unsuccessful);
-            }
+
+            return (false, movie);
         }
 
         public async Task<IEnumerable<CalendarItemDto>> GetMovieCalendarAsync()

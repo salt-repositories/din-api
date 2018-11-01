@@ -46,7 +46,7 @@ namespace Din.Controllers
         /// <param name="id">Account ID</param>
         /// <returns>Single account</returns>
         [Authorize, HttpGet("{id}")]
-        public async Task<IActionResult> GetAccountById(int id)
+        public async Task<IActionResult> GetAccountById([FromRoute] int id)
         {
             return Ok(await _service.GetAccountByIdAsync(id));
         }
@@ -69,13 +69,9 @@ namespace Din.Controllers
         /// <param name="data">updated data/ properties</param>
         /// <returns>Updated Account</returns>
         [Authorize, HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateAccount(int id, [FromBody]JsonPatchDocument<AccountDto> data)
+        public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody]JsonPatchDocument<AccountDto> data)
         {
-            var account = await _service.GetAccountByIdAsync(id);
-            data.ApplyTo(account);
-            await _service.UpdateAccountAsync(account);
-
-            return Ok(account);
+            return Ok(await _service.UpdateAccountAsync(id, data));
         }
 
         #endregion endpoints

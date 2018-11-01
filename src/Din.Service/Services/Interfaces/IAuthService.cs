@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using Din.Data.Entities;
+﻿using System.Threading.Tasks;
 using Din.Service.Dto.Auth;
 
 namespace Din.Service.Services.Interfaces
@@ -11,21 +9,10 @@ namespace Din.Service.Services.Interfaces
     public interface IAuthService
     {
         /// <summary>
-        /// User Login method, authenticates the supplied parameters.
+        /// User Login method, authenticates the supplied parameters
         /// </summary>
-        /// <param name="username">Username of the user</param>
-        /// <param name="password">Password in hash (BCrypt) format</param>
+        /// <param name="credentials">Login credentials containing the username and password</param>
         /// <returns>The generated claims principle for authorization</returns>
-        Task<(bool status, string message)> LoginAsync(CredentialsDto credentials);
-
-        /// <summary>
-        /// Logging of the LoginAsync attempt.
-        /// </summary>
-        /// <param name="username">Username supplied in the user input.</param>
-        /// <param name="userAgentString">user-agent string supplied by the browser.</param>
-        /// <param name="publicIp">Users public ip.</param>
-        /// <param name="status">Status returned by LoginAsync.</param>
-        /// <returns></returns>
-        Task LogLoginAttempt(string username, string userAgentString, string publicIp, LoginStatus status);
+        Task<(bool status, string message, string token)> LoginAsync(CredentialsDto credentials);
     }
 }
