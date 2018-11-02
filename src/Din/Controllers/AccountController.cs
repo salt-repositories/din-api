@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
+using Din.Data.Entities;
 using Din.Service.Dto.Context;
 using Din.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -17,14 +20,17 @@ namespace Din.Controllers
         #region injections
 
         private readonly IAccountService _service;
+        private readonly IMapper _mapper;
+      
 
         #endregion injections
 
         #region constructors
 
-        public AccountController(IAccountService service)
+        public AccountController(IAccountService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         #endregion constructors
@@ -37,7 +43,7 @@ namespace Din.Controllers
         [Authorize, HttpGet]
         public async Task<IActionResult> GetAccounts()
         {
-            return Ok(await _service.GetAccountsAsync());
+            return Ok(_mapper.Map<IEnumerable<AccountDto>>(await _service.GetAccountsAsync()));
         }
 
         /// <summary>
@@ -48,7 +54,7 @@ namespace Din.Controllers
         [Authorize, HttpGet("{id}")]
         public async Task<IActionResult> GetAccountById([FromRoute] int id)
         {
-            return Ok(await _service.GetAccountByIdAsync(id));
+            return Ok(_mapper.Map<AccountDto>(await _service.GetAccountByIdAsync(id)));
         }
 
         /// <summary>
@@ -59,7 +65,7 @@ namespace Din.Controllers
         [Authorize, HttpPost]
         public async Task<IActionResult> CreateAccount([FromBody] AccountDto account)
         {
-            return Created("Account created:", await _service.CreateAccountAsync(account));
+            return Created("Account created:", _mapper.Map<AccountDto>(await _service.CreateAccountAsync(_mapper.Map<AccountEntity>(account))));
         }
 
         /// <summary>
@@ -71,7 +77,11 @@ namespace Din.Controllers
         [Authorize, HttpPatch("{id}")]
         public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] JsonPatchDocument<AccountDto> data)
         {
-            return Ok(await _service.UpdateAccountAsync(id, data));
+            var entity = await _service.GetAccountByIdAsync(id);
+            var update =_mapper.Map<JsonPatchDocument<AccountEntity>>(data);
+            update.ApplyTo(entity);
+
+            return Ok(_mapper.Map<AccountDto>(await _service.UpdateAccountAsync(entity)));
         }
 
         #endregion endpoints

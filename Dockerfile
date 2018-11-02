@@ -1,5 +1,5 @@
 #pull dotnet build image
-FROM microsoft/dotnet:2.1-sdk AS build
+FROM microsoft/dotnet:2.1-sdk
 WORKDIR /app
 
 #resore packages

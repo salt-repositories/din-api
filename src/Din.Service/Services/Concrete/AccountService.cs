@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using Din.Data;
 using Din.Data.Entities;
-using Din.Service.Dto.Context;
 using Din.Service.Services.Interfaces;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace Din.Service.Services.Concrete
@@ -14,44 +11,36 @@ namespace Din.Service.Services.Concrete
     public class AccountService : IAccountService
     {
         private readonly DinContext _context;
-        private readonly IMapper _mapper;
 
-        public AccountService(DinContext context, IMapper mapper)
+        public AccountService(DinContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<AccountDto>> GetAccountsAsync()
+        public async Task<IEnumerable<AccountEntity>> GetAccountsAsync()
         {
-            return _mapper.Map<IEnumerable<AccountDto>>(await _context.Account.Include(a => a.User).Include(a => a.Image).ToListAsync());
+            return await _context.Account.Include(a => a.User).Include(a => a.Image).ToListAsync();
         }
 
-        public async Task<AccountDto> GetAccountByIdAsync(int id)
+        public async Task<AccountEntity> GetAccountByIdAsync(int id)
         {
-            return _mapper.Map<AccountDto>(await _context.Account.Include(a => a.User).Include(a => a.Image)
-                .FirstAsync(a => a.Id.Equals(id)));
+            return await _context.Account.Include(a => a.User).Include(a => a.Image).FirstAsync(a => a.Id.Equals(id));
         }
 
-        public async Task<AccountDto> CreateAccountAsync(AccountDto account)
+        public async Task<AccountEntity> CreateAccountAsync(AccountEntity account)
         {
-            await _context.Account.AddAsync(_mapper.Map<AccountEntity>(account));
+            await _context.Account.AddAsync(account);
             await _context.SaveChangesAsync();
 
             return account;
         }
 
-        public async Task<AccountDto> UpdateAccountAsync(int id, JsonPatchDocument<AccountDto> data)
+        public async Task<AccountEntity> UpdateAccountAsync(AccountEntity account)
         {
-            var account = await _context.Account.Include(a => a.User).Include(a => a.Image)
-                .FirstAsync(a => a.Id.Equals(id));
-            var entityData = _mapper.Map<JsonPatchDocument<AccountEntity>>(data);
-
-            entityData.ApplyTo(account);
-
+            _context.Account.Update(account);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<AccountDto>(account);
+            return account;
         }    
     }
 }

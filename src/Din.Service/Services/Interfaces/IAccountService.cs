@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Din.Service.Dto.Context;
-using Microsoft.AspNetCore.JsonPatch;
+using Din.Data.Entities;
 
 namespace Din.Service.Services.Interfaces
 {
@@ -10,16 +9,16 @@ namespace Din.Service.Services.Interfaces
     /// </summary>
     public interface IAccountService
     {
-        Task<IEnumerable<AccountDto>> GetAccountsAsync();
+        Task<IEnumerable<AccountEntity>> GetAccountsAsync();
         /// <summary>
         /// Gets the account data associated with the session
         /// </summary>
         /// <param name="id">Account id, stored in the session</param>
         /// <returns>ViewModel containing the account data</returns>
-        Task<AccountDto> GetAccountByIdAsync(int id);
+        Task<AccountEntity> GetAccountByIdAsync(int id);
 
-        Task<AccountDto> CreateAccountAsync(AccountDto account);
+        Task<AccountEntity> CreateAccountAsync(AccountEntity account);
 
-        Task<AccountDto> UpdateAccountAsync(int id, JsonPatchDocument<AccountDto> data);
+        Task<AccountEntity> UpdateAccountAsync(AccountEntity account);
     }
 }
