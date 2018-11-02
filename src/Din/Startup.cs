@@ -77,9 +77,6 @@ namespace Din
             //API Versioning
             services.AddApiVersioning(o => o.ApiVersionReader = new UrlSegmentApiVersionReader());
 
-            //HttpClientFactory
-            services.AddHttpClient();
-
             //Inject Configurations
             services.AddSingleton<ITokenConfig>(new TokenConfig(Configuration["Jwt:Issuer"],
                 Configuration["Jwt:Key"]));
@@ -102,11 +99,11 @@ namespace Din
             services.AddTransient<IAccountService, AccountService>();
 
             //Injecting Clients
-            services.AddTransient<IGiphyClient, GiphyClient>();
-            services.AddTransient<IIpStackClient, IpStackClient>();
-            services.AddTransient<IMovieClient, MovieClient>();
-            services.AddTransient<ITvShowClient, TvShowClient>();
-            services.AddTransient<IUnsplashClient, UnsplashClient>();
+            services.AddHttpClient<IGiphyClient, GiphyClient>();
+            services.AddHttpClient<IIpStackClient, IpStackClient>();
+            services.AddHttpClient<IMovieClient, MovieClient>();
+            services.AddHttpClient<ITvShowClient, TvShowClient>();
+            services.AddHttpClient<IUnsplashClient, UnsplashClient>();
 
             //Inject Generators
             services.AddSingleton<IMediaGenerator, MediaGenerator>();

@@ -7,6 +7,7 @@ using Din.Data.Entities;
 using Din.Service.Clients.Interfaces;
 using Din.Service.Clients.RequestObjects;
 using Din.Service.Clients.RequestObjects.Abstractions;
+using Din.Service.Clients.ResponseObjects;
 using Din.Service.Config.Interfaces;
 using Din.Service.Dto.Content;
 using Din.Service.DTO.Content;
@@ -83,14 +84,14 @@ namespace Din.Service.Services.Concrete
             return (false, movie);
         }
 
-        public async Task<IEnumerable<CalendarItemDto>> GetMovieCalendarAsync()
+        public async Task<IEnumerable<CalendarItemDto>> GetMovieCalendarAsync(DateTime start, DateTime end)
         {
-            return Mapper.Map<IEnumerable<CalendarItemDto>>(await _movieClient.GetCalendarAsync());
+            return Mapper.Map<IEnumerable<CalendarItemDto>>(await _movieClient.GetCalendarAsync<McCalendar>(start, end));
         }
 
         public async Task<IEnumerable<QueueDto>> GetMovieQueueAsync()
         {
-            return Mapper.Map<IEnumerable<QueueDto>>(await _movieClient.GetQueue());
+            return Mapper.Map<IEnumerable<QueueDto>>(await _movieClient.GetQueue<McQueueItem>());
         }
     }
 }

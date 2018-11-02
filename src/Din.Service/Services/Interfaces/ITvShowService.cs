@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Din.Service.Dto.Content;
 using Din.Service.DTO.Content;
@@ -30,7 +31,7 @@ namespace Din.Service.Services.Interfaces
         /// Get the MediaSystem tvShow release calendar.
         /// </summary>
         /// <returns>ViewModel containing calendar data.</returns>
-        Task<IEnumerable<CalendarItemDto>> GetTvShowCalendarAsync();
+        Task<IEnumerable<CalendarItemDto>> GetTvShowCalendarAsync(DateTime start, DateTime end);
 
         Task<IEnumerable<QueueDto>> GetTvShowQueueAsync();
     }

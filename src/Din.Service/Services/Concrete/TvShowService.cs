@@ -6,6 +6,7 @@ using Din.Data;
 using Din.Data.Entities;
 using Din.Service.Clients.Interfaces;
 using Din.Service.Clients.RequestObjects;
+using Din.Service.Clients.ResponseObjects;
 using Din.Service.Config.Interfaces;
 using Din.Service.Dto.Content;
 using Din.Service.DTO.Content;
@@ -75,14 +76,14 @@ namespace Din.Service.Services.Concrete
             return (false, tvShow);
         }
 
-        public async Task<IEnumerable<CalendarItemDto>> GetTvShowCalendarAsync()
+        public async Task<IEnumerable<CalendarItemDto>> GetTvShowCalendarAsync(DateTime start, DateTime end)
         {
-            return Mapper.Map<IEnumerable<CalendarItemDto>>(await _tvShowClient.GetCalendarAsync());
+            return Mapper.Map<IEnumerable<CalendarItemDto>>(await _tvShowClient.GetCalendarAsync<TcCalendar>(start, end));
         }
 
         public async Task<IEnumerable<QueueDto>> GetTvShowQueueAsync()
         {
-            return Mapper.Map<IEnumerable<QueueDto>>(await _tvShowClient.GetQueue());
+            return Mapper.Map<IEnumerable<QueueDto>>(await _tvShowClient.GetQueue<TcQueueItem>());
         }
     }
 }

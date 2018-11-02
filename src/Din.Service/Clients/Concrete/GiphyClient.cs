@@ -1,6 +1,6 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Din.Service.Clients.Abstractions;
 using Din.Service.Clients.Interfaces;
 using Din.Service.Clients.ResponseObjects;
 using Din.Service.Config.Interfaces;
@@ -8,32 +8,24 @@ using Newtonsoft.Json;
 
 namespace Din.Service.Clients.Concrete
 {
-    public class GiphyClient : BaseClient, IGiphyClient
+    public class GiphyClient : IGiphyClient
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient _client;
         private readonly IGiphyClientConfig _config;
 
-        public GiphyClient(IHttpClientFactory httpClientFactory, IGiphyClientConfig config)
+        public GiphyClient(HttpClient httpClient, IGiphyClientConfig config)
         {
-            _httpClientFactory = httpClientFactory;
+            httpClient.BaseAddress = new Uri(config.Url);
+            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+
+            _client = httpClient;
             _config = config;
         }
 
-        public async Task<GiphyItem> GetRandomGifAsync(GiphyTag tag)
+        public async Task<GiphyItem> GetRandomGifAsync(string query) 
         {
-            var client = _httpClientFactory.CreateClient();
-
-            return JsonConvert.DeserializeObject<GiphyItem>(await client
-                .GetStringAsync(BuildUrl(_config.Url, $"?api_key={_config.Key}", $"&tag={tag.ToString().ToLower()}", "&rating=G")));
+            return JsonConvert.DeserializeObject<GiphyItem>(await _client
+                .GetStringAsync($"?api_key={_config.Key}&tag={query}&rating=G"));
         }
-    }
-
-    public enum GiphyTag
-    {
-        Nicetry,
-        Bye,
-        Funny,
-        Trending,
-        Error
     }
 }

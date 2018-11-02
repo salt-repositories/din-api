@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Din.Service.Clients.Concrete;
 using Din.Service.Clients.Interfaces;
 using Din.Service.Clients.ResponseObjects;
 using Din.Service.Generators.Interfaces;
@@ -34,9 +33,9 @@ namespace Din.Service.Generators.Concrete
             return _unsplashData.Collection;
         }
 
-        public async Task<GiphyItem> GenerateGif(GiphyTag tag)
+        public async Task<GiphyItem> GenerateGif(string query)
         {
-            return await _giphyClient.GetRandomGifAsync(tag);
+            return await _giphyClient.GetRandomGifAsync(query);
 
         }
     }

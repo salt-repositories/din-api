@@ -39,7 +39,7 @@ namespace Din.Controllers
         {
             var result = await _service.LoginAsync(credentials);
 
-            if (result.status)
+            if (result.Success)
             {
                 return Ok(result);
             }

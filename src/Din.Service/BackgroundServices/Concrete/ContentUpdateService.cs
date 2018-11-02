@@ -6,6 +6,7 @@ using Din.Data;
 using Din.Data.Entities;
 using Din.Service.BackgroundServices.Abstractions;
 using Din.Service.Clients.Interfaces;
+using Din.Service.Clients.ResponseObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,7 +36,7 @@ namespace Din.Service.BackgroundServices.Concrete
         {
             var content = await context.AddedContent.Where(c =>
                 c.Type.Equals(ContentType.Movie) && !c.Status.Equals(ContentStatus.Done)).ToListAsync();
-            var queue = (await movieClient.GetQueue()).ToList();
+            var queue = (await movieClient.GetQueue<McQueueItem>()).ToList();
             var now = DateTime.Now;
 
 

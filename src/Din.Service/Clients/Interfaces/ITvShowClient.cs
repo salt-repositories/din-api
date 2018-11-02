@@ -5,12 +5,10 @@ using Din.Service.Clients.ResponseObjects;
 
 namespace Din.Service.Clients.Interfaces
 {
-    public interface ITvShowClient
+    public interface ITvShowClient : IContentClient
     {
         Task<IEnumerable<TcTvShow>> GetCurrentTvShowsAsync();
         Task<TcTvShow> GetTvShowByIdAsync(int id);
         Task<(bool status, int systemId)> AddTvShowAsync(TcRequest tvShow);
-        Task<IEnumerable<TcCalendar>> GetCalendarAsync();
-        Task<IEnumerable<TcQueueItem>> GetQueue();
     }
 }

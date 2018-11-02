@@ -32,7 +32,7 @@ namespace Din.Service.Services.Concrete
             _config = config;
         }
 
-        public async Task<(bool status, string message, string token)> LoginAsync(CredentialsDto credentials)
+        public async Task<AuthResultDto> LoginAsync(CredentialsDto credentials)
         {
             try
             {
@@ -41,15 +41,15 @@ namespace Din.Service.Services.Concrete
                 if (!BCrypt.Net.BCrypt.Verify(credentials.Password, accountEntity.Hash))
                 {
                     //TODO log login attempt
-                    return (false, "Password Incorrect", null);
+                    return new AuthResultDto{ Success = false, Message = "Password Incorrect", Token = null};
                 }
 
                 //TODO log login attempt
-                return (true, "Credentials are valid", GenerateToken());
+                return new AuthResultDto{ Success = true, Message = "Credentials are valid", Token = GenerateToken() };
             }
             catch (InvalidOperationException)
             {
-                return (false, "Username Incorrect", null);
+                return new AuthResultDto{ Success = false, Message = "Username Incorrect", Token = null };
             }
         }
 

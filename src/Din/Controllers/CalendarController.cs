@@ -38,13 +38,12 @@ namespace Din.Controllers
         /// </summary>
         /// <returns>Release calendar</returns>
         [Authorize, HttpGet]
-        public async Task<IActionResult> GetReleaseCalendarAsync()
+        public async Task<IActionResult> GetReleaseCalendarAsync([FromQuery] DateTime start, [FromQuery] DateTime end)
         {
-            //TODO except date range as query
             var calendarDto = new CalendarDto
             {
-                Items = (await _movieService.GetMovieCalendarAsync()).Concat(
-                    await _tvShowService.GetTvShowCalendarAsync()),
+                Items = (await _movieService.GetMovieCalendarAsync(start, end)).Concat(
+                    await _tvShowService.GetTvShowCalendarAsync(start, end)),
                 DateRange = new Tuple<DateTime, DateTime>(DateTime.Now, DateTime.Now.AddMonths(1))
             };
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Din.Service.Dto.Content;
 using Din.Service.DTO.Content;
@@ -28,7 +29,7 @@ namespace Din.Service.Services.Interfaces
         /// Get the MediaSystem movie release calendar.
         /// </summary>
         /// <returns>ViewModel containing calendar data.</returns>
-        Task<IEnumerable<CalendarItemDto>> GetMovieCalendarAsync();
+        Task<IEnumerable<CalendarItemDto>> GetMovieCalendarAsync(DateTime start, DateTime end);
 
         Task<IEnumerable<QueueDto>> GetMovieQueueAsync();
     }
