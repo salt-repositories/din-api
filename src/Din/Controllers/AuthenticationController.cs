@@ -46,18 +46,7 @@ namespace Din.Controllers
 
             return BadRequest(result);
         }
-
-        /// <summary>
-        /// Logout
-        /// </summary>
-        /// <returns>Status response</returns>
-        [Authorize, HttpGet]
-        public async Task<IActionResult> LogoutAsync()
-        {
-            // Cancel token?
-            return Ok();
-        }
-
+       
         #endregion endpoints
     }
 }

@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Din.Data.Entities
 {
     public class UserEntity
     {
         public int Id { get; set; }
+        [MaxLength(50)]
         public string FirstName { get; set; }
+        [MaxLength(50)]
         public string LastName { get; set; }
         public AccountEntity Account { get; set; }
     }
@@ -13,6 +16,7 @@ namespace Din.Data.Entities
     public class AccountEntity
     {
         public int Id { get; set; }
+        [MaxLength(50)]
         public string Username { get; set; }
         public string Hash { get; set; }
         public AccountRoll Role { get; set; }

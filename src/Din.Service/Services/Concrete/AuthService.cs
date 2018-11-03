@@ -56,7 +56,7 @@ namespace Din.Service.Services.Concrete
         private string GenerateToken()
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Key));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(_config.Issuer,
                 _config.Issuer,
