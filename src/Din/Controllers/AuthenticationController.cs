@@ -3,12 +3,13 @@ using Din.Service.Dto.Auth;
 using Din.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 
 namespace Din.Controllers
 {
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
@@ -35,16 +36,18 @@ namespace Din.Controllers
         /// <param name="credentials">Login Credentials</param>
         /// <returns>Status response</returns>
         [AllowAnonymous, HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> LoginAsync([FromBody] CredentialsDto credentials)
         {
             var result = await _service.LoginAsync(credentials);
 
-            if (result.Success)
+            if (result.success)
             {
-                return Ok(result);
+                return Ok(new{access_token = result.token});
             }
 
-            return BadRequest(result);
+            return BadRequest(new {error = result.message});
         }
        
         #endregion endpoints

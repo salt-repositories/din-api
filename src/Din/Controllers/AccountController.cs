@@ -13,7 +13,7 @@ namespace Din.Controllers
 {
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -41,6 +41,7 @@ namespace Din.Controllers
         /// </summary>
         /// <returns>Collection containing all accounts</returns>
         [Authorize, HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<AccountDto>), 200)]
         public async Task<IActionResult> GetAccounts()
         {
             return Ok(_mapper.Map<IEnumerable<AccountDto>>(await _service.GetAccountsAsync()));
@@ -52,6 +53,8 @@ namespace Din.Controllers
         /// <param name="id">Account ID</param>
         /// <returns>Single account</returns>
         [Authorize, HttpGet("{id}")]
+        [ProducesResponseType(typeof(AccountDto), 200)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> GetAccountById([FromRoute] int id)
         {
             return Ok(_mapper.Map<AccountDto>(await _service.GetAccountByIdAsync(id)));
@@ -63,6 +66,7 @@ namespace Din.Controllers
         /// <param name="account">Account model</param>
         /// <returns>Created account</returns>
         [Authorize, HttpPost]
+        [ProducesResponseType(typeof(AccountDto), 201)]
         public async Task<IActionResult> CreateAccount([FromBody] AccountDto account)
         {
             return Created("Account created:", _mapper.Map<AccountDto>(await _service.CreateAccountAsync(_mapper.Map<AccountEntity>(account))));
@@ -75,6 +79,8 @@ namespace Din.Controllers
         /// <param name="data">updated data/ properties</param>
         /// <returns>Updated Account</returns>
         [Authorize, HttpPatch("{id}")]
+        [ProducesResponseType(typeof(AccountDto), 200)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] JsonPatchDocument<AccountDto> data)
         {
             var entity = await _service.GetAccountByIdAsync(id);

@@ -24,7 +24,8 @@ namespace Din.Service.Services.Concrete
 
         public async Task<AccountEntity> GetAccountByIdAsync(int id)
         {
-            return await _context.Account.Include(a => a.User).Include(a => a.Image).FirstAsync(a => a.Id.Equals(id));
+            return await _context.Account.Include(a => a.User).Include(a => a.Image)
+                .FirstAsync(a => a.Id.Equals(id));
         }
 
         public async Task<AccountEntity> CreateAccountAsync(AccountEntity account)
@@ -41,6 +42,6 @@ namespace Din.Service.Services.Concrete
             await _context.SaveChangesAsync();
 
             return account;
-        }    
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace Din.Controllers
 {
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     public class CalendarController : ControllerBase
     {
@@ -38,6 +38,7 @@ namespace Din.Controllers
         /// </summary>
         /// <returns>Release calendar</returns>
         [Authorize, HttpGet]
+        [ProducesResponseType(typeof(CalendarItemDto), 200)]
         public async Task<IActionResult> GetReleaseCalendarAsync([FromQuery] DateTime start, [FromQuery] DateTime end)
         {
             var calendarDto = new CalendarDto

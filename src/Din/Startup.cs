@@ -6,6 +6,7 @@ using AutoMapper;
 using Din.Config;
 using Din.Data;
 using Din.Mapping;
+using Din.Middleware;
 using Din.Service.BackgroundServices.Concrete;
 using Din.Service.Clients.Concrete;
 using Din.Service.Clients.Interfaces;
@@ -153,6 +154,7 @@ namespace Din
 
             app.UseAuthentication();
             app.UseForwardedHeaders();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "DinApi V1"); });

@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Din.Service.Dto.Content;
 using Din.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +10,7 @@ namespace Din.Controllers
 {
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     public class QueueController : ControllerBase
     {
@@ -36,6 +38,7 @@ namespace Din.Controllers
         /// </summary>
         /// <returns>Collection of queue items</returns>
         [Authorize, HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<QueueDto>), 200)]
         public async Task<IActionResult> GetQueue()
         {
             return Ok((await _movieService.GetMovieQueueAsync()).Concat(await _tvShowService.GetTvShowQueueAsync()));

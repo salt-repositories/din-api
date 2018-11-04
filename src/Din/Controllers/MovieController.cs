@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Din.Service.Dto.Content;
 using Din.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +11,7 @@ namespace Din.Controllers
 {
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     public class MovieController : ControllerBase
     {
@@ -35,6 +37,7 @@ namespace Din.Controllers
         /// </summary>
         /// <returns>Collection of movies</returns>
         [Authorize, HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<MovieDto>), 200)]
         public async Task<IActionResult> GetAllMovies()
         {
             return Ok(await _service.GetAllMoviesAsync());
@@ -46,6 +49,8 @@ namespace Din.Controllers
         /// <param name="id">system ID</param>
         /// <returns>Single movie</returns>
         [Authorize, HttpGet("{id}")]
+        [ProducesResponseType(typeof(MovieDto), 200)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> GetMovieById([FromRoute] int id)
         {
             return Ok(await _service.GetMovieByIdAsync(id));
@@ -57,6 +62,8 @@ namespace Din.Controllers
         /// <param name="query">Searchquery</param>
         /// <returns>Collection of results</returns>
         [HttpGet("search"), Authorize]
+        [ProducesResponseType(typeof(IEnumerable<SearchMovie>), 200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> SearchMovie([FromQuery] string query)
         {
             if (string.IsNullOrEmpty(query)) return BadRequest(new {message = "query can not be empty"});
@@ -70,20 +77,25 @@ namespace Din.Controllers
         /// <param name="movieData">Movie to add</param>
         /// <returns>Status response</returns>
         [HttpPost, Authorize]
+        [ProducesResponseType(typeof(SearchMovie), 200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> AddMovieAsync([FromBody] string movieData)
         {
-            try
-            {
-                var movie = JsonConvert.DeserializeObject<SearchMovie>(movieData);
+            var movie = JsonConvert.DeserializeObject<SearchMovie>(movieData);
 
-                if (movie == null) return BadRequest();
-
-                return Ok(await _service.AddMovieAsync(movie, 1));
-            }
-            catch
+            if (movie == null)
             {
-                return BadRequest();
+                return BadRequest(new {error = "The body is empty"});
             }
+
+            var result = await _service.AddMovieAsync(movie, 1);
+
+            if (result.success)
+            {
+                return Ok(result.movie);
+            }
+
+            return BadRequest(new {error = "Movie has been not added"});
         }
 
         #endregion endpoints
