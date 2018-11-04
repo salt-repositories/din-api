@@ -46,7 +46,7 @@ namespace Din.Service.Services.Concrete
             return Mapper.Map<IEnumerable<SearchMovie> >((await new TMDbClient(_tmdbKey).SearchMovieAsync(query)).Results);
         }
 
-        public async Task<(bool success, SearchMovie movie)> AddMovieAsync(SearchMovie movie, int accountId)
+        public async Task<(bool success, SearchMovie movie)> AddMovieAsync(SearchMovie movie, int id)
         {
             var movieDate = Convert.ToDateTime(movie.ReleaseDate);
             var requestObj = new McRequest
@@ -76,7 +76,7 @@ namespace Din.Service.Services.Concrete
 
             if (result.status)
             {
-                await LogContentAdditionAsync(movie.Title, accountId, ContentType.Movie, movie.Id, result.systemId);
+                await LogContentAdditionAsync(movie.Title, id, ContentType.Movie, movie.Id, result.systemId);
 
                 return (true, movie);
             }

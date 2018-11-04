@@ -5,7 +5,7 @@
         public string Url { get; }
         public string Key { get; }
 
-        public BaseClientConfig(string url, string key)
+        protected BaseClientConfig(string url, string key)
         {
             Url = url;
             Key = key;

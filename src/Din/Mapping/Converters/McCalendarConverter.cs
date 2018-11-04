@@ -8,10 +8,6 @@ namespace Din.Service.Mapping.Converters
     {
         public CalendarItemDto Convert(McCalendar source, CalendarItemDto destination, ResolutionContext context)
         {
-            if (source.Downloaded)
-            {
-
-            }
             return new CalendarItemDto
             {
                 Title = source.Title,

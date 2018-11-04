@@ -48,9 +48,6 @@ namespace Din.Service.BackgroundServices.Abstractions
 
         protected virtual async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //stoppingToken.Register(() =>
-            //        _logger.LogDebug($" GracePeriod background task is stopping."));
-
             do
             {
                 await Process();

@@ -8,10 +8,10 @@ namespace Din.Service.BackgroundServices.Abstractions
 {
     public abstract class ScheduledProcessor : ScopedProcessor
     {
-        private CrontabSchedule _schedule;
+        private readonly CrontabSchedule _schedule;
         private DateTime _nextRun;
         protected abstract string Schedule { get; }
-        public ScheduledProcessor(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
+        protected ScheduledProcessor(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
         {
             _schedule = CrontabSchedule.Parse(Schedule);
             _nextRun = _schedule.GetNextOccurrence(DateTime.Now);

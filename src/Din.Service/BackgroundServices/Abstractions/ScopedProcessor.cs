@@ -8,7 +8,7 @@ namespace Din.Service.BackgroundServices.Abstractions
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public ScopedProcessor(IServiceScopeFactory serviceScopeFactory) : base()
+        protected ScopedProcessor(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
         }
