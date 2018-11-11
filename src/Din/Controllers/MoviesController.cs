@@ -13,7 +13,7 @@ namespace Din.Controllers
     [Produces("application/json")]
     [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class MovieController : ControllerBase
+    public class MoviesController : ControllerBase
     {
         #region injectons
 
@@ -23,7 +23,7 @@ namespace Din.Controllers
 
         #region constructors
 
-        public MovieController(IMovieService service)
+        public MoviesController(IMovieService service)
         {
             _service = service;
         }
@@ -38,9 +38,11 @@ namespace Din.Controllers
         /// <returns>Collection of movies</returns>
         [Authorize, HttpGet]
         [ProducesResponseType(typeof(IEnumerable<MovieDto>), 200)]
-        public async Task<IActionResult> GetAllMovies()
+        public async Task<IActionResult> GetAllMovies([FromQuery] int pageSize, [FromQuery] int page, [FromQuery] string sortKey, [FromQuery] string sortDirection)
         {
-            return Ok(await _service.GetAllMoviesAsync());
+            return pageSize.Equals(0) 
+                ? Ok(await _service.GetAllMoviesAsync<IEnumerable<MovieDto>>(pageSize, page, sortKey, sortDirection)) 
+                : Ok(await _service.GetAllMoviesAsync<MovieContainerDto>(pageSize, page, sortKey, sortDirection));
         }
 
         /// <summary>

@@ -15,7 +15,7 @@ namespace Din.Controllers
     [Produces("application/json")]
     [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountsController : ControllerBase
     {
         #region injections
 
@@ -27,7 +27,7 @@ namespace Din.Controllers
 
         #region constructors
 
-        public AccountController(IAccountService service, IMapper mapper)
+        public AccountsController(IAccountService service, IMapper mapper)
         {
             _service = service;
             _mapper = mapper;

@@ -13,7 +13,7 @@ namespace Din.Controllers
     [Produces("application/json")]
     [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class TvShowController : ControllerBase
+    public class TvShowsController : ControllerBase
     {
         #region injections
 
@@ -23,7 +23,7 @@ namespace Din.Controllers
 
         #region constructors
 
-        public TvShowController(ITvShowService service)
+        public TvShowsController(ITvShowService service)
         {
             _service = service;
         }

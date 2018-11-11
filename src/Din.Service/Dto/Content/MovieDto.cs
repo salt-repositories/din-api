@@ -1,4 +1,6 @@
-﻿namespace Din.Service.Dto.Content
+﻿using System.Collections.Generic;
+
+namespace Din.Service.Dto.Content
 {
     public class MovieDto
     {
@@ -8,5 +10,15 @@
         public string Status { get; set; }
         public bool Downloaded { get; set; }
         public bool HasFile { get; set; }
+    }
+
+    public class MovieContainerDto
+    {
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public string SortKey { get; set; }
+        public string SortDirection { get; set; }
+        public int TotalRecords { get; set; }
+        public IEnumerable<MovieDto> Records { get; set; }
     }
 }

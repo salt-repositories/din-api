@@ -25,10 +25,10 @@ namespace Din.Service.Clients.Concrete
             _config = config;
         }
 
-        public async Task<IEnumerable<McMovie>> GetCurrentMoviesAsync()
+        public async Task<T> GetCurrentMoviesAsync<T>(int pageSize, int page, string sortKey, string sortDirection)
         {
-            return JsonConvert.DeserializeObject<IEnumerable<McMovie>>(
-                await _client.GetStringAsync($"movie?apikey={_config.Key}"));
+            return JsonConvert.DeserializeObject<T>(
+                await _client.GetStringAsync($"movie?apikey={_config.Key}&pageSize={pageSize}&page={page}&sortKey={sortKey}&sortDir={sortDirection}"));
         }
 
         public async Task<McMovie> GetMovieByIdAsync(int id)

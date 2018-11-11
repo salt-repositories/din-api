@@ -9,7 +9,7 @@ namespace Din.Service.Services.Interfaces
 {
     public interface IMovieService
     {
-        Task<IEnumerable<MovieDto>> GetAllMoviesAsync();
+        Task<T> GetAllMoviesAsync<T>(int pageSize, int page, string sortKey, string sortDirection);
         Task<MovieDto> GetMovieByIdAsync(int id);
         /// <summary>
         /// Search movies with a specific query.

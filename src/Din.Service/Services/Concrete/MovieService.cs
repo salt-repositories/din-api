@@ -31,9 +31,11 @@ namespace Din.Service.Services.Concrete
             _tmdbKey = config.Key;
         }
 
-        public async Task<IEnumerable<MovieDto>> GetAllMoviesAsync()
+        public async Task<T> GetAllMoviesAsync<T>(int pageSize, int page, string sortKey, string sortDirection)
         {
-            return Mapper.Map<IEnumerable<MovieDto>>(await _movieClient.GetCurrentMoviesAsync());
+            return typeof(T) == typeof(IEnumerable<MovieDto>)
+                ? Mapper.Map<T>(await _movieClient.GetCurrentMoviesAsync<IEnumerable<McMovie>>(pageSize, page, sortKey, sortDirection))
+                : Mapper.Map<T>(await _movieClient.GetCurrentMoviesAsync<McMovieContainer>(pageSize, page, sortKey, sortDirection));
         }
 
         public async Task<MovieDto> GetMovieByIdAsync(int id)
@@ -43,7 +45,8 @@ namespace Din.Service.Services.Concrete
 
         public async Task<IEnumerable<SearchMovie>> SearchMovieAsync(string query)
         {
-            return Mapper.Map<IEnumerable<SearchMovie> >((await new TMDbClient(_tmdbKey).SearchMovieAsync(query)).Results);
+            return Mapper.Map<IEnumerable<SearchMovie>>(
+                (await new TMDbClient(_tmdbKey).SearchMovieAsync(query)).Results);
         }
 
         public async Task<(bool success, SearchMovie movie)> AddMovieAsync(SearchMovie movie, int id)
@@ -86,7 +89,8 @@ namespace Din.Service.Services.Concrete
 
         public async Task<IEnumerable<CalendarItemDto>> GetMovieCalendarAsync(DateTime start, DateTime end)
         {
-            return Mapper.Map<IEnumerable<CalendarItemDto>>(await _movieClient.GetCalendarAsync<McCalendar>(start, end));
+            return Mapper.Map<IEnumerable<CalendarItemDto>>(
+                await _movieClient.GetCalendarAsync<McCalendar>(start, end));
         }
 
         public async Task<IEnumerable<QueueDto>> GetMovieQueueAsync()
