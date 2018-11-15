@@ -1,54 +1,64 @@
-node {
-    def app
-    def branch
-    try {
-      stage('clone') {
-          checkout scm
-          branch = env.BRANCH_NAME
-          echo 'Repo cloned'
-      }
+pipeline {
+  agent {
+    docker {
+      image 'microsoft/dotnet:2.1-sdk'
+      args '-u root:root'
+    }
 
-      stage('restore packages') {
-        sh "dotnet restore src/"
+  }
+  stages {
+    stage('Restore packages') {
+      steps {
+        sh 'dotnet restore src/'
       }
-
-      stage('clean') {
-        sh "dotnet clean src/"
+    }
+    stage('Build') {
+      steps {
+        sh 'dotnet build src/'
       }
-
-      stage('build') {
-        sh "dotnet build src/ --configuration Release"
-      }
-
-      stage('test') {
+    }
+    stage('Test') {
+      steps {
         sh 'dotnet test src/Din.Tests/ --logger "trx;LogFileName=results.xml"'
-        xunit([MSTest(deleteOutputFiles: true, failIfNotNew: true, pattern: '**/results.xml', skipNoTestFiles: false, stopProcessingIfError: true)])
-      }
+        script {
+          xunit thresholds: [failed(failureNewThreshold: '3', failureThreshold: '5', unstableNewThreshold: '1', unstableThreshold: '2')], tools: [MSTest(deleteOutputFiles: true, failIfNotNew: true, pattern: '**/results.xml', skipNoTestFiles: false, stopProcessingIfError: true)]
+        }
 
-      stage('create docker image') {
-        app = docker.build("saltz/din-api")
-        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-          switch(branch) {
-            case 'master':
-              app.push('prod');
-              echo 'Deployed to production environment'
-              break
-            case 'beta':
-                app.push('beta');
-                echo 'Deployed to beta environment'
-              break
-            case 'develop':
+      }
+    }
+    stage('Deploy to environment') {
+      parallel {
+        stage('Deploy to development') {
+          agent any
+          when {
+            branch 'develop'
+          }
+          steps {
+            script {
+              def app = docker.build('saltz/din-api')
+              docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
                 app.push('dev')
-                echo 'Deployed to dev environment'
-              break
-            default:
-                echo 'This build will not be deployed'
-              break
+              }
+            }
+
+          }
+        }
+        stage('Deploy to production') {
+          agent any
+          when {
+            branch 'master'
+          }
+          steps {
+            script {
+              def app = docker.build('saltz/din-api')
+              docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                app.push('prod')
+              }
+            }
+
           }
         }
       }
-    } catch (e) {
-        echo 'Pipeline failed'
-      throw e
     }
+  }
 }
