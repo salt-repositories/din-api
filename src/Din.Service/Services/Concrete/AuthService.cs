@@ -7,8 +7,7 @@ using Din.Data;
 using Din.Data.Entities;
 using Din.Service.Clients.Interfaces;
 using Din.Service.Config.Interfaces;
-using Din.Service.Dto.Auth;
-using Din.Service.Dto.Context;
+using Din.Service.Dtos;
 using Din.Service.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -32,7 +31,7 @@ namespace Din.Service.Services.Concrete
             _config = config;
         }
 
-        public async Task<(bool success, string message, string token)> LoginAsync(CredentialsDto credentials)
+        public async Task<(bool success, string message, string token)> LoginAsync(AuthDto credentials)
         {
             try
             {
@@ -69,7 +68,7 @@ namespace Din.Service.Services.Concrete
         private async Task LogLoginAttempt(string username, string userAgentString, string publicIp, LoginStatus status)
         {
             var clientInfo = Parser.GetDefault().Parse(userAgentString);
-            var loginAttemptDto = new LoginAttemptDto
+            var loginAttempt = new LoginAttemptEntity()
             {
                 Username = username,
                 Device = clientInfo.Device.Family,
@@ -82,14 +81,14 @@ namespace Din.Service.Services.Concrete
 
             try
             {
-                loginAttemptDto.Location = _mapper.Map<LoginLocationDto>(await _ipStackClient.GetLocation(publicIp));
+                loginAttempt.Location = _mapper.Map<LoginLocationEntity>(await _ipStackClient.GetLocation(publicIp));
 
-                await _context.LoginAttempt.AddAsync(_mapper.Map<LoginAttemptEntity>(loginAttemptDto));
+                await _context.LoginAttempt.AddAsync(_mapper.Map<LoginAttemptEntity>(loginAttempt));
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
             {
-                await _context.LoginAttempt.AddAsync(_mapper.Map<LoginAttemptEntity>(loginAttemptDto));
+                await _context.LoginAttempt.AddAsync(_mapper.Map<LoginAttemptEntity>(loginAttempt));
                 await _context.SaveChangesAsync();
             }
         }

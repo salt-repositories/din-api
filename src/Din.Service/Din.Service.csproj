@@ -8,7 +8,7 @@
     <None Remove="BackgroundServices\Interfaces\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="BCrypt.Net-Core" Version="1.5.0" />
     <PackageReference Include="MediaBrowser.ApiClient" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.1.1" />

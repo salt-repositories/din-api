@@ -4,7 +4,7 @@ namespace Din.Data.Entities
 {
     public class LoginAttemptEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Username { get; set; }
         public string Device { get; set; }
         public string Os { get; set; }
@@ -24,7 +24,7 @@ namespace Din.Data.Entities
 
     public class LoginLocationEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string ContinentCode { get; set; }
         public string ContinentName { get; set; }
         public string CountryCode { get; set; }

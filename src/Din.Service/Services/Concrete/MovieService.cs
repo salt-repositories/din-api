@@ -9,8 +9,7 @@ using Din.Service.Clients.RequestObjects;
 using Din.Service.Clients.RequestObjects.Abstractions;
 using Din.Service.Clients.ResponseObjects;
 using Din.Service.Config.Interfaces;
-using Din.Service.Dto.Content;
-using Din.Service.DTO.Content;
+using Din.Service.Dtos;
 using Din.Service.Services.Abstractions;
 using Din.Service.Services.Interfaces;
 using TMDbLib.Client;
@@ -49,7 +48,7 @@ namespace Din.Service.Services.Concrete
                 (await new TMDbClient(_tmdbKey).SearchMovieAsync(query)).Results);
         }
 
-        public async Task<(bool success, SearchMovie movie)> AddMovieAsync(SearchMovie movie, int id)
+        public async Task<(bool success, SearchMovie movie)> AddMovieAsync(SearchMovie movie, Guid id)
         {
             var movieDate = Convert.ToDateTime(movie.ReleaseDate);
             var requestObj = new McRequest

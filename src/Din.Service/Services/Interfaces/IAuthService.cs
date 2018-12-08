@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Din.Service.Dto.Auth;
+using Din.Service.Dtos;
 
 namespace Din.Service.Services.Interfaces
 {
@@ -13,6 +13,6 @@ namespace Din.Service.Services.Interfaces
         /// </summary>
         /// <param name="credentials">Login credentials containing the username and password</param>
         /// <returns>The generated claims principle for authorization</returns>
-        Task<(bool success, string message, string token)> LoginAsync(CredentialsDto credentials);
+        Task<(bool success, string message, string token)> LoginAsync(AuthDto credentials);
     }
 }

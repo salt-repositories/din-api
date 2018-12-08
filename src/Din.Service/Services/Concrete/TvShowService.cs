@@ -8,8 +8,7 @@ using Din.Service.Clients.Interfaces;
 using Din.Service.Clients.RequestObjects;
 using Din.Service.Clients.ResponseObjects;
 using Din.Service.Config.Interfaces;
-using Din.Service.Dto.Content;
-using Din.Service.DTO.Content;
+using Din.Service.Dtos;
 using Din.Service.Services.Abstractions;
 using Din.Service.Services.Interfaces;
 using TMDbLib.Client;
@@ -44,7 +43,7 @@ namespace Din.Service.Services.Concrete
             return (await new TMDbClient(_tmdbKey).SearchTvShowAsync(query)).Results;
         }
 
-        public async Task<(bool success, SearchTv tvShow)> AddTvShowAsync(SearchTv tvShow, int id)
+        public async Task<(bool success, SearchTv tvShow)> AddTvShowAsync(SearchTv tvShow, Guid id)
         {
             var tmdbClient = new TMDbClient(_tmdbKey);
             var showDate = Convert.ToDateTime(tvShow.FirstAirDate);

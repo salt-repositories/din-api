@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Din.Service.Dto.Content
+namespace Din.Service.Dtos
 {
     public class QueueDto
     {
