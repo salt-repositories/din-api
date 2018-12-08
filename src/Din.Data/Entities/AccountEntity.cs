@@ -13,6 +13,7 @@ namespace Din.Data.Entities
         public AccountRoll Role { get; set; }
         public AccountImageEntity Image { get; set; }
         public List<AddedContentEntity> AddedContent { get; set; }
+
     }
 
     public class AccountImageEntity
@@ -20,8 +21,6 @@ namespace Din.Data.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public byte[] Data { get; set; }
-        public AccountEntity Account { get; set; }
-        public Guid AccountRef { get; set; }
     }
 
     public enum AccountRoll

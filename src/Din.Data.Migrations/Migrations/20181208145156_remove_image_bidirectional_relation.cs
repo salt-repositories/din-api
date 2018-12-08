@@ -1,12 +1,25 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Din.Migrations
+namespace Din.Data.Migrations.Migrations
 {
-    public partial class init : Migration
+    public partial class remove_image_bidirectional_relation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AccountImage",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Data = table.Column<byte[]>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountImage", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "LoginLocation",
                 columns: table => new
@@ -29,16 +42,24 @@ namespace Din.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Account",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    FirstName = table.Column<string>(maxLength: 50, nullable: true),
-                    LastName = table.Column<string>(maxLength: 50, nullable: true)
+                    Username = table.Column<string>(maxLength: 30, nullable: true),
+                    Hash = table.Column<string>(nullable: true),
+                    Role = table.Column<int>(nullable: false),
+                    ImageId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Account", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Account_AccountImage_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "AccountImage",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,47 +85,6 @@ namespace Din.Migrations
                         principalTable: "LoginLocation",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Account",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Username = table.Column<string>(maxLength: 50, nullable: true),
-                    Hash = table.Column<string>(nullable: true),
-                    Role = table.Column<int>(nullable: false),
-                    UserRef = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Account", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Account_User_UserRef",
-                        column: x => x.UserRef,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AccountImage",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Data = table.Column<byte[]>(nullable: true),
-                    AccountRef = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccountImage", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AccountImage_Account_AccountRef",
-                        column: x => x.AccountRef,
-                        principalTable: "Account",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,21 +114,14 @@ namespace Din.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Account_UserRef",
+                name: "IX_Account_ImageId",
                 table: "Account",
-                column: "UserRef",
-                unique: true);
+                column: "ImageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Account_Username",
                 table: "Account",
                 column: "Username",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AccountImage_AccountRef",
-                table: "AccountImage",
-                column: "AccountRef",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -165,9 +138,6 @@ namespace Din.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AccountImage");
-
-            migrationBuilder.DropTable(
                 name: "AddedContent");
 
             migrationBuilder.DropTable(
@@ -180,7 +150,7 @@ namespace Din.Migrations
                 name: "LoginLocation");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "AccountImage");
         }
     }
 }
