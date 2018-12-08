@@ -72,7 +72,7 @@ namespace Din
                     };
                 });
             services.AddDbContext<DinContext>(options =>
-                options.UseMySql(Configuration["Database:ConString"], b => { b.MigrationsAssembly("Din");})
+                options.UseMySql(Configuration["Database:ConString"], b => { b.MigrationsAssembly("Din.Data.Migrations");})
             );
 
             //API Versioning

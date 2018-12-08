@@ -18,23 +18,20 @@
     <None Remove="wwwroot\**" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Migrations\20181208125008_removal-of-user-two.cs" />
-    <Compile Remove="Migrations\20181208125008_removal-of-user-two.Designer.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.3.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" />
     <PackageReference Include="NETCore.Encrypt" Version="2.0.7" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.4" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
     <PackageReference Include="TMDbLib" Version="1.2.0-alpha" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Din.Data.Migrations\Din.Data.Migrations.csproj" />
     <ProjectReference Include="..\Din.Data\Din.Data.csproj" />
     <ProjectReference Include="..\Din.Service\Din.Service.csproj" />
   </ItemGroup>

@@ -3,16 +3,14 @@ using System;
 using Din.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Din.Migrations
+namespace Din.Data.Migrations.Migrations
 {
     [DbContext(typeof(DinContext))]
-    [Migration("20181208113023_generate-guid")]
-    partial class generateguid
+    partial class DinContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,17 +24,16 @@ namespace Din.Migrations
 
                     b.Property<string>("Hash");
 
+                    b.Property<Guid?>("ImageId");
+
                     b.Property<int>("Role");
 
-                    b.Property<Guid>("UserRef");
-
                     b.Property<string>("Username")
-                        .HasMaxLength(50);
+                        .HasMaxLength(30);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserRef")
-                        .IsUnique();
+                    b.HasIndex("ImageId");
 
                     b.HasIndex("Username")
                         .IsUnique();
@@ -49,16 +46,11 @@ namespace Din.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("AccountRef");
-
                     b.Property<byte[]>("Data");
 
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AccountRef")
-                        .IsUnique();
 
                     b.ToTable("AccountImage");
                 });
@@ -151,36 +143,11 @@ namespace Din.Migrations
                     b.ToTable("LoginLocation");
                 });
 
-            modelBuilder.Entity("Din.Data.Entities.UserEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(50);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
-                });
-
             modelBuilder.Entity("Din.Data.Entities.AccountEntity", b =>
                 {
-                    b.HasOne("Din.Data.Entities.UserEntity", "User")
-                        .WithOne("Account")
-                        .HasForeignKey("Din.Data.Entities.AccountEntity", "UserRef")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Din.Data.Entities.AccountImageEntity", b =>
-                {
-                    b.HasOne("Din.Data.Entities.AccountEntity", "Account")
-                        .WithOne("Image")
-                        .HasForeignKey("Din.Data.Entities.AccountImageEntity", "AccountRef")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("Din.Data.Entities.AccountImageEntity", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId");
                 });
 
             modelBuilder.Entity("Din.Data.Entities.AddedContentEntity", b =>
