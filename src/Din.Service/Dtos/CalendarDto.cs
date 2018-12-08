@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Din.Service.DTO.Content
+namespace Din.Service.Dtos
 {
     public class CalendarDto
     {

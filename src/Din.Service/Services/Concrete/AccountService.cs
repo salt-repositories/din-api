@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Din.Data;
 using Din.Data.Entities;
@@ -19,12 +20,12 @@ namespace Din.Service.Services.Concrete
 
         public async Task<IEnumerable<AccountEntity>> GetAccountsAsync()
         {
-            return await _context.Account.Include(a => a.User).Include(a => a.Image).ToListAsync();
+            return await _context.Account.Include(a => a.Image).ToListAsync();
         }
 
-        public async Task<AccountEntity> GetAccountByIdAsync(int id)
+        public async Task<AccountEntity> GetAccountByIdAsync(Guid id)
         {
-            return await _context.Account.Include(a => a.User).Include(a => a.Image)
+            return await _context.Account.Include(a => a.Image)
                 .FirstAsync(a => a.Id.Equals(id));
         }
 
@@ -42,6 +43,12 @@ namespace Din.Service.Services.Concrete
             await _context.SaveChangesAsync();
 
             return account;
+        }
+
+        public async Task DeleteAccountById(Guid id)
+        {
+            _context.Account.Remove(await _context.Account.FirstAsync(a => a.Id.Equals(id)));
+            await _context.SaveChangesAsync();
         }
     }
 }

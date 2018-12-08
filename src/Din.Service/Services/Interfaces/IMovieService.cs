@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Din.Service.Dto.Content;
-using Din.Service.DTO.Content;
+using Din.Service.Dtos;
 using TMDbLib.Objects.Search;
 
 namespace Din.Service.Services.Interfaces
@@ -24,7 +23,7 @@ namespace Din.Service.Services.Interfaces
         /// <param name="movie">The movie object that needs to be added.</param>
         /// <param name="id">The account id of the current session.</param>
         /// <returns>The status and the movie.</returns>
-        Task<(bool success, SearchMovie movie)> AddMovieAsync(SearchMovie movie, int id);
+        Task<(bool success, SearchMovie movie)> AddMovieAsync(SearchMovie movie, Guid id);
         /// <summary>
         /// Get the MediaSystem movie release calendar.
         /// </summary>

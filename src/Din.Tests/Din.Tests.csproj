@@ -13,13 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\Din\appsettings-dev.json" Link="appsettings-dev.json">
+    <Content Include="..\Din\appsettings.dev.json" Link="appsettings.dev.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\Din\appsettings-beta.json" Link="appsettings-beta.json">
+    <Content Include="..\Din\appsettings.accept.json" Link="appsettings.accept.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\Din\appsettings-prod.json" Link="appsettings-prod.json">
+    <Content Include="..\Din\appsettings.prod.json" Link="appsettings.prod.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

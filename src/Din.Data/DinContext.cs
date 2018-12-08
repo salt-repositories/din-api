@@ -9,7 +9,6 @@ namespace Din.Data
         {
         }
 
-        public DbSet<UserEntity> User { get; set; }
         public DbSet<AccountEntity> Account { get; set; }
         public DbSet<AccountImageEntity> AccountImage { get; set; }
         public DbSet<AddedContentEntity> AddedContent { get; set; }
@@ -18,10 +17,6 @@ namespace Din.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserEntity>().ToTable("User")
-                .HasOne(u => u.Account)
-                .WithOne(a => a.User)
-                .HasForeignKey<AccountEntity>(a => a.UserRef);
             modelBuilder.Entity<AccountEntity>().ToTable("Account")
                 .HasIndex(a => a.Username)
                 .IsUnique();
@@ -33,11 +28,20 @@ namespace Din.Data
                 .HasOne(a => a.Image)
                 .WithOne(ai => ai.Account)
                 .HasForeignKey<AccountImageEntity>(ai => ai.AccountRef);
+            modelBuilder.Entity<AccountEntity>().Property(a => a.Id).ValueGeneratedOnAdd();
+
             modelBuilder.Entity<AccountImageEntity>().ToTable("AccountImage");
+            modelBuilder.Entity<AccountImageEntity>().Property(a => a.Id).ValueGeneratedOnAdd();
+
             modelBuilder.Entity<AddedContentEntity>().ToTable("AddedContent");
+            modelBuilder.Entity<AddedContentEntity>().Property(a => a.Id).ValueGeneratedOnAdd();
+
             modelBuilder.Entity<LoginAttemptEntity>().ToTable("LoginAttempt")
                 .HasOne(la => la.Location);
+            modelBuilder.Entity<LoginAttemptEntity>().Property(l => l.Id).ValueGeneratedOnAdd();
+
             modelBuilder.Entity<LoginLocationEntity>().ToTable("LoginLocation");
+            modelBuilder.Entity<LoginLocationEntity>().Property(l => l.Id).ValueGeneratedOnAdd();
         }
     }
 }
