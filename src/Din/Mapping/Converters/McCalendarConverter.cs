@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Din.Service.Clients.ResponseObjects;
-using Din.Service.DTO.Content;
+using Din.Service.Dtos;
 
 namespace Din.Service.Mapping.Converters
 {

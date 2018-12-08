@@ -1,10 +1,9 @@
 ﻿using AutoMapper.Configuration;
 using Din.Data.Entities;
+using Din.Requests;
 using Din.Service.Clients.ResponseObjects;
-using Din.Service.Dto.Context;
-using Din.Service.DTO.Content;
+using Din.Service.Dtos;
 using Din.Service.Mapping.Converters;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace Din.Mapping
 {
@@ -12,11 +11,9 @@ namespace Din.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<AccountEntity, AccountDto>().ReverseMap();
-            CreateMap<UserEntity, UserDto>().ReverseMap();
+            CreateMap<AccountRequest, AccountEntity>().ReverseMap();
             CreateMap<McCalendar, CalendarItemDto>().ConvertUsing<McCalendarConverter>();
             CreateMap<TcCalendar, CalendarItemDto>().ConvertUsing<TcCalendarConverter>();
-            CreateMap<JsonPatchDocument<AccountDto>, JsonPatchDocument<AccountEntity>>();
         }
     }
 }

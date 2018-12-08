@@ -19,7 +19,7 @@ namespace Din.Service.Services.Abstractions
             Mapper = mapper;
         }
 
-        protected async Task LogContentAdditionAsync(string title, int accountId, ContentType type, int foreignId, int systemId)
+        protected async Task LogContentAdditionAsync(string title, Guid accountId, ContentType type, int foreignId, int systemId)
         {
             var account = await _context.Account.FirstAsync(a => a.Id.Equals(accountId));
 

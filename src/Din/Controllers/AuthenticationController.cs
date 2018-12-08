@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Din.Service.Dto.Auth;
+using AutoMapper;
+using Din.Requests;
+using Din.Service.Dtos;
 using Din.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 
 namespace Din.Controllers
 {
@@ -16,14 +17,16 @@ namespace Din.Controllers
         #region injections
 
         private readonly IAuthService _service;
+        private readonly IMapper _mapper;
 
         #endregion injections
 
         #region constructors
 
-        public AuthenticationController(IAuthService service)
+        public AuthenticationController(IAuthService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         #endregion constructors
@@ -38,9 +41,9 @@ namespace Din.Controllers
         [AllowAnonymous, HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> LoginAsync([FromBody] CredentialsDto credentials)
+        public async Task<IActionResult> LoginAsync([FromBody] AuthRequest credentials)
         {
-            var result = await _service.LoginAsync(credentials);
+            var result = await _service.LoginAsync(_mapper.Map<AuthDto>(credentials));
 
             if (result.success)
             {

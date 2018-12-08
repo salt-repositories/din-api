@@ -5,7 +5,7 @@ namespace Din.Data.Entities
 
     public class AddedContentEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public int SystemId { get; set; }
         public int ForeignId { get; set; }
         public string Title { get; set; }
@@ -15,7 +15,7 @@ namespace Din.Data.Entities
         public int Eta { get; set; }
         public double Percentage { get; set; }
         public AccountEntity Account { get; set; }
-        public int AccountRef { get; set; }
+        public Guid AccountRef { get; set; }
     }
 
     public enum ContentType

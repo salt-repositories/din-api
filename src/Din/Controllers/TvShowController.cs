@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Din.Service.Dto.Content;
+using Din.Service.Dtos;
 using Din.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,9 @@ namespace Din.Controllers
 {
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("v{version:apiVersion}/[controller]")]
+    [Route("v{version:apiVersion}/tvshows")]
     [ApiController]
-    public class TvShowsController : ControllerBase
+    public class TvShowController : ControllerBase
     {
         #region injections
 
@@ -23,7 +24,7 @@ namespace Din.Controllers
 
         #region constructors
 
-        public TvShowsController(ITvShowService service)
+        public TvShowController(ITvShowService service)
         {
             _service = service;
         }
@@ -88,7 +89,7 @@ namespace Din.Controllers
                 return BadRequest(new {error = "The body is empty"});
             }
 
-            var result = await _service.AddTvShowAsync(tvShow, 1);
+            var result = await _service.AddTvShowAsync(tvShow, new Guid());
 
             if (result.success)
             {
