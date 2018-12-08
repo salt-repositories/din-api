@@ -25,9 +25,7 @@ namespace Din.Data
                 .WithOne(ac => ac.Account)
                 .HasForeignKey(ac => ac.AccountRef);
             modelBuilder.Entity<AccountEntity>()
-                .HasOne(a => a.Image)
-                .WithOne(ai => ai.Account)
-                .HasForeignKey<AccountImageEntity>(ai => ai.AccountRef);
+                .HasOne(a => a.Image);
             modelBuilder.Entity<AccountEntity>().Property(a => a.Id).ValueGeneratedOnAdd();
 
             modelBuilder.Entity<AccountImageEntity>().ToTable("AccountImage");
