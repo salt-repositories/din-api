@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="BackgroundServices\Interfaces\**" />
+    <EmbeddedResource Remove="BackgroundServices\Interfaces\**" />
+    <None Remove="BackgroundServices\Interfaces\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="BCrypt.Net-Core" Version="1.5.0" />
+    <PackageReference Include="MediaBrowser.ApiClient" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.3.0" />
+    <PackageReference Include="ncrontab" Version="3.3.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.3.0" />
+    <PackageReference Include="TMDbLib" Version="1.2.0-alpha" />
+    <PackageReference Include="UAParser" Version="3.1.32" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Din.Infrastructure.DataAccess\Din.Infrastructure.DataAccess.csproj" />
+  </ItemGroup>
+</Project>
