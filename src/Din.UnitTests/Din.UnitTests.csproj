@@ -5,21 +5,14 @@
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
-    <Compile Remove="Controllers\**" />
-    <EmbeddedResource Remove="Controllers\**" />
-    <None Remove="Controllers\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="..\Din.Application.WebApi\appsettings.dev.json" Link="appsettings.dev.json">
+    <Content Include="..\Din.Application.WebAPI\appsettings.dev.json" Link="appsettings.dev.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\Din.Application.WebApi\appsettings.accept.json" Link="appsettings.accept.json">
+    <Content Include="..\Din.Application.WebAPI\appsettings.accept.json" Link="appsettings.accept.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\Din.Application.WebApi\appsettings.prod.json" Link="appsettings.prod.json">
+    <Content Include="..\Din.Application.WebAPI\appsettings.prod.json" Link="appsettings.prod.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

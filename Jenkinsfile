@@ -1,4 +1,4 @@
-node {
+node('dotnetcore') {
   def branch
   stage('Clone') {
     checkout scm
@@ -18,13 +18,13 @@ node {
   }
 
   stage('Test') {
-    sh 'dotnet test src/Din.Tests/ --logger "trx;LogFileName=results.xml"'
+    sh 'dotnet test src/Din.UnitTests/ --logger "trx;LogFileName=results.xml"'
     xunit thresholds: [failed(failureNewThreshold: '3', failureThreshold: '5', unstableNewThreshold: '1', unstableThreshold: '2')], tools: [MSTest(deleteOutputFiles: true, failIfNotNew: true, pattern: '**/results.xml', skipNoTestFiles: false, stopProcessingIfError: true)]
   }
 
   stage('Deploy to environment') {
     parallel devolopment: {
-        node {
+        node('docker') {
           def app
           if (branch == 'develop') {
             checkout scm
@@ -36,7 +36,7 @@ node {
         }
       },
       production: {
-        node {
+        node('docker') {
           def app
           if (branch == 'master') {
             checkout scm
@@ -47,5 +47,10 @@ node {
           }
         }
       }
+  }
+
+  stage('Cleanup') {
+    step([$class: 'WsCleanup'])
+    sh "docker image prune -f -a"
   }
 }

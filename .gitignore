@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io/api/aspnetcore,visualstudio
 
 src/.sonarqube/
+src/**/launchSettings.json
 
 ### ASPNETCore ###
 ## Ignore Visual Studio temporary files, build results, and
