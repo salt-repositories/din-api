@@ -1,4 +1,4 @@
-﻿namespace Din.Domain.Dtos
+﻿namespace Din.Domain.Models.Dtos
 {
     public class AuthDto
     {

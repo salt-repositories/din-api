@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Din.Domain.Clients.Interfaces;
 using Din.Domain.Config.Interfaces;
-using Din.Domain.Dtos;
+using Din.Domain.Models.Dtos;
+using Din.Domain.Models.Entity;
 using Din.Domain.Services.Interfaces;
 using Din.Infrastructure.DataAccess;
-using Din.Infrastructure.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using UAParser;
@@ -68,7 +68,7 @@ namespace Din.Domain.Services.Concrete
         private async Task LogLoginAttempt(string username, string userAgentString, string publicIp, LoginStatus status)
         {
             var clientInfo = Parser.GetDefault().Parse(userAgentString);
-            var loginAttempt = new LoginAttemptEntity()
+            var loginAttempt = new LoginAttempt()
             {
                 Username = username,
                 Device = clientInfo.Device.Family,
@@ -81,14 +81,14 @@ namespace Din.Domain.Services.Concrete
 
             try
             {
-                loginAttempt.Location = _mapper.Map<LoginLocationEntity>(await _ipStackClient.GetLocation(publicIp));
+                loginAttempt.Location = _mapper.Map<LoginLocation>(await _ipStackClient.GetLocation(publicIp));
 
-                await _context.LoginAttempt.AddAsync(_mapper.Map<LoginAttemptEntity>(loginAttempt));
+                await _context.LoginAttempt.AddAsync(_mapper.Map<LoginAttempt>(loginAttempt));
                 await _context.SaveChangesAsync();
             }
             catch (Exception)
             {
-                await _context.LoginAttempt.AddAsync(_mapper.Map<LoginAttemptEntity>(loginAttempt));
+                await _context.LoginAttempt.AddAsync(_mapper.Map<LoginAttempt>(loginAttempt));
                 await _context.SaveChangesAsync();
             }
         }

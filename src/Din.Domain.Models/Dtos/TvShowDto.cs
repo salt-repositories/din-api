@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Din.Domain.Dtos
+namespace Din.Domain.Models.Dtos
 {
     public class TvShowDto
     {

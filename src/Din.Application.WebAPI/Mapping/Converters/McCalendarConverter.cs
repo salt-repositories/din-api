@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Din.Domain.Clients.ResponseObjects;
-using Din.Domain.Dtos;
+using Din.Domain.Models.Dtos;
 
 namespace Din.Application.WebAPI.Mapping.Converters
 {

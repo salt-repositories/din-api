@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace Din.Infrastructure.DataAccess.Entities
+namespace Din.Domain.Models.Entity
 {
 
-    public class AddedContentEntity
+    public class AddedContent
     {
         public Guid Id { get; set; }
         public int SystemId { get; set; }
@@ -14,7 +14,7 @@ namespace Din.Infrastructure.DataAccess.Entities
         public ContentStatus Status { get; set; }
         public int Eta { get; set; }
         public double Percentage { get; set; }
-        public AccountEntity Account { get; set; }
+        public Account Account { get; set; }
         public Guid AccountRef { get; set; }
     }
 
