@@ -27,10 +27,22 @@ node('dotnetcore') {
         node('docker') {
           def app
           if (branch == 'develop') {
-            checkout scm
-            app = docker.build('saltz/din-api')
-            docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-              app.push('dev')
+            stage('Clone') {
+              checkout scm
+            }
+
+            stage('Build docker image') {
+              app = docker.build('saltz/din-api')
+            }
+
+            stage('Push docker image') {
+              docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                app.push('dev')
+              }
+            }
+
+            stage('Cleanup') {
+              sh 'docker image prune -f -a'
             }
           }
         }
@@ -39,10 +51,22 @@ node('dotnetcore') {
         node('docker') {
           def app
           if (branch == 'master') {
-            checkout scm
-            app = docker.build('saltz/din-api')
-            docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-              app.push('prod')
+            stage('Clone') {
+              checkout scm
+            }
+
+            stage('Build docker image') {
+              app = docker.build('saltz/din-api')
+            }
+
+            stage('Push docker image') {
+              docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                app.push('prod')
+              }
+            }
+
+            stage('Cleanup') {
+              sh 'docker image prune -f -a'
             }
           }
         }
@@ -51,6 +75,5 @@ node('dotnetcore') {
 
   stage('Cleanup') {
     step([$class: 'WsCleanup'])
-    sh "docker image prune -f -a"
   }
 }
