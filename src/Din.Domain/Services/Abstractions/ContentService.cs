@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Din.Domain.Models.Entity;
 using Din.Infrastructure.DataAccess;
-using Din.Infrastructure.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Din.Domain.Services.Abstractions
@@ -24,10 +24,10 @@ namespace Din.Domain.Services.Abstractions
             var account = await _context.Account.FirstAsync(a => a.Id.Equals(accountId));
 
             if(account.AddedContent == null)
-                account.AddedContent = new List<AddedContentEntity>();
+                account.AddedContent = new List<AddedContent>();
 
             _context.Attach(account);
-            account.AddedContent.Add(new AddedContentEntity
+            account.AddedContent.Add(new AddedContent()
             {
                 ForeignId = foreignId,
                 SystemId = systemId,

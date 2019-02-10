@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Din.Application.WebAPI.Requests;
 using Din.Application.WebAPI.ViewModels;
+using Din.Domain.Models.Entity;
 using Din.Domain.Services.Interfaces;
-using Din.Infrastructure.DataAccess.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -85,7 +85,7 @@ namespace Din.Application.WebAPI.Controllers
         [ProducesResponseType(typeof(AccountViewModel), 201)]
         public async Task<IActionResult> CreateAccount([FromBody] AccountRequest account)
         {
-            return Created("Account created:", _mapper.Map<AccountViewModel>(await _service.CreateAccountAsync(_mapper.Map<AccountEntity>(account))));
+            return Created("Account created:", _mapper.Map<AccountViewModel>(await _service.CreateAccountAsync(_mapper.Map<Account>(account))));
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Din.Application.WebAPI.Controllers
         public async Task<IActionResult> UpdateAccount([FromRoute] Guid id, [FromBody] JsonPatchDocument<AccountRequest> account)
         {
             var currentAccount = await _service.GetAccountByIdAsync(id);
-            var update =_mapper.Map<JsonPatchDocument<AccountEntity>>(account);
+            var update =_mapper.Map<JsonPatchDocument<Account>>(account);
             update.ApplyTo(currentAccount);
 
             return Ok(_mapper.Map<AccountViewModel>(await _service.UpdateAccountAsync(currentAccount)));

@@ -6,11 +6,11 @@ using Din.Domain.Clients.Interfaces;
 using Din.Domain.Clients.RequestObjects;
 using Din.Domain.Clients.ResponseObjects;
 using Din.Domain.Config.Interfaces;
-using Din.Domain.Dtos;
+using Din.Domain.Models.Dtos;
+using Din.Domain.Models.Entity;
 using Din.Domain.Services.Abstractions;
 using Din.Domain.Services.Interfaces;
 using Din.Infrastructure.DataAccess;
-using Din.Infrastructure.DataAccess.Entities;
 using TMDbLib.Client;
 using TMDbLib.Objects.Search;
 

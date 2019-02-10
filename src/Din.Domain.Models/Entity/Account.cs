@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Din.Infrastructure.DataAccess.Entities
+namespace Din.Domain.Models.Entity
 {
-    public class AccountEntity
+    public class Account
     {
         public Guid Id { get; set; }
         [MaxLength(30)]
         public string Username { get; set; }
         public string Hash { get; set; }
         public AccountRoll Role { get; set; }
-        public AccountImageEntity Image { get; set; }
-        public List<AddedContentEntity> AddedContent { get; set; }
+        public AccountImage Image { get; set; }
+        public List<AddedContent> AddedContent { get; set; }
 
     }
 
-    public class AccountImageEntity
+    public class AccountImage
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

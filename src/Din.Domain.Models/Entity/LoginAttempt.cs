@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Din.Infrastructure.DataAccess.Entities
+namespace Din.Domain.Models.Entity
 {
-    public class LoginAttemptEntity
+    public class LoginAttempt
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
@@ -10,7 +10,7 @@ namespace Din.Infrastructure.DataAccess.Entities
         public string Os { get; set; }
         public string Browser { get; set; }
         public string PublicIp { get; set; }
-        public LoginLocationEntity Location { get; set; }
+        public LoginLocation Location { get; set; }
         public DateTime DateAndTime { get; set; }
         public LoginStatus Status { get; set; }
 
@@ -22,7 +22,7 @@ namespace Din.Infrastructure.DataAccess.Entities
         Success
     }
 
-    public class LoginLocationEntity
+    public class LoginLocation
     {
         public Guid Id { get; set; }
         public string ContinentCode { get; set; }

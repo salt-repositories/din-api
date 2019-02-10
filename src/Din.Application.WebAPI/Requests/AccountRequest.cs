@@ -1,4 +1,4 @@
-﻿using Din.Infrastructure.DataAccess.Entities;
+﻿using Din.Domain.Models.Entity;
 using Newtonsoft.Json;
 
 namespace Din.Application.WebAPI.Requests

@@ -1,5 +1,5 @@
 ﻿using System;
-using Din.Infrastructure.DataAccess.Entities;
+using Din.Domain.Models.Entity;
 
 namespace Din.Application.WebAPI.ViewModels
 {

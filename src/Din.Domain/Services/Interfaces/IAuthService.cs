@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Din.Domain.Dtos;
+using Din.Domain.Models.Dtos;
 
 namespace Din.Domain.Services.Interfaces
 {

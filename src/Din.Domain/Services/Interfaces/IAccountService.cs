@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Din.Infrastructure.DataAccess.Entities;
+using Din.Domain.Models.Entity;
 
 namespace Din.Domain.Services.Interfaces
 {
@@ -10,18 +10,11 @@ namespace Din.Domain.Services.Interfaces
     /// </summary>
     public interface IAccountService
     {
-        Task<IEnumerable<AccountEntity>> GetAccountsAsync();
-        /// <summary>
-        /// Gets the account data associated with the session
-        /// </summary>
-        /// <param name="id">Account id, stored in the session</param>
-        /// <returns>ViewModel containing the account data</returns>
-        Task<AccountEntity> GetAccountByIdAsync(Guid id);
-        Task<IEnumerable<AddedContentEntity>> GetAccountAddedContent(Guid id);
-        Task<AccountEntity> CreateAccountAsync(AccountEntity account);
-
-        Task<AccountEntity> UpdateAccountAsync(AccountEntity account);
+        Task<IEnumerable<Account>> GetAccountsAsync();
+        Task<Account> GetAccountByIdAsync(Guid id);
+        Task<IEnumerable<AddedContent>> GetAccountAddedContent(Guid id);
+        Task<Account> CreateAccountAsync(Account account);
+        Task<Account> UpdateAccountAsync(Account account);
         Task DeleteAccountById(Guid id);
-
     }
 }

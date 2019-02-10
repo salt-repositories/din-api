@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Din.Domain.Models.Entity;
 using Din.Domain.Services.Interfaces;
 using Din.Infrastructure.DataAccess;
-using Din.Infrastructure.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Din.Domain.Services.Concrete
@@ -19,23 +19,23 @@ namespace Din.Domain.Services.Concrete
             _context = context;
         }
 
-        public async Task<IEnumerable<AccountEntity>> GetAccountsAsync()
+        public async Task<IEnumerable<Account>> GetAccountsAsync()
         {
             return await _context.Account.Include(a => a.Image).ToListAsync();
         }
 
-        public async Task<AccountEntity> GetAccountByIdAsync(Guid id)
+        public async Task<Account> GetAccountByIdAsync(Guid id)
         {
             return await _context.Account.Include(a => a.Image)
                 .FirstAsync(a => a.Id.Equals(id));
         }
 
-        public async Task<IEnumerable<AddedContentEntity>> GetAccountAddedContent(Guid id)
+        public async Task<IEnumerable<AddedContent>> GetAccountAddedContent(Guid id)
         {
             return await _context.AddedContent.Where(a => a.Account.Id.Equals(id)).ToListAsync();
         }
 
-        public async Task<AccountEntity> CreateAccountAsync(AccountEntity account)
+        public async Task<Account> CreateAccountAsync(Account account)
         {
             await _context.Account.AddAsync(account);
             await _context.SaveChangesAsync();
@@ -43,7 +43,7 @@ namespace Din.Domain.Services.Concrete
             return account;
         }
 
-        public async Task<AccountEntity> UpdateAccountAsync(AccountEntity account)
+        public async Task<Account> UpdateAccountAsync(Account account)
         {
             _context.Account.Update(account);
             await _context.SaveChangesAsync();
