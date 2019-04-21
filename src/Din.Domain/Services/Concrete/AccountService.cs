@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Din.Domain.Models.Entity;
 using Din.Domain.Services.Interfaces;
+using Din.Domain.Validators.Interfaces;
 using Din.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +14,12 @@ namespace Din.Domain.Services.Concrete
     public class AccountService : IAccountService
     {
         private readonly DinContext _context;
+        private readonly IValidatorBus<Account> _validatorBus;
 
-        public AccountService(DinContext context)
+        public AccountService(DinContext context, IValidatorBus<Account> validatorBus)
         {
             _context = context;
+            _validatorBus = validatorBus;
         }
 
         public async Task<IEnumerable<Account>> GetAccountsAsync()
@@ -37,6 +40,8 @@ namespace Din.Domain.Services.Concrete
 
         public async Task<Account> CreateAccountAsync(Account account)
         {
+            await _validatorBus.ValidateAsync(account);
+
             await _context.Account.AddAsync(account);
             await _context.SaveChangesAsync();
 
@@ -45,6 +50,8 @@ namespace Din.Domain.Services.Concrete
 
         public async Task<Account> UpdateAccountAsync(Account account)
         {
+            await _validatorBus.ValidateAsync(account);
+
             _context.Account.Update(account);
             await _context.SaveChangesAsync();
 
