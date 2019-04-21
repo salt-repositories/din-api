@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Din.Application.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:Din.Application.WebAPI.Controllers.AccountController.GetAccounts">
+            <summary>
+            Get all accounts
+            </summary>
+            <returns>Collection containing all accounts</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.AccountController.GetAccountById(System.Guid)">
+            <summary>
+            Get account by ID
+            </summary>
+            <param name="id">Account ID</param>
+            <returns>Single account</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.AccountController.GetAccountAddedContent(System.Guid)">
+            <summary>
+            Get addedcontent from account by ID
+            </summary>
+            <param name="id">Account ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.AccountController.CreateAccount(Din.Application.WebAPI.Requests.AccountRequest)">
+            <summary>
+            Create account
+            </summary>
+            <param name="account">Account model</param>
+            <returns>Created account</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.AccountController.UpdateAccount(System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{Din.Application.WebAPI.Requests.AccountRequest})">
+            <summary>
+            Update existing account
+            </summary>
+            <param name="id">Account ID</param>
+            <param name="account">updated data/ properties</param>
+            <returns>Updated Account</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.AuthenticationController.LoginAsync(Din.Application.WebAPI.Requests.AuthRequest)">
+            <summary>
+            Login
+            </summary>
+            <param name="credentials">Login Credentials</param>
+            <returns>Status response</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.CalendarController.GetReleaseCalendarAsync(System.DateTime,System.DateTime)">
+            <summary>
+            Get content release calendar
+            </summary>
+            <returns>Release calendar</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.MovieController.GetAllMovies(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Get all movies
+            </summary>
+            <returns>Collection of movies</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.MovieController.GetMovieById(System.Int32)">
+            <summary>
+            Get movie by ID
+            </summary>
+            <param name="id">system ID</param>
+            <returns>Single movie</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.MovieController.SearchMovie(System.String)">
+            <summary>
+            Search moviedatabase for movie
+            </summary>
+            <param name="query">Searchquery</param>
+            <returns>Collection of results</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.MovieController.AddMovieAsync(Din.Application.WebAPI.Requests.MovieRequest)">
+            <summary>
+            Add movie to system
+            </summary>
+            <param name="data">Movie to add</param>
+            <returns>Status response</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.QueueController.GetQueue">
+            <summary>
+            Get system queue
+            </summary>
+            <returns>Collection of queue items</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.TvShowController.GetAllTvShows">
+            <summary>
+            Get all tvShows
+            </summary>
+            <returns>Collection of tvShows</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.TvShowController.GetTvShowById(System.Int32)">
+            <summary>
+            Get tvshow by system ID
+            </summary>
+            <param name="id">System ID</param>
+            <returns>Single TvShow</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.TvShowController.SearchTvShowAsync(System.String)">
+            <summary>
+            Search tvshowdatabase for tvShow
+            </summary>
+            <param name="query">Searchquery</param>
+            <returns>Collection of results</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Controllers.TvShowController.AddTvShowAsync(Din.Application.WebAPI.Requests.TvShowRequest)">
+            <summary>
+            Add tvshow to system
+            </summary>
+            <param name="data">Tvshow to add</param>
+            <returns>Status response</returns>
+        </member>
+    </members>
+</doc>
