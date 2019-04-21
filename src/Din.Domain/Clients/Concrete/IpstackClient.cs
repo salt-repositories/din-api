@@ -13,8 +13,9 @@ namespace Din.Domain.Clients.Concrete
         private readonly HttpClient _client;
         private readonly IIpStackClientConfig _config;
 
-        public IpStackClient(HttpClient httpClient, IIpStackClientConfig config)
+        public IpStackClient(IHttpClientFactory clientFactory, IIpStackClientConfig config)
         {
+            var httpClient = clientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(config.Url);
             httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
 

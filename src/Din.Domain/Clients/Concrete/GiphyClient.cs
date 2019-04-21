@@ -13,8 +13,9 @@ namespace Din.Domain.Clients.Concrete
         private readonly HttpClient _client;
         private readonly IGiphyClientConfig _config;
 
-        public GiphyClient(HttpClient httpClient, IGiphyClientConfig config)
+        public GiphyClient(IHttpClientFactory clientFactory, IGiphyClientConfig config)
         {
+            var httpClient = clientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(config.Url);
             httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
 

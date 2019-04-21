@@ -12,12 +12,6 @@ namespace Din.Application.WebAPI.Injection.DotNet
     {
         public static void RegisterMvcComponents(this IServiceCollection services)
         {
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            });
-
             services.AddMvc().AddJsonOptions(options =>
             {
                 options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
