@@ -35,7 +35,7 @@ namespace Din.Application.WebAPI
             services.RegisterMvcComponents();
             services.RegisterAuthentication(Configuration);
             services.RegisterSwagger();
-            services.RegisterHttpClients();
+            services.AddHttpClient();
 
             IntegrateSimpleInjector(services);
         }

@@ -48,7 +48,7 @@ namespace Din.Domain.Services.Concrete
                 (await new TMDbClient(_tmdbKey).SearchMovieAsync(query)).Results);
         }
 
-        public async Task<(bool success, int systemId)> AddMovieAsync(SearchMovie movie, Guid id)
+        public async Task<McMovie> AddMovieAsync(SearchMovie movie, Guid id)
         {
             var movieDate = Convert.ToDateTime(movie.ReleaseDate);
             var requestObj = new McRequest
@@ -76,14 +76,9 @@ namespace Din.Domain.Services.Concrete
 
             var result = await _movieClient.AddMovieAsync(requestObj);
 
-            if (result.status)
-            {
-                await LogContentAdditionAsync(movie.Title, id, ContentType.Movie, movie.Id, result.systemId);
+            await LogContentAdditionAsync(movie.Title, id, ContentType.Movie, movie.Id, result.SystemId);
 
-                return (true, result.systemId);
-            }
-
-            return (false, 0);
+            return result;
         }
 
         public async Task<IEnumerable<CalendarItemDto>> GetMovieCalendarAsync(DateTime start, DateTime end)

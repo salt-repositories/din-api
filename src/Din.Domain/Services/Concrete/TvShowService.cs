@@ -43,7 +43,7 @@ namespace Din.Domain.Services.Concrete
             return (await new TMDbClient(_tmdbKey).SearchTvShowAsync(query)).Results;
         }
 
-        public async Task<(bool success, SearchTv tvShow)> AddTvShowAsync(SearchTv tvShow, Guid id)
+        public async Task<TcTvShow> AddTvShowAsync(SearchTv tvShow, Guid id)
         {
             var tmdbClient = new TMDbClient(_tmdbKey);
             var showDate = Convert.ToDateTime(tvShow.FirstAirDate);
@@ -65,14 +65,9 @@ namespace Din.Domain.Services.Concrete
 
             var response = await _tvShowClient.AddTvShowAsync(requestObj);
 
-            if (response.status)
-            {
-                await LogContentAdditionAsync(tvShow.Name, id, ContentType.TvShow, Convert.ToInt32(requestObj.TvShowId), response.systemId);
+            await LogContentAdditionAsync(tvShow.Name, id, ContentType.TvShow, Convert.ToInt32(requestObj.TvShowId), response.SystemId);
 
-                return (true, tvShow);
-            }
-
-            return (false, tvShow);
+            return response;
         }
 
         public async Task<IEnumerable<CalendarItemDto>> GetTvShowCalendarAsync(DateTime start, DateTime end)

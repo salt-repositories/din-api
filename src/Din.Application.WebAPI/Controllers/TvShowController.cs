@@ -77,18 +77,13 @@ namespace Din.Application.WebAPI.Controllers
         /// <param name="data">Tvshow to add</param>
         /// <returns>Status response</returns>
         [HttpPost, Authorize]
-        [ProducesResponseType(typeof(SearchTv), 200)]
+        [ProducesResponseType(typeof(SearchTv), 201)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddTvShowAsync([FromBody] TvShowRequest data)
         {
             var result = await _service.AddTvShowAsync(data.TvShow, data.AccountId);
 
-            if (result.success)
-            {
-                return Ok(result.tvShow);
-            }
-
-            return BadRequest(new {error = "TvShow has not been added"});
+            return Created("TvShow created", result);
         }
 
         #endregion endpoints

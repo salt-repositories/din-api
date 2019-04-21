@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Din.Domain.Clients.ResponseObjects;
 using Din.Domain.Models.Dtos;
 using TMDbLib.Objects.Search;
 
@@ -25,7 +26,7 @@ namespace Din.Domain.Services.Interfaces
         /// <param name="tvShow">The TvShow object that needs to be added.</param>
         /// <param name="id">The account id of the current session.</param>
         /// <returns>The status result.</returns>
-        Task<(bool success, SearchTv tvShow)> AddTvShowAsync(SearchTv tvShow, Guid id);
+        Task<TcTvShow> AddTvShowAsync(SearchTv tvShow, Guid id);
         /// <summary>
         /// Get the MediaSystem tvShow release calendar.
         /// </summary>
