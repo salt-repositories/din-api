@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Din.Application.WebAPI.Constants;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Din.Application.WebAPI.Controllers
 {
     [ControllerName("Calendars")]
-    [Authorize]
+    [Authorize(Policy = AuthorizationRoles.USER)]
     [ApiVersion("1.0")]
     [Produces("application/json")]
     [Route("v{version:apiVersion}/[controller]")]

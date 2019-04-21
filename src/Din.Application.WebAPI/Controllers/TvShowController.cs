@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Din.Application.WebAPI.Constants;
 using Din.Application.WebAPI.Requests;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
@@ -13,6 +14,7 @@ namespace Din.Application.WebAPI.Controllers
     [Produces("application/json")]
     [Route("v{version:apiVersion}/tvshows")]
     [ApiController]
+    [Authorize(Policy = AuthorizationRoles.USER)]
     public class TvShowController : ControllerBase
     {
         #region injections
@@ -36,7 +38,7 @@ namespace Din.Application.WebAPI.Controllers
         /// Get all tvShows
         /// </summary>
         /// <returns>Collection of tvShows</returns>
-        [Authorize, HttpGet]
+        [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<TvShowDto>), 200)]
         public async Task<IActionResult> GetAllTvShows()
         {
@@ -48,7 +50,7 @@ namespace Din.Application.WebAPI.Controllers
         /// </summary>
         /// <param name="id">System ID</param>
         /// <returns>Single TvShow</returns>
-        [Authorize, HttpGet("{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(TvShowDto), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetTvShowById([FromRoute] int id)
@@ -61,7 +63,7 @@ namespace Din.Application.WebAPI.Controllers
         /// </summary>
         /// <param name="query">Searchquery</param>
         /// <returns>Collection of results</returns>
-        [HttpPost("search"), Authorize]
+        [HttpPost("search")]
         [ProducesResponseType(typeof(IEnumerable<SearchTv>), 200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> SearchTvShowAsync([FromQuery] string query)
@@ -76,7 +78,7 @@ namespace Din.Application.WebAPI.Controllers
         /// </summary>
         /// <param name="data">Tvshow to add</param>
         /// <returns>Status response</returns>
-        [HttpPost, Authorize]
+        [HttpPost]
         [ProducesResponseType(typeof(SearchTv), 201)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddTvShowAsync([FromBody] TvShowRequest data)

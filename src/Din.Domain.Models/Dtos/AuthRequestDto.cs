@@ -1,8 +1,8 @@
 ﻿namespace Din.Domain.Models.Dtos
 {
-    public class AuthDto
+    public class AuthRequestDto
     {
         public string Username { get; set; }
-        public string Password { get; set; }
+        public string Hash { get; set; }
     }
 }

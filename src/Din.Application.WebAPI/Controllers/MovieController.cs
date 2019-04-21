@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Din.Application.WebAPI.Constants;
 using Din.Application.WebAPI.Requests;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
@@ -13,6 +14,7 @@ namespace Din.Application.WebAPI.Controllers
     [Produces("application/json")]
     [Route("v{version:apiVersion}/movies")]
     [ApiController]
+    [Authorize(Policy = AuthorizationRoles.USER)]
     public class MovieController : ControllerBase
     {
         #region injectons
@@ -36,7 +38,7 @@ namespace Din.Application.WebAPI.Controllers
         /// Get all movies
         /// </summary>
         /// <returns>Collection of movies</returns>
-        [Authorize, HttpGet]
+        [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<MovieDto>), 200)]
         public async Task<IActionResult> GetAllMovies([FromQuery] int pageSize, [FromQuery] int page, [FromQuery] string sortKey, [FromQuery] string sortDirection)
         {
@@ -50,7 +52,7 @@ namespace Din.Application.WebAPI.Controllers
         /// </summary>
         /// <param name="id">system ID</param>
         /// <returns>Single movie</returns>
-        [Authorize, HttpGet("{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(MovieDto), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetMovieById([FromRoute] int id)
@@ -63,7 +65,7 @@ namespace Din.Application.WebAPI.Controllers
         /// </summary>
         /// <param name="query">Searchquery</param>
         /// <returns>Collection of results</returns>
-        [HttpGet("search"), Authorize]
+        [HttpGet("search")]
         [ProducesResponseType(typeof(IEnumerable<SearchMovie>), 200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> SearchMovie([FromQuery] string query)
@@ -78,7 +80,7 @@ namespace Din.Application.WebAPI.Controllers
         /// </summary>
         /// <param name="data">Movie to add</param>
         /// <returns>Status response</returns>
-        [HttpPost, Authorize]
+        [HttpPost]
         [ProducesResponseType(typeof(SearchMovie), 201)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddMovieAsync([FromBody] MovieRequest data)
