@@ -79,18 +79,13 @@ namespace Din.Application.WebAPI.Controllers
         /// <param name="data">Movie to add</param>
         /// <returns>Status response</returns>
         [HttpPost, Authorize]
-        [ProducesResponseType(typeof(SearchMovie), 200)]
+        [ProducesResponseType(typeof(SearchMovie), 201)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddMovieAsync([FromBody] MovieRequest data)
         {
             var result = await _service.AddMovieAsync(data.Movie, data.AccountId);
 
-            if (result.success)
-            {
-                return Created("Movie has been added", new { system_id = result.systemId });
-            }
-
-            return BadRequest(new {error = "Movie has been not added"});
+            return Created("Movie created", result);
         }
 
         #endregion endpoints

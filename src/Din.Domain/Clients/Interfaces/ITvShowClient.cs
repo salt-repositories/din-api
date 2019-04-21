@@ -9,6 +9,6 @@ namespace Din.Domain.Clients.Interfaces
     {
         Task<IEnumerable<TcTvShow>> GetCurrentTvShowsAsync();
         Task<TcTvShow> GetTvShowByIdAsync(int id);
-        Task<(bool status, int systemId)> AddTvShowAsync(TcRequest tvShow);
+        Task<TcTvShow> AddTvShowAsync(TcRequest tvShow);
     }
 }

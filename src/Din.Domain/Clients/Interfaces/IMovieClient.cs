@@ -8,6 +8,6 @@ namespace Din.Domain.Clients.Interfaces
     {
         Task<T> GetCurrentMoviesAsync<T>(int pageSize, int page, string sortKey, string sortDirection);
         Task<McMovie> GetMovieByIdAsync(int id);
-        Task<(bool status, int systemId)> AddMovieAsync(McRequest movie);
+        Task<McMovie> AddMovieAsync(McRequest movie);
     }
 }

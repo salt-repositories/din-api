@@ -7,58 +7,112 @@ using Din.Domain.Clients.Interfaces;
 using Din.Domain.Clients.RequestObjects;
 using Din.Domain.Clients.ResponseObjects;
 using Din.Domain.Config.Interfaces;
+using Din.Domain.Exceptions;
 using Newtonsoft.Json;
 
 namespace Din.Domain.Clients.Concrete
 {
     public class TvShowClient : ITvShowClient
     {
-        private readonly HttpClient _client;
+        private readonly IHttpClientFactory _clientFactory;
         private readonly ITvShowClientConfig _config;
 
         public TvShowClient(IHttpClientFactory clientFactory, ITvShowClientConfig config)
         {
-            var httpClient = clientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(config.Url);
-            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-
-            _client = httpClient;
+            _clientFactory = clientFactory;
             _config = config;
         }
 
         public async Task<IEnumerable<TcTvShow>> GetCurrentTvShowsAsync()
         {
-            return JsonConvert.DeserializeObject<IEnumerable<TcTvShow>>(
-                await _client.GetStringAsync($"series?apikey={_config.Key}"));
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_config.Url}series?apikey={_config.Key}"));
+            request.Headers.Add("Accept", "application/json");
+
+            using (var client = _clientFactory.CreateClient())
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new HttpClientException($"{GetType()} GET tv shows failed");
+                }
+
+                return JsonConvert.DeserializeObject<IEnumerable<TcTvShow>>(await response.Content.ReadAsStringAsync());
+            }
         }
 
         public async Task<TcTvShow> GetTvShowByIdAsync(int id)
         {
-            return JsonConvert.DeserializeObject<TcTvShow>(
-                await _client.GetStringAsync($"series/{id}?apikey={_config.Key}"));
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_config.Url}series/{id}?apikey={_config.Key}"));
+            request.Headers.Add("Accept", "application/json");
+
+            using (var client = _clientFactory.CreateClient())
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new HttpClientException($"{GetType()} GET tv show by id failed");
+                }
+
+                return JsonConvert.DeserializeObject<TcTvShow>(await response.Content.ReadAsStringAsync());
+            }
         }
 
-        public async Task<(bool status, int systemId)> AddTvShowAsync(TcRequest tvShow)
+        public async Task<TcTvShow> AddTvShowAsync(TcRequest tvShow)
         {
             tvShow.RootFolderPath = _config.SaveLocation;
 
-            var response = await _client.PostAsync($"series?apikey={_config.Key}",
-                new StringContent(JsonConvert.SerializeObject(tvShow)));
+            var request = new HttpRequestMessage(HttpMethod.Post, new Uri($"{_config.Url}series?apikey={_config.Key}"));
+            request.Headers.Add("Accept", "application/json");
 
-            return (response.StatusCode.Equals(HttpStatusCode.Created),
-                JsonConvert.DeserializeObject<TcTvShow>(await response.Content.ReadAsStringAsync()).SystemId);
+            using (var client = _clientFactory.CreateClient())
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.Created)
+                {
+                    throw new HttpClientException($"{GetType()} POST tv show failed");
+                }
+
+                return JsonConvert.DeserializeObject<TcTvShow>(await response.Content.ReadAsStringAsync());
+            }
         }
 
         public async Task<IEnumerable<T>> GetCalendarAsync<T>(DateTime start, DateTime end)
         {
-            return JsonConvert.DeserializeObject<IEnumerable<T>>(
-                await _client.GetStringAsync($"calendar?apikey={_config.Key}&start={start:yyyy-MM-dd}&end={end:yyyy-MM-dd}"));
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_config.Url}calendar?apikey={_config.Key}&start={start:yyyy-MM-dd}&end={end:yyyy-MM-dd}"));
+            request.Headers.Add("Accept", "application/json");
+
+            using (var client = _clientFactory.CreateClient())
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new HttpClientException($"{GetType()} GET calendar by date range failed");
+                }
+
+                return JsonConvert.DeserializeObject<IEnumerable<T>>(await response.Content.ReadAsStringAsync());
+            }
         }
 
         public async Task<IEnumerable<T>> GetQueue<T>()
         {
-            return JsonConvert.DeserializeObject<IEnumerable<T>>(
-                await _client.GetStringAsync($"queue?apikey={_config.Key}"));
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_config.Url}queue?apikey={_config.Key}"));
+            request.Headers.Add("Accept", "application/json");
+
+            using (var client = _clientFactory.CreateClient())
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new HttpClientException($"{GetType()} GET queue failed");
+                }
+
+                return JsonConvert.DeserializeObject<IEnumerable<T>>(await response.Content.ReadAsStringAsync());
+            }
         }
     }
 }

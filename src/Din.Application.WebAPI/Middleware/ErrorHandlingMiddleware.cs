@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Din.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
@@ -35,6 +36,9 @@ namespace Din.Application.WebAPI.Middleware
             {
                 case InvalidOperationException _:
                     code = HttpStatusCode.NotFound;
+                    break;
+                case HttpClientException _:
+                    code = HttpStatusCode.BadRequest;
                     break;
             }
 

@@ -7,57 +7,112 @@ using Din.Domain.Clients.Interfaces;
 using Din.Domain.Clients.RequestObjects;
 using Din.Domain.Clients.ResponseObjects;
 using Din.Domain.Config.Interfaces;
+using Din.Domain.Exceptions;
 using Newtonsoft.Json;
 
 namespace Din.Domain.Clients.Concrete
 {
     public class MovieClient : IMovieClient
     {
-        private readonly HttpClient _client;
+        private readonly IHttpClientFactory _clientFactory;
         private readonly IMovieClientConfig _config;
 
         public MovieClient(IHttpClientFactory clientFactory, IMovieClientConfig config)
         {
-            var httpClient = clientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(config.Url);
-            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-
-            _client = httpClient;
+            _clientFactory = clientFactory;
             _config = config;
         }
 
         public async Task<T> GetCurrentMoviesAsync<T>(int pageSize, int page, string sortKey, string sortDirection)
         {
-            return JsonConvert.DeserializeObject<T>(
-                await _client.GetStringAsync($"movie?apikey={_config.Key}&pageSize={pageSize}&page={page}&sortKey={sortKey}&sortDir={sortDirection}"));
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_config.Url}movie?apikey={_config.Key}&pageSize={pageSize}&page={page}&sortKey={sortKey}&sortDir={sortDirection}"));
+            request.Headers.Add("Accept", "application/json");
+
+            using (var client = _clientFactory.CreateClient())
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new HttpClientException($"{GetType()} GET movies failed");
+                }
+
+                return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
+            }
         }
 
         public async Task<McMovie> GetMovieByIdAsync(int id)
         {
-            return JsonConvert.DeserializeObject<McMovie>(
-                await _client.GetStringAsync($"movie/{id}?apikey={_config.Key}"));
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_config.Url}movie/{id}?apikey={_config.Key}"));
+            request.Headers.Add("Accept", "application/json");
+
+            using (var client = _clientFactory.CreateClient())
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new HttpClientException($"{GetType()} GET movies by id failed");
+                }
+
+                return JsonConvert.DeserializeObject<McMovie>(await response.Content.ReadAsStringAsync());
+            }
         }
 
-        public async Task<(bool status, int systemId)> AddMovieAsync(McRequest movie)
+        public async Task<McMovie> AddMovieAsync(McRequest movie)
         {
             movie.RootFolderPath = _config.SaveLocation;
 
-            var response = await _client.PostAsync($"movie?apikey={_config.Key}",
-                new StringContent(JsonConvert.SerializeObject(movie)));
+            var request = new HttpRequestMessage(HttpMethod.Post, new Uri($"{_config.Url}movie?apikey={_config.Key}"));
+            request.Headers.Add("Accept", "application/json");
 
-            return (response.StatusCode.Equals(HttpStatusCode.Created),
-                JsonConvert.DeserializeObject<McMovie>(await response.Content.ReadAsStringAsync()).SystemId);
+            using (var client = _clientFactory.CreateClient())
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.Created)
+                {
+                    throw new HttpClientException($"{GetType()} POST movie failed");
+                }
+
+                return JsonConvert.DeserializeObject<McMovie>(await response.Content.ReadAsStringAsync());
+            }
         }
 
         public async Task<IEnumerable<T>> GetCalendarAsync<T>(DateTime start, DateTime end)
         {
-            return JsonConvert.DeserializeObject<IEnumerable<T>>(await _client.GetStringAsync($"calendar?apikey={_config.Key}&start={start:yyyy-MM-dd}&end={end:yyyy-MM-dd}"));
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_config.Url}calendar?apikey={_config.Key}&start={start:yyyy-MM-dd}&end={end:yyyy-MM-dd}"));
+            request.Headers.Add("Accept", "application/json");
+
+            using (var client = _clientFactory.CreateClient())
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new HttpClientException($"{GetType()} GET calender by date range failed");
+                }
+
+                return JsonConvert.DeserializeObject<IEnumerable<T>>(await response.Content.ReadAsStringAsync());
+            }
         }
 
         public async Task<IEnumerable<T>> GetQueue<T>()
         {
-            return JsonConvert.DeserializeObject<IEnumerable<T>>(
-                await _client.GetStringAsync($"queue?apikey={_config.Key}"));
+            var request = new HttpRequestMessage(HttpMethod.Get, new Uri($"{_config.Url}queue?apikey={_config.Key}"));
+            request.Headers.Add("Accept", "application/json");
+
+            using (var client = _clientFactory.CreateClient())
+            {
+                var response = await client.SendAsync(request);
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new HttpClientException($"{GetType()} GET queue failed");
+                }
+
+                return JsonConvert.DeserializeObject<IEnumerable<T>>(await response.Content.ReadAsStringAsync());
+            }
         }
     }
 }
