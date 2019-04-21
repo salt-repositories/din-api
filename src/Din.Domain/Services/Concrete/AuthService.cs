@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -44,7 +46,7 @@ namespace Din.Domain.Services.Concrete
                 }
 
                 //TODO log login attempt
-                return (true, null, GenerateToken());
+                return (true, null, GenerateToken(accountEntity.Role.ToString()));
             }
             catch (InvalidOperationException)
             {
@@ -52,13 +54,17 @@ namespace Din.Domain.Services.Concrete
             }
         }
 
-        private string GenerateToken()
+        private string GenerateToken(string role)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Key));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(_config.Issuer,
                 _config.Issuer,
+                new List<Claim>
+                {
+                    new Claim("role", role)
+                },
                 expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: credentials);
 

@@ -1,7 +1,9 @@
-﻿using Din.Application.WebAPI.Config;
+﻿using System;
+using Din.Application.WebAPI.Config;
 using Din.Application.WebAPI.Injection.DotNet;
 using Din.Application.WebAPI.Injection.SimpleInjector;
 using Din.Application.WebAPI.Middleware;
+using Din.Domain.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -81,6 +83,7 @@ namespace Din.Application.WebAPI
             _container.Register();
             _container.RegisterConfigurations(Configuration);
             _container.RegisterServices();
+            _container.RegisterValidators(AppDomain.CurrentDomain.GetApplicationAssemblies());
 
             _container.AutoCrossWireAspNetComponents(app);
             _container.Verify();
