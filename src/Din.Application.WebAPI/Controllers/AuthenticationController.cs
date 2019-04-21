@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
 using Din.Application.WebAPI.Requests;
+using Din.Application.WebAPI.ViewModels;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -40,18 +41,13 @@ namespace Din.Application.WebAPI.Controllers
         /// <param name="credentials">Login Credentials</param>
         /// <returns>Status response</returns>
         [AllowAnonymous, HttpPost]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(AuthViewModel), 200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> LoginAsync([FromBody] AuthRequest credentials)
         {
-            var result = await _service.LoginAsync(_mapper.Map<AuthDto>(credentials));
+            var result = await _service.LoginAsync(_mapper.Map<AuthRequestDto>(credentials));
 
-            if (result.success)
-            {
-                return Ok(new{access_token = result.token});
-            }
-
-            return BadRequest(new {error = result.message});
+            return Ok(_mapper.Map<AuthViewModel>(result));
         }
        
         #endregion endpoints

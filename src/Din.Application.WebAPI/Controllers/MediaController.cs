@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Din.Domain.Clients.ResponseObjects;
 using Din.Domain.Generators.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Din.Application.WebAPI.Controllers
@@ -30,14 +29,14 @@ namespace Din.Application.WebAPI.Controllers
 
         #region endpoints
         
-        [Authorize, HttpGet("gif")]
+        [HttpGet("gif")]
         [ProducesResponseType(typeof(GiphyItem), 200)]
         public async Task<IActionResult> GetGif([FromQuery] string query)
         {
             return Ok(await _generator.GenerateGif(query));
         }
 
-        [Authorize, HttpGet("backgrounds")]
+        [HttpGet("backgrounds")]
         [ProducesResponseType(typeof(IEnumerable<UnsplashItem>), 200)]
         public async Task<IActionResult> GetBackgrounds()
         {

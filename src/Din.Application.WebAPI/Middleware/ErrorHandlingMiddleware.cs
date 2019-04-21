@@ -40,6 +40,9 @@ namespace Din.Application.WebAPI.Middleware
                 case HttpClientException _:
                     code = HttpStatusCode.BadRequest;
                     break;
+                case AuthenticationException _:
+                    code = HttpStatusCode.Unauthorized;
+                    break;
             }
 
             var result = JsonConvert.SerializeObject(new {error = exception.Message});

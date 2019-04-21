@@ -3,14 +3,16 @@ using System;
 using Din.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Din.Data.Migrations.Migrations
 {
     [DbContext(typeof(DinContext))]
-    partial class DinContextModelSnapshot : ModelSnapshot
+    [Migration("20190421152558_table-names")]
+    partial class tablenames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -13,6 +13,6 @@ namespace Din.Domain.Services.Interfaces
         /// </summary>
         /// <param name="credentials">Login credentials containing the username and password</param>
         /// <returns>The generated claims principle for authorization</returns>
-        Task<(bool success, string message, string token)> LoginAsync(AuthDto credentials);
+        Task<AuthResponseDto> LoginAsync(AuthRequestDto credentials);
     }
 }

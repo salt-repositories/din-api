@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Din.Application.WebAPI.Constants;
 using Din.Application.WebAPI.Requests;
 using Din.Application.WebAPI.ViewModels;
 using Din.Domain.Models.Entity;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Din.Application.WebAPI.Controllers
 {
     [ControllerName("Accounts")]
-    [Authorize]
+    [Authorize(Policy = AuthorizationRoles.USER)]
     [ApiVersion("1.0")]
     [Produces("application/json")]
     [Route("v{version:apiVersion}/accounts")]
@@ -85,7 +86,12 @@ namespace Din.Application.WebAPI.Controllers
         [ProducesResponseType(typeof(AccountViewModel), 201)]
         public async Task<IActionResult> CreateAccount([FromBody] AccountRequest account)
         {
-            return Created("Account created:", _mapper.Map<AccountViewModel>(await _service.CreateAccountAsync(_mapper.Map<Account>(account))));
+            return Created("Account created:", _mapper.Map<AccountViewModel>(await _service.CreateAccountAsync(new Account
+            {
+                Username =  account.Username,
+                Hash = BCrypt.Net.BCrypt.HashPassword(account.Password),
+                Role = account.Role
+            })));
         }
 
         /// <summary>

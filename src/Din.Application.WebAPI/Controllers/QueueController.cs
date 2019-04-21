@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Din.Application.WebAPI.Constants;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +13,7 @@ namespace Din.Application.WebAPI.Controllers
     [Produces("application/json")]
     [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize(Policy = AuthorizationRoles.USER)]
     public class QueueController : ControllerBase
     {
         #region injections
@@ -37,7 +39,7 @@ namespace Din.Application.WebAPI.Controllers
         /// Get system queue
         /// </summary>
         /// <returns>Collection of queue items</returns>
-        [Authorize, HttpGet]
+        [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<QueueDto>), 200)]
         public async Task<IActionResult> GetQueue()
         {

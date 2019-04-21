@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Din.Application.WebAPI.Requests
+﻿namespace Din.Application.WebAPI.Requests
 {
     public class AuthRequest
     {

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Din.Domain.Models.Entity
 {
     public class Account
     {
         public Guid Id { get; set; }
-        [MaxLength(30)]
         public string Username { get; set; }
         public string Hash { get; set; }
         public AccountRoll Role { get; set; }

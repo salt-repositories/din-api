@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Din.Domain.Clients.Interfaces;
 using Din.Domain.Config.Interfaces;
+using Din.Domain.Exceptions;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Models.Entity;
 using Din.Domain.Services.Interfaces;
@@ -33,7 +34,7 @@ namespace Din.Domain.Services.Concrete
             _config = config;
         }
 
-        public async Task<(bool success, string message, string token)> LoginAsync(AuthDto credentials)
+        public async Task<AuthResponseDto> LoginAsync(AuthRequestDto credentials)
         {
             try
             {
@@ -41,16 +42,21 @@ namespace Din.Domain.Services.Concrete
 
                 if (!BCrypt.Net.BCrypt.Verify(credentials.Password, accountEntity.Hash))
                 {
-                    //TODO log login attempt
-                    return (false, "Password Incorrect", null);
+                   // TODO await LogLoginAttempt(accountEntity.Username, "", "", LoginStatus.Failed);
+
+                    throw new AuthenticationException("Password incorrect");
                 }
 
-                //TODO log login attempt
-                return (true, null, GenerateToken(accountEntity.Role.ToString()));
+                return new AuthResponseDto
+                {
+                    AccessToken = GenerateToken(accountEntity.Role.ToString()),
+                    ExpiresIn = 3600,
+                    TokenType = "Bearer"
+                };
             }
             catch (InvalidOperationException)
             {
-                return (false, "Username Incorrect", null);
+                throw new AuthenticationException("Username incorrect");
             }
         }
 
@@ -63,9 +69,9 @@ namespace Din.Domain.Services.Concrete
                 _config.Issuer,
                 new List<Claim>
                 {
-                    new Claim("role", role)
+                    new Claim("Role", role)
                 },
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddHours(1),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
