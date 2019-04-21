@@ -14,8 +14,9 @@ namespace Din.Domain.Clients.Concrete
         private readonly HttpClient _client;
         private readonly IUnsplashClientConfig _config;
 
-        public UnsplashClient(HttpClient httpClient, IUnsplashClientConfig config)
+        public UnsplashClient(IHttpClientFactory clientFactory, IUnsplashClientConfig config)
         {
+            var httpClient = clientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(config.Url);
             httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
 

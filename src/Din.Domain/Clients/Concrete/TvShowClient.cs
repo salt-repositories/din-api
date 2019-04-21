@@ -16,8 +16,9 @@ namespace Din.Domain.Clients.Concrete
         private readonly HttpClient _client;
         private readonly ITvShowClientConfig _config;
 
-        public TvShowClient(HttpClient httpClient, ITvShowClientConfig config)
+        public TvShowClient(IHttpClientFactory clientFactory, ITvShowClientConfig config)
         {
+            var httpClient = clientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(config.Url);
             httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
 

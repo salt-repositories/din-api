@@ -11,7 +11,7 @@ namespace Din.Application.WebAPI.Injection.DotNet
         public static void RegisterDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<DinContext>(options =>
-                options.UseMySql(configuration["Database:ConString"], b => { b.MigrationsAssembly("Din.Data.Migrations"); })
+                options.UseMySql(configuration["Database:ConString"], b => { b.MigrationsAssembly("Din.Infrastructure.Migrations"); })
             );
         }
     }
