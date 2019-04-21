@@ -40,7 +40,7 @@ namespace Din.Domain.Services.Concrete
             {
                 var accountEntity = await _context.Account.FirstAsync(a => a.Username.Equals(credentials.Username));
 
-                if (!BCrypt.Net.BCrypt.Verify(credentials.Hash, accountEntity.Hash))
+                if (!BCrypt.Net.BCrypt.Verify(credentials.Password, accountEntity.Hash))
                 {
                    // TODO await LogLoginAttempt(accountEntity.Username, "", "", LoginStatus.Failed);
 
@@ -69,7 +69,7 @@ namespace Din.Domain.Services.Concrete
                 _config.Issuer,
                 new List<Claim>
                 {
-                    new Claim("role", role)
+                    new Claim("Role", role)
                 },
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: credentials);

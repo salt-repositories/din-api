@@ -12,6 +12,9 @@ namespace Din.Domain.Validators.Concretes
                 .NotEmpty().WithMessage("Username cannot empty or null")
                 .MinimumLength(3).WithMessage("Username must be longer then three characters")
                 .MaximumLength(40).WithMessage("Username cannot be longer then 40 characters");
+            RuleFor(a => a.Hash)
+                .NotEmpty().WithMessage("Hash cannot empty or null")
+                .MinimumLength(3).WithMessage("Hash must be longer then three characters");
             RuleFor(a => a.Role)
                 .NotEmpty().WithMessage("Role cannot be empty or null");
         }

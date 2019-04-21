@@ -86,7 +86,12 @@ namespace Din.Application.WebAPI.Controllers
         [ProducesResponseType(typeof(AccountViewModel), 201)]
         public async Task<IActionResult> CreateAccount([FromBody] AccountRequest account)
         {
-            return Created("Account created:", _mapper.Map<AccountViewModel>(await _service.CreateAccountAsync(_mapper.Map<Account>(account))));
+            return Created("Account created:", _mapper.Map<AccountViewModel>(await _service.CreateAccountAsync(new Account
+            {
+                Username =  account.Username,
+                Hash = BCrypt.Net.BCrypt.HashPassword(account.Password),
+                Role = account.Role
+            })));
         }
 
         /// <summary>

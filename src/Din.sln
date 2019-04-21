@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Infrastructure.DataAcce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Infrastructure.Migrations", "Din.Infrastructure.Migrations\Din.Infrastructure.Migrations.csproj", "{9B47D1B7-635A-48D0-ACB1-468648BC4B80}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.UnitTests", "Din.UnitTests\Din.UnitTests.csproj", "{2AEB5B9E-3ADD-4BAC-9503-FB46159C9762}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.DomainTests", "Din.UnitTests\Din.DomainTests.csproj", "{2AEB5B9E-3ADD-4BAC-9503-FB46159C9762}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7811AD8B-EEA7-4B9A-94FD-C61696485765}"
 	ProjectSection(SolutionItems) = preProject
@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Din.Domain.Models", "Din.Domain.Models\Din.Domain.Models.csproj", "{6CD0B536-7A7D-4B32-8768-7CDCBB5C0D94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Domain.Models", "Din.Domain.Models\Din.Domain.Models.csproj", "{6CD0B536-7A7D-4B32-8768-7CDCBB5C0D94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
