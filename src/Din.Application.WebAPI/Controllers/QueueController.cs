@@ -2,16 +2,18 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Din.Application.WebAPI.Constants;
+using Din.Application.WebAPI.Versioning;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
 {
-    [ApiVersion("1.0")]
+    [ApiVersion(V1)]
+    [VersionedRoute("queues")]
     [Produces("application/json")]
-    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     [Authorize(Policy = AuthorizationRoles.USER)]
     public class QueueController : ControllerBase

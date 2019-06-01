@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Din.Application.WebAPI.Constants;
-using Din.Application.WebAPI.Requests;
-using Din.Application.WebAPI.ViewModels;
-using Din.Domain.Models.Entity;
+using Din.Application.WebAPI.Models.RequestsModels;
+using Din.Application.WebAPI.Models.ViewModels;
+using Din.Application.WebAPI.Versioning;
+using Din.Domain.Models.Entities;
 using Din.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
 {
+    [ApiVersion(V1)]
+    [VersionedRoute("accounts")]
     [ControllerName("Accounts")]
     [Authorize(Policy = AuthorizationRoles.USER)]
-    [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("v{version:apiVersion}/accounts")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -45,6 +47,7 @@ namespace Din.Application.WebAPI.Controllers
         /// </summary>
         /// <returns>Collection containing all accounts</returns>
         [HttpGet]
+        [Authorize(Policy = AuthorizationRoles.MODERATOR)]
         [ProducesResponseType(typeof(IEnumerable<AccountViewModel>), 200)]
         public async Task<IActionResult> GetAccounts()
         {

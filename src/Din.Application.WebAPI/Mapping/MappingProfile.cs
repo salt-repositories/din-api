@@ -1,9 +1,9 @@
 ﻿using AutoMapper.Configuration;
 using Din.Application.WebAPI.Mapping.Converters;
-using Din.Application.WebAPI.Requests;
+using Din.Application.WebAPI.Models.RequestsModels;
 using Din.Domain.Clients.ResponseObjects;
 using Din.Domain.Models.Dtos;
-using Din.Domain.Models.Entity;
+using Din.Domain.Models.Entities;
 
 namespace Din.Application.WebAPI.Mapping
 {

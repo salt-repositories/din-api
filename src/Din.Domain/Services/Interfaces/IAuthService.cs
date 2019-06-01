@@ -12,7 +12,9 @@ namespace Din.Domain.Services.Interfaces
         /// User Login method, authenticates the supplied parameters
         /// </summary>
         /// <param name="credentials">Login credentials containing the username and password</param>
+        /// <param name="userAgent"></param>
+        /// <param name="ip"></param>
         /// <returns>The generated claims principle for authorization</returns>
-        Task<AuthResponseDto> LoginAsync(AuthRequestDto credentials);
+        Task<AuthResponseDto> LoginAsync(AuthRequestDto credentials, string userAgent, string ip);
     }
 }

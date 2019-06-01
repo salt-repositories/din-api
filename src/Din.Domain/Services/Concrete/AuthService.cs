@@ -5,11 +5,11 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Din.Domain.Clients.Configurations.Interfaces;
 using Din.Domain.Clients.Interfaces;
-using Din.Domain.Config.Interfaces;
 using Din.Domain.Exceptions;
 using Din.Domain.Models.Dtos;
-using Din.Domain.Models.Entity;
+using Din.Domain.Models.Entities;
 using Din.Domain.Services.Interfaces;
 using Din.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +34,7 @@ namespace Din.Domain.Services.Concrete
             _config = config;
         }
 
-        public async Task<AuthResponseDto> LoginAsync(AuthRequestDto credentials)
+        public async Task<AuthResponseDto> LoginAsync(AuthRequestDto credentials, string userAgent, string ip)
         {
             try
             {
@@ -42,14 +42,16 @@ namespace Din.Domain.Services.Concrete
 
                 if (!BCrypt.Net.BCrypt.Verify(credentials.Password, accountEntity.Hash))
                 {
-                   // TODO await LogLoginAttempt(accountEntity.Username, "", "", LoginStatus.Failed);
+                    await LogLoginAttempt(accountEntity.Username, userAgent, ip, LoginStatus.Failed);
 
                     throw new AuthenticationException("Password incorrect");
                 }
 
+                await LogLoginAttempt(accountEntity.Username, userAgent, ip, LoginStatus.Success);
+
                 return new AuthResponseDto
                 {
-                    AccessToken = GenerateToken(accountEntity.Role.ToString()),
+                    AccessToken = GenerateToken(accountEntity.Id, accountEntity.Role),
                     ExpiresIn = 3600,
                     TokenType = "Bearer"
                 };
@@ -60,16 +62,17 @@ namespace Din.Domain.Services.Concrete
             }
         }
 
-        private string GenerateToken(string role)
+        private string GenerateToken(Guid id, AccountRole role)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Key));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
             var token = new JwtSecurityToken(_config.Issuer,
                 _config.Issuer,
                 new List<Claim>
                 {
-                    new Claim("Role", role)
+                    new Claim("Identity", id.ToString()),
+                    new Claim("Role", role.ToString())
                 },
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: credentials);

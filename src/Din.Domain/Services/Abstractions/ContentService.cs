@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Din.Domain.Models.Entity;
+using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 

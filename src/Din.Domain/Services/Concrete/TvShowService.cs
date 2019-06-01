@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Din.Domain.Clients.Configurations.Interfaces;
 using Din.Domain.Clients.Interfaces;
 using Din.Domain.Clients.RequestObjects;
 using Din.Domain.Clients.ResponseObjects;
-using Din.Domain.Config.Interfaces;
 using Din.Domain.Models.Dtos;
-using Din.Domain.Models.Entity;
+using Din.Domain.Models.Entities;
 using Din.Domain.Services.Abstractions;
 using Din.Domain.Services.Interfaces;
 using Din.Infrastructure.DataAccess;

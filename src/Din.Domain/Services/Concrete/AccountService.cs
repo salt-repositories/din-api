@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Din.Domain.Models.Entity;
+using Din.Domain.Models.Entities;
 using Din.Domain.Services.Interfaces;
 using Din.Domain.Validators.Interfaces;
 using Din.Infrastructure.DataAccess;

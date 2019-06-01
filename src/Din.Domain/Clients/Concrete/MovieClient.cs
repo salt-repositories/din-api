@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Din.Domain.Clients.Configurations.Interfaces;
 using Din.Domain.Clients.Interfaces;
 using Din.Domain.Clients.RequestObjects;
 using Din.Domain.Clients.ResponseObjects;
-using Din.Domain.Config.Interfaces;
 using Din.Domain.Exceptions;
 using Newtonsoft.Json;
 

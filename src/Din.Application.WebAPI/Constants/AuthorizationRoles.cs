@@ -1,6 +1,4 @@
-﻿using Din.Domain.Models.Entity;
-
-namespace Din.Application.WebAPI.Constants
+﻿namespace Din.Application.WebAPI.Constants
 {
     public static class AuthorizationRoles
     {

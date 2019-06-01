@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Din.Domain.BackgroundServices.Abstractions;
 using Din.Domain.Clients.Interfaces;
 using Din.Domain.Clients.ResponseObjects;
-using Din.Domain.Models.Entity;
+using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

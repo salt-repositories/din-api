@@ -1,25 +1,36 @@
-﻿using Din.Domain.Models.Entity;
-using Din.Infrastructure.DataAccess.ModelBuilders;
+﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Din.Infrastructure.DataAccess
 {
     public class DinContext : DbContext
     {
-        public DinContext(DbContextOptions<DinContext> options) : base(options)
+        private readonly string _connectionString;
+
+        public DinContext(string connectionString)
         {
+            _connectionString = connectionString;
         }
 
         public DbSet<Account> Account { get; set; }
-        public DbSet<AccountImage> AccountImage { get; set; }
         public DbSet<AddedContent> AddedContent { get; set; }
         public DbSet<LoginAttempt> LoginAttempt { get; set; }
-        public DbSet<LoginLocation> LoginLocation { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.BuildAccountModel();
-            modelBuilder.BuildLoginAttemptModel();
+            modelBuilder.ApplyConfiguration(new AccountEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountImageEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AddedContentEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new LoginAttemptEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new LoginLocationEntityConfiguration());
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseMySql(_connectionString);
         }
     }
 }
