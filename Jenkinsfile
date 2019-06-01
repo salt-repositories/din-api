@@ -2,6 +2,7 @@
 
 @Library('main_shared') _
 
+String organization = 'saltrepositories'
 String repo = 'din-api'
 String project = 'Din.Application.WebAPI'
 String solution = 'Din'
@@ -12,4 +13,4 @@ Map settings = [
   migrations_project: 'Din.Infrastructure.Migrations'
 ]
 
-csDockerBuildAndPublish(repo, project, solution, settings)
+csDockerBuildAndPublish(organization, repo, project, solution, settings)
