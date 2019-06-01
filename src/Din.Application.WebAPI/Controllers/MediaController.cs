@@ -1,14 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Din.Application.WebAPI.Versioning;
 using Din.Domain.Clients.ResponseObjects;
 using Din.Domain.Generators.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
 {
-    [ApiVersion("1.0")]
+
+    [ApiVersion(V1)]
+    [VersionedRoute("media")]
+    [ControllerName("Media")]
     [Produces("application/json")]
-    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     public class MediaController : ControllerBase
     {

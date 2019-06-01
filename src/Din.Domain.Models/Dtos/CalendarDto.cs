@@ -5,7 +5,7 @@ namespace Din.Domain.Models.Dtos
 {
     public class CalendarDto
     {
-        public Tuple<DateTime, DateTime> DateRange { get; set; }
+        public (DateTime beginDate, DateTime endDate) DateRange { get; set; }
         public IEnumerable<CalendarItemDto> Items { get; set; }
     }
 

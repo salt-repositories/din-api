@@ -2,18 +2,20 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Din.Application.WebAPI.Constants;
+using Din.Application.WebAPI.Versioning;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
 {
+    [ApiVersion(V1)]
+    [VersionedRoute("calendars")]
     [ControllerName("Calendars")]
     [Authorize(Policy = AuthorizationRoles.USER)]
-    [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     public class CalendarController : ControllerBase
     {
@@ -48,7 +50,7 @@ namespace Din.Application.WebAPI.Controllers
             {
                 Items = (await _movieService.GetMovieCalendarAsync(start, end)).Concat(
                     await _tvShowService.GetTvShowCalendarAsync(start, end)),
-                DateRange = new Tuple<DateTime, DateTime>(DateTime.Now, DateTime.Now.AddMonths(1))
+                DateRange = (start, end)
             };
 
             return Ok(calendarDto);

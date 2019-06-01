@@ -1,33 +1,38 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
-using Din.Application.WebAPI.Requests;
-using Din.Application.WebAPI.ViewModels;
+using Din.Application.WebAPI.Context.Interfaces;
+using Din.Application.WebAPI.Models.RequestsModels;
+using Din.Application.WebAPI.Models.ViewModels;
+using Din.Application.WebAPI.Versioning;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
 {
+    [ApiVersion(V1)]
+    [VersionedRoute("authentication")]
     [ControllerName("Authentication")]
-    [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("v{version:apiVersion}/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
         #region fields
 
         private readonly IAuthService _service;
+        private readonly IRequestContext _requestContext;
         private readonly IMapper _mapper;
 
         #endregion fields
 
         #region constructors
 
-        public AuthenticationController(IAuthService service, IMapper mapper)
+        public AuthenticationController(IAuthService service, IRequestContext requestContext, IMapper mapper)
         {
             _service = service;
+            _requestContext = requestContext;
             _mapper = mapper;
         }
 
@@ -45,7 +50,7 @@ namespace Din.Application.WebAPI.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> LoginAsync([FromBody] AuthRequest credentials)
         {
-            var result = await _service.LoginAsync(_mapper.Map<AuthRequestDto>(credentials));
+            var result = await _service.LoginAsync(_mapper.Map<AuthRequestDto>(credentials), _requestContext.GetUserAgentAsString(), _requestContext.GetRequestIpAsString());
 
             return Ok(_mapper.Map<AuthViewModel>(result));
         }

@@ -6,7 +6,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
 {
     public static class AutoMapper
     {
-        public static void Register(this Container container)
+        public static void RegisterAutoMapper(this Container container)
         {
             container.Register<IMapper>(() => new Mapper(new MapperConfiguration(config =>
             {

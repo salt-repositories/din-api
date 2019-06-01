@@ -14,7 +14,7 @@ namespace Din.Application.WebAPI.AuthorizationHandlers
 
             if (identity == null)
             {
-                return Task.CompletedTask;;
+                return Task.CompletedTask;
             }
 
             if (!identity.HasClaim(c => c.Type.Equals("Role") && c.Value.Equals(requirement.Role)) &&

@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Din.Application.WebAPI.Constants;
-using Din.Application.WebAPI.Requests;
+using Din.Application.WebAPI.Models.RequestsModels;
+using Din.Application.WebAPI.Versioning;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TMDbLib.Objects.Search;
+using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
 {
-    [ApiVersion("1.0")]
+    [ApiVersion(V1)]
+    [VersionedRoute("movies")]
     [Produces("application/json")]
-    [Route("v{version:apiVersion}/movies")]
     [ApiController]
     [Authorize(Policy = AuthorizationRoles.USER)]
     public class MovieController : ControllerBase
