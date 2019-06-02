@@ -1,5 +1,5 @@
 ﻿using Din.Application.WebAPI.Context;
-using Din.Domain.Context;
+using Din.Domain.Authorization.Context;
 using Din.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

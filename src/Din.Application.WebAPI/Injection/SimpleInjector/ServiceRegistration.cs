@@ -8,7 +8,7 @@ using SimpleInjector;
 
 namespace Din.Application.WebAPI.Injection.SimpleInjector
 {
-    public static class Services
+    public static class ServiceRegistration
     {
         public static void RegisterServices(this Container container)
         {

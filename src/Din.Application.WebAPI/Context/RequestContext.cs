@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using Din.Domain.Context;
+using Din.Domain.Authorization.Context;
 using Din.Domain.Models.Entities;
 using Microsoft.AspNetCore.Http;
 

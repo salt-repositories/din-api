@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Din.Domain.Authorization.Authorizers.Interfaces;
+using Din.Domain.Authorization.Context;
 using Din.Domain.Authorization.Requests;
-using Din.Domain.Context;
 using Din.Domain.Exceptions.Concrete;
 
 namespace Din.Domain.Authorization.Authorizers.Concrete

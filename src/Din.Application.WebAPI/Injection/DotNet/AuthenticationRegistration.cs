@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Din.Application.WebAPI.Injection.DotNet
 {
-    public static class Authentication
+    public static class AuthenticationRegistration
     {
         public static void RegisterAuthentication(this IServiceCollection services, IConfiguration configuration)
         {

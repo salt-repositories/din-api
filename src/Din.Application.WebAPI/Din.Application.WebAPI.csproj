@@ -27,10 +27,13 @@
     <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
     <PackageReference Include="TMDbLib" Version="1.2.0-alpha" />
-    <PackageReference Include="VaultSharp" Version="0.11.1002" />
+    <PackageReference Include="VaultSharp" Version="0.11.1000" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Din.Domain.Authorization\Din.Domain.Authorization.csproj" />
+    <ProjectReference Include="..\Din.Domain.Exceptions\Din.Domain.Exceptions.csproj" />
+    <ProjectReference Include="..\Din.Domain.MiddleWares\Din.Domain.Middlewares.csproj" />
     <ProjectReference Include="..\Din.Domain\Din.Domain.csproj" />
     <ProjectReference Include="..\Din.Infrastructure.DataAccess\Din.Infrastructure.DataAccess.csproj" />
     <ProjectReference Include="..\Din.Infrastructure.Migrations\Din.Infrastructure.Migrations.csproj" />

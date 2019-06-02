@@ -3,7 +3,7 @@ using AutoMapper;
 using Din.Application.WebAPI.Models.RequestsModels;
 using Din.Application.WebAPI.Models.ViewModels;
 using Din.Application.WebAPI.Versioning;
-using Din.Domain.Context;
+using Din.Domain.Authorization.Context;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;

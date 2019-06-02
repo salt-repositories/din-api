@@ -4,7 +4,7 @@ using SimpleInjector;
 
 namespace Din.Application.WebAPI.Injection.SimpleInjector
 {
-    public static class AutoMapper
+    public static class AutoMapperRegistration
     {
         public static void RegisterAutoMapper(this Container container)
         {

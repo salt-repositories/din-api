@@ -7,7 +7,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Din.Application.WebAPI.Injection.DotNet
 {
-    public static class MvcComponents
+    public static class MvcComponentsRegistration
     {
         public static void RegisterMvcComponents(this IServiceCollection services)
         {

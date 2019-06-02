@@ -34,7 +34,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Domain.Models", "Din.Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Domain.Tests", "Din.Domain.Tests\Din.Domain.Tests.csproj", "{0E180842-4114-4D9F-B38E-0302338E2A0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Din.Domain.Middlewares", "Din.Domain.MiddleWares\Din.Domain.Middlewares.csproj", "{2431F5B2-90CE-4AC8-A60E-5FC7F0A9C21E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Din.Domain.Middlewares", "Din.Domain.Middlewares\Din.Domain.Middlewares.csproj", "{2431F5B2-90CE-4AC8-A60E-5FC7F0A9C21E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Din.Domain.Authorization", "Din.Domain.Authorization\Din.Domain.Authorization.csproj", "{F103EE2E-32B5-47CA-A7CB-9AC783B9AD82}"
 EndProject
