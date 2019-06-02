@@ -1,5 +1,5 @@
-﻿using Din.Application.WebAPI.Context.Concretes;
-using Din.Application.WebAPI.Context.Interfaces;
+﻿using Din.Application.WebAPI.Context;
+using Din.Domain.Context;
 using SimpleInjector;
 
 namespace Din.Application.WebAPI.Injection.SimpleInjector

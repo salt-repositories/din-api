@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Din.Application.WebAPI.Context.Interfaces;
+using System.Security.Claims;
+using Din.Domain.Context;
+using Din.Domain.Models.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace Din.Application.WebAPI.Context.Concretes
+namespace Din.Application.WebAPI.Context
 {
     public class RequestContext : IRequestContext
     {
@@ -17,12 +19,7 @@ namespace Din.Application.WebAPI.Context.Concretes
 
         public Guid GetIdentity()
         {
-            var identityClaim = _httpContextAccessor.HttpContext.User.Claims.SingleOrDefault(c => c.Type == "Identity");
-
-            if (identityClaim == null)
-            {
-                throw new NullReferenceException("request identity is null");
-            }
+            var identityClaim = GetClaimByType("Identity");
 
             if (!Guid.TryParse(identityClaim.Value, out var identity))
             {
@@ -30,6 +27,18 @@ namespace Din.Application.WebAPI.Context.Concretes
             }
 
             return identity;
+        }
+
+        public AccountRole GetAccountRole()
+        {
+            var roleClaim = GetClaimByType("Role");
+
+            if (!Enum.TryParse<AccountRole>(roleClaim.Value, out var role))
+            {
+                throw new InvalidDataException("Stored role is not a valid account role");
+            }
+
+            return role;
         }
 
         public string GetUserAgentAsString()
@@ -40,6 +49,13 @@ namespace Din.Application.WebAPI.Context.Concretes
         public string GetRequestIpAsString()
         {
             return _httpContextAccessor.HttpContext.Request.Headers["X-Real-IP"].ToString();
+        }
+
+        private Claim GetClaimByType(string type)
+        {
+            var claim = _httpContextAccessor.HttpContext.User.Claims.SingleOrDefault(c => c.Type == type);
+
+            return claim ?? throw new NullReferenceException("request identity is null");
         }
     }
 }

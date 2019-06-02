@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Din.Application.WebAPI.Constants;
 using Din.Application.WebAPI.Models.RequestsModels;
 using Din.Application.WebAPI.Models.ViewModels;
 using Din.Application.WebAPI.Versioning;
@@ -15,12 +14,12 @@ using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
 {
+    [ApiController]
     [ApiVersion(V1)]
     [VersionedRoute("accounts")]
     [ControllerName("Accounts")]
-    [Authorize(Policy = AuthorizationRoles.USER)]
     [Produces("application/json")]
-    [ApiController]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         #region fields
@@ -47,7 +46,6 @@ namespace Din.Application.WebAPI.Controllers
         /// </summary>
         /// <returns>Collection containing all accounts</returns>
         [HttpGet]
-        [Authorize(Policy = AuthorizationRoles.MODERATOR)]
         [ProducesResponseType(typeof(IEnumerable<AccountViewModel>), 200)]
         public async Task<IActionResult> GetAccounts()
         {
@@ -103,7 +101,7 @@ namespace Din.Application.WebAPI.Controllers
         /// <param name="id">Account ID</param>
         /// <param name="account">updated data/ properties</param>
         /// <returns>Updated Account</returns>
-        [Authorize, HttpPatch("{id}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(typeof(AccountViewModel), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateAccount([FromRoute] Guid id, [FromBody] JsonPatchDocument<AccountRequest> account)

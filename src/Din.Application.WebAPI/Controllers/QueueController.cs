@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Din.Application.WebAPI.Constants;
 using Din.Application.WebAPI.Versioning;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
@@ -11,11 +10,12 @@ using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
 {
+    [ApiController]
     [ApiVersion(V1)]
     [VersionedRoute("queues")]
+    [ControllerName("Queues")]
     [Produces("application/json")]
-    [ApiController]
-    [Authorize(Policy = AuthorizationRoles.USER)]
+    [Authorize]
     public class QueueController : ControllerBase
     {
         #region injections

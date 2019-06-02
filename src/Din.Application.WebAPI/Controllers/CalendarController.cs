@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Din.Application.WebAPI.Constants;
 using Din.Application.WebAPI.Versioning;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
@@ -11,12 +10,12 @@ using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
 {
+    [ApiController]
     [ApiVersion(V1)]
     [VersionedRoute("calendars")]
     [ControllerName("Calendars")]
-    [Authorize(Policy = AuthorizationRoles.USER)]
     [Produces("application/json")]
-    [ApiController]
+    [Authorize]
     public class CalendarController : ControllerBase
     {
         #region injections

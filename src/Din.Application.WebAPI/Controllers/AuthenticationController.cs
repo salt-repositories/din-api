@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
-using Din.Application.WebAPI.Context.Interfaces;
 using Din.Application.WebAPI.Models.RequestsModels;
 using Din.Application.WebAPI.Models.ViewModels;
 using Din.Application.WebAPI.Versioning;
+using Din.Domain.Context;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,11 +12,12 @@ using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
 {
+    [ApiController]
     [ApiVersion(V1)]
     [VersionedRoute("authentication")]
     [ControllerName("Authentication")]
     [Produces("application/json")]
-    [ApiController]
+    [Authorize]
     public class AuthenticationController : ControllerBase
     {
         #region fields
