@@ -74,7 +74,7 @@ namespace Din.Application.WebAPI
                 options.UseLogging();
             });
 
-            _container.RegisterMediatr();
+            _container.RegisterMediatr(AppDomain.CurrentDomain.GetApplicationAssemblies());
             _container.RegisterDbContext(Configuration, env);
             _container.RegisterContexts();
             _container.RegisterAutoMapper();
