@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace Din.Application.WebAPI.Injection.DotNet
 {
-    public static class Swagger
+    public static class SwaggerRegistration
     {
         public static void RegisterSwagger(this IServiceCollection services)
         {

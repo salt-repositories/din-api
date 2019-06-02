@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Din.Domain.Validators.Concrete
 {
-    public class AccountValidator : AbstractValidator<Account>, Interfaces.IValidator<Account>
+    public class AccountValidator : AbstractValidator<Account>, IValidator<Account>
     {
         public AccountValidator()
         {

@@ -2,30 +2,29 @@
 using Din.Domain.Authorization.Authorizers.Interfaces;
 using Din.Domain.Authorization.Requests;
 using Din.Domain.Context;
-using Din.Domain.Exceptions;
 using Din.Domain.Exceptions.Concrete;
 
 namespace Din.Domain.Authorization.Authorizers.Concrete
 {
-    public class RoleAuthorizer<TRequest> : IRequestAuthorizer<TRequest>  where TRequest : IAuthorizedAccountRequest
+    public class IdentityAuthorizer<TRequest> : IRequestAuthorizer<TRequest> where TRequest : IAuthorizedIdentityRequest
     {
         private readonly IRequestContext _context;
 
-        public RoleAuthorizer(IRequestContext context)
+        public IdentityAuthorizer(IRequestContext context)
         {
             _context = context;
         }
 
         public Task Authorize(TRequest request)
-        { 
-            var role = _context.GetAccountRole();
+        {
+            var identity = _context.GetIdentity();
 
-            if (role != request.Role)
+            if (identity != request.Identity)
             {
-                throw new AuthorizationException("Account is not authorized to perform this operation");
+                throw new AuthorizationException("Requester is not authorized to perform this operation");
             }
 
-           return Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

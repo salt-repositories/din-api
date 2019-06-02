@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Din.Domain.Authorization.Requests
 {
-    public interface IAuthorizedAccountRequest : IBaseRequest
+    public interface IAuthorizedRoleRequest : IBaseRequest
     {
         AccountRole Role { get; set; }
     }

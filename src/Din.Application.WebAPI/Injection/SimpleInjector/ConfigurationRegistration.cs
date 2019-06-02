@@ -5,7 +5,7 @@ using SimpleInjector;
 
 namespace Din.Application.WebAPI.Injection.SimpleInjector
 {
-    public static class Configurations
+    public static class ConfigurationRegistration
     {
         public static void RegisterConfigurations(this Container container, IConfiguration configuration)
         {

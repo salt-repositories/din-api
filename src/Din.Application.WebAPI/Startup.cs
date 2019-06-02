@@ -74,12 +74,12 @@ namespace Din.Application.WebAPI
                 options.UseLogging();
             });
 
+            _container.RegisterMediatr();
             _container.RegisterDbContext(Configuration, env);
             _container.RegisterContexts();
             _container.RegisterAutoMapper();
             _container.RegisterConfigurations(Configuration);
             _container.RegisterServices();
-            _container.RegisterValidators(AppDomain.CurrentDomain.GetApplicationAssemblies());
 
             _container.Verify();
         }
