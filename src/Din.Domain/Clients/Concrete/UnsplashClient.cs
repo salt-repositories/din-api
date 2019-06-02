@@ -7,6 +7,7 @@ using Din.Domain.Clients.Configurations.Interfaces;
 using Din.Domain.Clients.Interfaces;
 using Din.Domain.Clients.ResponseObjects;
 using Din.Domain.Exceptions;
+using Din.Domain.Exceptions.Concrete;
 using Newtonsoft.Json;
 
 namespace Din.Domain.Clients.Concrete

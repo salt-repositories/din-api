@@ -8,6 +8,7 @@ using AutoMapper;
 using Din.Domain.Clients.Configurations.Interfaces;
 using Din.Domain.Clients.Interfaces;
 using Din.Domain.Exceptions;
+using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Models.Entities;
 using Din.Domain.Services.Interfaces;
