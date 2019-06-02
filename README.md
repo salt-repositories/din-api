@@ -47,8 +47,4 @@ dotnet fm rollback -p mysql -c "connection string" -a "migration assembly"
 |VAULT_URL|https://vault.naebers.me|All|The url to the secret management system (vault).|
 |VAULT_GITHUB_AT|`hex-string`|Development|The developers github access token to access the vault secrets.|
 |VAULT_ID|`hex-string`|Production|The application ID to access the vault secrets.|
-<<<<<<< HEAD
 |VAULT_SECRET|`hex-string`|Production|The application SECRET to access the vault secrets.|
-=======
-|VAULT_SECRET|`hex-string`|Production|The application SECRET to access the vault secrets.|
->>>>>>> master

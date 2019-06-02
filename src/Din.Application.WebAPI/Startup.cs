@@ -70,7 +70,7 @@ namespace Din.Application.WebAPI
         {
             app.UseSimpleInjector(_container, options =>
             {
-                options.UseMiddleware<ErrorHandlingMiddleware>(app);
+                options.UseMiddleware<ExceptionMiddleware>(app);
                 options.UseLogging();
             });
 
