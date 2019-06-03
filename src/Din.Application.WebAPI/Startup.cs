@@ -77,6 +77,7 @@ namespace Din.Application.WebAPI
             _container.RegisterMediatr(AppDomain.CurrentDomain.GetApplicationAssemblies());
             _container.RegisterDbContext(Configuration, env);
             _container.RegisterContexts();
+            _container.RegisterRepositories();
             _container.RegisterAutoMapper();
             _container.RegisterConfigurations(Configuration);
             _container.RegisterServices();

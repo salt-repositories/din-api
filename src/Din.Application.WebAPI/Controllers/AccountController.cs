@@ -4,9 +4,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Din.Application.WebAPI.Models.RequestsModels;
 using Din.Application.WebAPI.Models.ViewModels;
+using Din.Application.WebAPI.Querying;
 using Din.Application.WebAPI.Versioning;
 using Din.Domain.Models.Entities;
+using Din.Domain.Models.Querying;
+using Din.Domain.Queries.Accounts;
 using Din.Domain.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +28,7 @@ namespace Din.Application.WebAPI.Controllers
     {
         #region fields
 
+        private readonly IMediator _bus;
         private readonly IAccountService _service;
         private readonly IMapper _mapper;
 
@@ -32,8 +37,9 @@ namespace Din.Application.WebAPI.Controllers
 
         #region constructors
 
-        public AccountController(IAccountService service, IMapper mapper)
+        public AccountController(IMediator bus, IAccountService service, IMapper mapper)
         {
+            _bus = bus;
             _service = service;
             _mapper = mapper;
         }
@@ -47,9 +53,12 @@ namespace Din.Application.WebAPI.Controllers
         /// <returns>Collection containing all accounts</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<AccountViewModel>), 200)]
-        public async Task<IActionResult> GetAccounts()
+        public async Task<IActionResult> GetAccounts([FromQuery] QueryParametersRequest queryParameters)
         {
-            return Ok(_mapper.Map<IEnumerable<AccountViewModel>>(await _service.GetAccountsAsync()));
+            var query = new GetAccountsQuery(_mapper.Map<QueryParameters<Account>>(queryParameters));
+            var result = await _bus.Send(query);
+
+            return Ok(_mapper.Map<QueryResponse<AccountViewModel>>(result));
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using Din.Domain.Authorization.Authorizers.Interfaces;
 using Din.Domain.Authorization.Handlers.Concrete;
 using Din.Domain.Authorization.Handlers.Interfaces;
+using Din.Domain.Queries.Accounts;
 using FluentValidation;
 using MediatR;
 using MediatR.Pipeline;
@@ -23,6 +24,9 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             
             container.Collection.Register(typeof(IRequestAuthorizer<>), assemblies);
             container.Collection.Register(typeof(IValidator<>), assemblies);
+
+            container.Register(typeof(IRequestHandler<>), new [] { typeof(GetAccountsQuery).Assembly }, Lifestyle.Scoped);
+            container.Register(typeof(IRequestHandler<,>), new [] { typeof(GetAccountsQuery).Assembly }, Lifestyle.Scoped);
         }
     }
 }
