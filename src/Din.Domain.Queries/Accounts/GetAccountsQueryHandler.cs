@@ -10,6 +10,7 @@ namespace Din.Domain.Queries.Accounts
     public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, QueryResult<Account>>
     {
         private readonly IAccountRepository _repository;
+
         public GetAccountsQueryHandler(IAccountRepository repository)
         {
             _repository = repository;
@@ -18,8 +19,9 @@ namespace Din.Domain.Queries.Accounts
         public async Task<QueryResult<Account>> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
             var accounts = await _repository.GetAccounts(request.QueryParameters, cancellationToken);
+            var count = await _repository.Count(cancellationToken);
 
-            return new QueryResult<Account>(accounts, accounts.Count);
+            return new QueryResult<Account>(accounts, count);
         }
     }
 }

@@ -2,19 +2,14 @@
 {
     public class QueryParameters<T>
     {
-        public const int DEFAULT_PAGE_SIZE = 20;
-        public const int MAX_PAGE_SIZE = 50;
+        public const int DefaultPageSize = 20;
+        public const int MaxPageSize = 50;
 
-        public int Skip { get; private set; }
-        public int Take { get; private set; } = DEFAULT_PAGE_SIZE; //TODO Fix mapping
-        public string SortBy { get; private set; }
-        public SortDirection? SortDirection { get; private set; }
+        public int Skip { get; set; }
+        public int Take { get; set; } = DefaultPageSize;
+        public string SortBy { get; set; }
+        public SortDirection? SortDirection { get; set; }
 
-        public QueryParameters()
-        {
-            Skip = 0;
-            Take = DEFAULT_PAGE_SIZE;
-        }
 
         public QueryParameters<T> WithPaging(int? skip, int? take)
         {

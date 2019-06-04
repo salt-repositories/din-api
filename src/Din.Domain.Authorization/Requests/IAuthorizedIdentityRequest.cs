@@ -5,6 +5,6 @@ namespace Din.Domain.Authorization.Requests
 {
     public interface IAuthorizedIdentityRequest : IBaseRequest
     {
-        Guid Identity { get; set; }
+        Guid Identity { get; }
     }
 }

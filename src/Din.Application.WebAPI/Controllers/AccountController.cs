@@ -71,7 +71,8 @@ namespace Din.Application.WebAPI.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetAccountById([FromRoute] Guid id)
         {
-            return Ok(_mapper.Map<AccountViewModel>(await _service.GetAccountByIdAsync(id)));
+            var query = new GetAccountQuery(id);
+            return Ok(_mapper.Map<AccountViewModel>(await _bus.Send(query)));
         }
 
         /// <summary>

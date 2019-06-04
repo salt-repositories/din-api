@@ -6,7 +6,7 @@ using Din.Domain.Exceptions.Concrete;
 
 namespace Din.Domain.Authorization.Authorizers.Concrete
 {
-    public class RoleAuthorizer<TRequest> : IRequestAuthorizer<TRequest>  where TRequest : IAuthorizedRoleRequest
+    public class RoleAuthorizer<TRequest> : IRequestAuthorizer<TRequest> where TRequest : IAuthorizedRoleRequest
     {
         private readonly IRequestContext _context;
 
@@ -16,7 +16,7 @@ namespace Din.Domain.Authorization.Authorizers.Concrete
         }
 
         public Task Authorize(TRequest request)
-        { 
+        {
             var role = _context.GetAccountRole();
 
             if (role != request.Role)
@@ -24,7 +24,7 @@ namespace Din.Domain.Authorization.Authorizers.Concrete
                 throw new AuthorizationException("Requester is not authorized to perform this operation");
             }
 
-           return Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }
