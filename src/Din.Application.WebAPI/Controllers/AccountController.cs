@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Din.Application.WebAPI.Models.RequestsModels;
-using Din.Application.WebAPI.Models.ViewModels;
+using Din.Application.WebAPI.Models.Request;
+using Din.Application.WebAPI.Models.Response;
 using Din.Application.WebAPI.Querying;
 using Din.Application.WebAPI.Versioning;
+using Din.Domain.Commands.Accounts;
 using Din.Domain.Models.Entities;
 using Din.Domain.Models.Querying;
 using Din.Domain.Queries.Accounts;
@@ -52,13 +52,13 @@ namespace Din.Application.WebAPI.Controllers
         /// </summary>
         /// <returns>Collection containing all accounts</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<AccountViewModel>), 200)]
+        [ProducesResponseType(typeof(QueryResponse<AccountResponse>), 200)]
         public async Task<IActionResult> GetAccounts([FromQuery] QueryParametersRequest queryParameters)
         {
             var query = new GetAccountsQuery(_mapper.Map<QueryParameters<Account>>(queryParameters));
             var result = await _bus.Send(query);
 
-            return Ok(_mapper.Map<QueryResponse<AccountViewModel>>(result));
+            return Ok(_mapper.Map<QueryResponse<AccountResponse>>(result));
         }
 
         /// <summary>
@@ -67,25 +67,28 @@ namespace Din.Application.WebAPI.Controllers
         /// <param name="id">Account ID</param>
         /// <returns>Single account</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(AccountViewModel), 200)]
+        [ProducesResponseType(typeof(AccountResponse), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetAccountById([FromRoute] Guid id)
         {
             var query = new GetAccountQuery(id);
-            return Ok(_mapper.Map<AccountViewModel>(await _bus.Send(query)));
+            return Ok(_mapper.Map<AccountResponse>(await _bus.Send(query)));
         }
 
         /// <summary>
-        /// Get addedcontent from account by ID
+        /// Get added content from account by ID
         /// </summary>
         /// <param name="id">Account ID</param>
         /// <returns></returns>
         [HttpGet("{id}/added_content")]
-        [ProducesResponseType(typeof(IEnumerable<AddedContentViewModel>), 200)]
+        [ProducesResponseType(typeof(QueryResponse<AddedContentResponse>), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetAccountAddedContent([FromRoute] Guid id)
+        public async Task<IActionResult> GetAccountAddedContent([FromQuery] QueryParametersRequest queryParameters, [FromRoute] Guid id)
         {
-            return Ok(_mapper.Map<IEnumerable<AddedContentViewModel>>(await _service.GetAccountAddedContent(id)));
+            var query = new GetAddedContentQuery(_mapper.Map<QueryParameters<AddedContent>>(queryParameters), id);
+            var result = await _bus.Send(query);
+
+            return Ok(_mapper.Map<QueryResponse<AddedContentResponse>>(result));
         }
 
         /// <summary>
@@ -94,15 +97,14 @@ namespace Din.Application.WebAPI.Controllers
         /// <param name="account">Account model</param>
         /// <returns>Created account</returns>
         [HttpPost]
-        [ProducesResponseType(typeof(AccountViewModel), 201)]
+        [ProducesResponseType(typeof(AccountResponse), 201)]
         public async Task<IActionResult> CreateAccount([FromBody] AccountRequest account)
         {
-            return Created("Account created:", _mapper.Map<AccountViewModel>(await _service.CreateAccountAsync(new Account
-            {
-                Username =  account.Username,
-                Hash = BCrypt.Net.BCrypt.HashPassword(account.Password),
-                Role = account.Role
-            })));
+            var command = new CreateAccountCommand(_mapper.Map<Account>(account), account.Password);
+           
+            var response = _bus.Send(command);
+
+            return Created("", _mapper.Map<AccountResponse>(response));
         }
 
         /// <summary>
@@ -112,7 +114,7 @@ namespace Din.Application.WebAPI.Controllers
         /// <param name="account">updated data/ properties</param>
         /// <returns>Updated Account</returns>
         [HttpPatch("{id}")]
-        [ProducesResponseType(typeof(AccountViewModel), 200)]
+        [ProducesResponseType(typeof(AccountResponse), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateAccount([FromRoute] Guid id, [FromBody] JsonPatchDocument<AccountRequest> account)
         {
@@ -120,7 +122,7 @@ namespace Din.Application.WebAPI.Controllers
             var update =_mapper.Map<JsonPatchDocument<Account>>(account);
             update.ApplyTo(currentAccount);
 
-            return Ok(_mapper.Map<AccountViewModel>(await _service.UpdateAccountAsync(currentAccount)));
+            return Ok(_mapper.Map<AccountResponse>(await _service.UpdateAccountAsync(currentAccount)));
         }
 
         [HttpDelete("{id}")]

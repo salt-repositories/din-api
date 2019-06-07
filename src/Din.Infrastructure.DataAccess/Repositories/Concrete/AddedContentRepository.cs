@@ -12,25 +12,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Din.Infrastructure.DataAccess.Repositories.Concrete
 {
-    public class AccountRepository : BaseRepository, IAccountRepository
+    public class AddedContentRepository : BaseRepository, IAddedContentRepository
     {
-        public AccountRepository(DinContext context) : base(context)
+        protected AddedContentRepository(DinContext context) : base(context)
         {
         }
 
-        public async Task<IList<Account>> GetAccounts(QueryParameters<Account> queryParameters, CancellationToken cancellationToken)
+        public async Task<IList<AddedContent>> GetAddedContentByAccountId(QueryParameters<AddedContent> queryParameters, Guid id,
+            CancellationToken cancellationToken)
         {
-            IQueryable<Account> query = _context.Set<Account>().Include(a => a.Image);
+            IQueryable<AddedContent> query = _context.Set<AddedContent>().Where(ac => ac.AccountId.Equals(id));
             query = query.ApplyQueryParameters(queryParameters);
 
             return await query.ToListAsync(cancellationToken);
-        }
-
-        public async Task<Account> GetAccount(Guid id, CancellationToken cancellationToken)
-        {
-            return await _context.Account
-                .Include(a => a.Image)
-                .FirstAsync(a => a.Id.Equals(id), cancellationToken);
         }
     }
 }

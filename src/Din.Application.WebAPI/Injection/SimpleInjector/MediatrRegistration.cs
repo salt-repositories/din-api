@@ -6,6 +6,7 @@ using Din.Domain.Authorization.Handlers.Interfaces;
 using Din.Domain.Extensions;
 using Din.Domain.Middlewares.Mediatr;
 using Din.Domain.Queries.Accounts;
+using Din.Infrastructure.DataAccess.Mediatr.Concrete;
 using FluentValidation;
 using MediatR;
 using MediatR.Pipeline;
@@ -23,7 +24,8 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.Collection.Register(typeof(IPipelineBehavior<,>),
                 new[]
                 {
-                    typeof(RequestPreProcessorBehavior<,>)
+                    typeof(RequestPreProcessorBehavior<,>),
+                    typeof(TransactionProcessorBehaviour<,>)
                 }
             );
 

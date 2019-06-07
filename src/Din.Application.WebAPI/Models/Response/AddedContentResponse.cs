@@ -1,9 +1,9 @@
 ﻿using System;
 using Din.Domain.Models.Entities;
 
-namespace Din.Application.WebAPI.Models.ViewModels
+namespace Din.Application.WebAPI.Models.Response
 {
-    public class AddedContentViewModel
+    public class AddedContentResponse
     {
         public Guid Id { get; set; }
         public int SystemId { get; set; }

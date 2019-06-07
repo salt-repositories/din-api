@@ -1,7 +1,7 @@
 ﻿using System;
 using TMDbLib.Objects.Search;
 
-namespace Din.Application.WebAPI.Models.RequestsModels
+namespace Din.Application.WebAPI.Models.Request
 {
     public class MovieRequest
     {

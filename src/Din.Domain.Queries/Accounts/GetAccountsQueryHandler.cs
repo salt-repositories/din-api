@@ -19,7 +19,7 @@ namespace Din.Domain.Queries.Accounts
         public async Task<QueryResult<Account>> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
             var accounts = await _repository.GetAccounts(request.QueryParameters, cancellationToken);
-            var count = await _repository.Count(cancellationToken);
+            var count = await _repository.Count<Account>(cancellationToken);
 
             return new QueryResult<Account>(accounts, count);
         }

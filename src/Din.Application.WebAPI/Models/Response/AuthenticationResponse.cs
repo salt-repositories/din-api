@@ -1,6 +1,6 @@
-﻿namespace Din.Application.WebAPI.Models.ViewModels
+﻿namespace Din.Application.WebAPI.Models.Response
 {
-    public class AuthViewModel
+    public class AuthenticationResponse
     {
         public string AccessToken { get; set; }
         public int ExpiresIn { get; set; }

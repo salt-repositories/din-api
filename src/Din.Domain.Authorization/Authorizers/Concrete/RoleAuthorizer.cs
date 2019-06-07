@@ -3,6 +3,7 @@ using Din.Domain.Authorization.Authorizers.Interfaces;
 using Din.Domain.Authorization.Context;
 using Din.Domain.Authorization.Requests;
 using Din.Domain.Exceptions.Concrete;
+using Din.Domain.Models.Entities;
 
 namespace Din.Domain.Authorization.Authorizers.Concrete
 {
@@ -19,7 +20,7 @@ namespace Din.Domain.Authorization.Authorizers.Concrete
         {
             var role = _context.GetAccountRole();
 
-            if (role != request.Role)
+            if (role != request.Role && role != AccountRole.Admin)
             {
                 throw new AuthorizationException("Requester is not authorized to perform this operation");
             }

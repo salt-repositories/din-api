@@ -1,6 +1,6 @@
 ﻿using Din.Domain.Models.Entities;
 
-namespace Din.Application.WebAPI.Models.RequestsModels
+namespace Din.Application.WebAPI.Models.Request
 {
     public class AccountRequest : IRequest
     {

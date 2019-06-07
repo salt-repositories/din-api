@@ -1,19 +1,18 @@
 ﻿using System;
 using Din.Domain.Models.Entities;
 
-namespace Din.Application.WebAPI.Models.ViewModels
+namespace Din.Application.WebAPI.Models.Response
 {
-    public class AccountViewModel
+    public class AccountResponse
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
         public AccountRole Role { get; set; }
-        public AccountImageViewModel Image { get; set; }
+        public AccountResponseImage Image { get; set; }
     }
 
-    public class AccountImageViewModel
+    public class AccountResponseImage
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public byte[] Data { get; set; }
     }
