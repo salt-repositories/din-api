@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Din.Domain.BackgroundServices.Abstractions;
 using Din.Domain.Clients.Interfaces;
 using Din.Domain.Clients.ResponseObjects;
 using Din.Domain.Models.Entities;
@@ -12,15 +11,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Din.Domain.BackgroundServices.Concrete
 {
-    public class ContentUpdateService : ScheduledProcessor
+    public class ContentUpdateService
     {
-        protected override string Schedule => "*/1 * * * *";
-
-        public ContentUpdateService(IServiceScopeFactory serviceScopeFactory) : base(serviceScopeFactory)
+        [Obsolete]
+        public ContentUpdateService(IServiceScopeFactory serviceScopeFactory)
         {
         }
 
-        public override async Task ProcessInScope(IServiceProvider serviceProvider)
+        public async Task ProcessInScope(IServiceProvider serviceProvider)
         {
             var context = serviceProvider.GetService<DinContext>();
             var movieClient = serviceProvider.GetService<IMovieClient>();
