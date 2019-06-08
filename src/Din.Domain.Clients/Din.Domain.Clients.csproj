@@ -13,8 +13,4 @@
     <ProjectReference Include="..\Din.Domain.Exceptions\Din.Domain.Exceptions.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configuration\Abstractions\" />
-  </ItemGroup>
-
 </Project>

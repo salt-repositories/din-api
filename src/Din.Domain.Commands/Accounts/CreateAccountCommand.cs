@@ -7,13 +7,13 @@ namespace Din.Domain.Commands.Accounts
 {
     public class CreateAccountCommand : IAuthorizedRoleRequest, ITransactionRequest, IRequest<Account>
     {
-        public AccountRole Role { get; }
+        public AccountRole AuthorizedRole { get; }
         public Account Account { get; }
         public string Password { get; }
 
         public CreateAccountCommand(Account account, string password)
         {
-            Role = AccountRole.Moderator;
+            AuthorizedRole = AccountRole.Moderator;
             Account = account;
             Password = password;
         }

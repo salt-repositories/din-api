@@ -5,6 +5,6 @@ namespace Din.Domain.Authorization.Requests
 {
     public interface IAuthorizedRoleRequest : IBaseRequest
     {
-        AccountRole Role { get; }
+        AccountRole AuthorizedRole { get; }
     }
 }

@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Abstractions;
-using Din.Domain.Clients.Configuration.Interfaces;
 using Din.Domain.Clients.Unsplash.Interfaces;
 using Din.Domain.Clients.Unsplash.Responses;
 

@@ -11,6 +11,7 @@ using Din.Domain.Logging.Loggers.Concrete;
 using Din.Domain.Logging.Loggers.Interfaces;
 using Din.Domain.Middlewares.Mediatr;
 using Din.Domain.Queries.Accounts;
+using Din.Domain.Stores.Concrete;
 using Din.Infrastructure.DataAccess.Mediatr.Concrete;
 using FluentValidation;
 using MediatR;
@@ -46,7 +47,8 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.Collection.Register(typeof(IRequestPostProcessor<,>), 
                 new []
                 {
-                    typeof(LoggingMiddleware<,>)
+                    typeof(LoggingMiddleware<,>),
+                    typeof(MediaStoreUpdater<,>)
                 }
             );
 

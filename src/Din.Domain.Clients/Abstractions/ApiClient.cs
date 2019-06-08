@@ -40,7 +40,7 @@ namespace Din.Domain.Clients.Abstractions
 
         private async Task CheckResponse(HttpRequestMessage request, HttpResponseMessage response)
         {
-            if (response.StatusCode != HttpStatusCode.OK)
+            if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.Created)
             {
                 var path = $"{request.RequestUri.Scheme}://{request.RequestUri.Host}{request.RequestUri.AbsolutePath}";
                 throw new HttpClientException(

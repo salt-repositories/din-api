@@ -1,11 +1,13 @@
 ﻿using AutoMapper.Configuration;
 using Din.Application.WebAPI.Mapping.Converters;
+using Din.Application.WebAPI.Mapping.Resolvers;
 using Din.Application.WebAPI.Models.Request;
 using Din.Application.WebAPI.Models.Response;
 using Din.Application.WebAPI.Querying;
 using Din.Domain.Clients.Giphy.Responses;
+using Din.Domain.Clients.Radarr.Requests;
+using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Clients.Unsplash.Responses;
-using Din.Domain.Models.Dtos;
 using Din.Domain.Models.Entities;
 using Din.Domain.Models.Querying;
 
@@ -27,6 +29,12 @@ namespace Din.Application.WebAPI.Mapping
                 .ConvertUsing<ToBackgroundResponseConverter>();
 
             CreateMap<AccountRequest, Account>();
+
+            CreateMap<RadarrMovie, MovieResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom<MovieIdResolver>());
+
+            CreateMap<MovieRequest, RadarrMovieRequest>()
+                .ConvertUsing<ToRadarrMovieRequestConverter>();
         }
     }
 }

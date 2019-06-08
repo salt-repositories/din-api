@@ -20,7 +20,7 @@ namespace Din.Domain.Authorization.Authorizers.Concrete
         {
             var role = _context.GetAccountRole();
 
-            if (role != request.Role && role != AccountRole.Admin)
+            if (role != request.AuthorizedRole && role != AccountRole.Admin)
             {
                 throw new AuthorizationException();
             }

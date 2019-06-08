@@ -8,11 +8,11 @@ namespace Din.Domain.Queries.Accounts
 {
     public class GetAccountsQuery : RequestWithQueryParameters<Account>, IAuthorizedRoleRequest, IRequest<QueryResult<Account>>
     {
-        public AccountRole Role { get; }
+        public AccountRole AuthorizedRole { get; }
 
         public GetAccountsQuery(QueryParameters<Account> queryParameters) : base(queryParameters)
         {
-            Role = AccountRole.Admin;
+            AuthorizedRole = AccountRole.Admin;
         }
     }
 }

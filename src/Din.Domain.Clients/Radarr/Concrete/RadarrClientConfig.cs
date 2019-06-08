@@ -1,6 +1,4 @@
 ﻿using Din.Domain.Clients.Abstractions;
-using Din.Domain.Clients.Configuration;
-using Din.Domain.Clients.Configuration.Interfaces;
 using Din.Domain.Clients.Radarr.Interfaces;
 
 namespace Din.Domain.Clients.Radarr.Concrete

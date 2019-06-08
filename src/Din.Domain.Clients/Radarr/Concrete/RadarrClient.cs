@@ -20,12 +20,12 @@ namespace Din.Domain.Clients.Radarr.Concrete
             _config = config;
         }
 
-        public async Task<T> GetMoviesAsync<T>(RadarrMovieQuery query, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RadarrMovie>> GetMoviesAsync(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, 
-                new Uri($"{_config.Url}api/movie?apikey={_config.Key}&pageSize={query.PageSize}&page={query.Page}&sortKey={query.SortKey}&sortDir={query.SortDirection}"));
+                new Uri($"{_config.Url}api/movie?apikey={_config.Key}"));
 
-            return await SendRequest<T>(request, cancellationToken);
+            return await SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
         }
 
         public async Task<RadarrMovie> GetMovieByIdAsync(int id, CancellationToken cancellationToken)

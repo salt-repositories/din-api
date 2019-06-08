@@ -1,6 +1,17 @@
-﻿using Din.Application.WebAPI.Versioning;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
+using Din.Application.WebAPI.Models.Request;
+using Din.Application.WebAPI.Models.Response;
+using Din.Application.WebAPI.Versioning;
+using Din.Domain.Clients.Radarr.Requests;
+using Din.Domain.Clients.Radarr.Responses;
+using Din.Domain.Commands.Movies;
+using Din.Domain.Queries.Movies;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TMDbLib.Objects.Search;
 using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
@@ -13,79 +24,105 @@ namespace Din.Application.WebAPI.Controllers
     [Authorize]
     public class MovieController : ControllerBase
     {
-//        #region injectons
-//
-//        private readonly IMovieService _service;
-//
-//        #endregion injections
-//
-//        #region constructors
-//
-//        public MovieController(IMovieService service)
-//        {
-//            _service = service;
-//        }
-//
-//        #endregion constructors
-//
-//        #region endpoints
-//
-//        /// <summary>
-//        /// Get all movies
-//        /// </summary>
-//        /// <returns>Collection of movies</returns>
-//        [HttpGet]
-//        [ProducesResponseType(typeof(IEnumerable<MovieDto>), 200)]
-//        public async Task<IActionResult> GetAllMovies([FromQuery] int pageSize, [FromQuery] int page, [FromQuery] string sortKey, [FromQuery] string sortDirection)
-//        {
-//            return pageSize.Equals(0) 
-//                ? Ok(await _service.GetAllMoviesAsync<IEnumerable<MovieDto>>(pageSize, page, sortKey, sortDirection)) 
-//                : Ok(await _service.GetAllMoviesAsync<MovieContainerDto>(pageSize, page, sortKey, sortDirection));
-//        }
-//
-//        /// <summary>
-//        /// Get movie by ID
-//        /// </summary>
-//        /// <param name="id">system ID</param>
-//        /// <returns>Single movie</returns>
-//        [HttpGet("{id}")]
-//        [ProducesResponseType(typeof(MovieDto), 200)]
-//        [ProducesResponseType(404)]
-//        public async Task<IActionResult> GetMovieById([FromRoute] int id)
-//        {
-//            return Ok(await _service.GetMovieByIdAsync(id));
-//        }
-//
-//        /// <summary>
-//        /// Search moviedatabase for movie
-//        /// </summary>
-//        /// <param name="query">Searchquery</param>
-//        /// <returns>Collection of results</returns>
-//        [HttpGet("search")]
-//        [ProducesResponseType(typeof(IEnumerable<SearchMovie>), 200)]
-//        [ProducesResponseType(400)]
-//        public async Task<IActionResult> SearchMovie([FromQuery] string query)
-//        {
-//            if (string.IsNullOrEmpty(query)) return BadRequest(new {message = "query can not be empty"});
-//
-//            return Ok(await _service.SearchMovieAsync(query));
-//        }
-//
-//        /// <summary>
-//        /// Add movie to system
-//        /// </summary>
-//        /// <param name="data">Movie to add</param>
-//        /// <returns>Status response</returns>
-//        [HttpPost]
-//        [ProducesResponseType(typeof(SearchMovie), 201)]
-//        [ProducesResponseType(400)]
-//        public async Task<IActionResult> AddMovieAsync([FromBody] MovieRequest data)
-//        {
-//            var result = await _service.AddMovieAsync(data.Movie, data.AccountId);
-//
-//            return Created("Movie created", result);
-//        }
-//
-//        #endregion endpoints
+        #region injectons
+
+        private readonly IMediator _bus;
+        private readonly IMapper _mapper;
+
+        #endregion injections
+
+        #region constructors
+
+        public MovieController(IMediator bus, IMapper mapper)
+        {
+            _bus = bus;
+            _mapper = mapper;
+        }
+
+        #endregion constructors
+
+        #region endpoints
+
+        /// <summary>
+        /// Get all movies
+        /// </summary>
+        /// <returns>Collection of movies</returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<MovieResponse>), 200)]
+        public async Task<IActionResult> GetMovies([FromQuery] string title)
+        {
+            IRequest<IEnumerable<RadarrMovie>> query;
+            IEnumerable<RadarrMovie> result;
+
+            if (title == null)
+            {
+                query = new GetMoviesQuery();
+                result = await _bus.Send(query);
+
+                return Ok(_mapper.Map<IEnumerable<MovieResponse>>(result));
+            }
+
+            query = new GetMoviesByTitleQuery(title);
+            result = await _bus.Send(query);
+
+            return Ok(_mapper.Map<IEnumerable<MovieResponse>>(result));
+        }
+
+        /// <summary>
+        /// Get movie by ID
+        /// </summary>
+        /// <param name="id">system ID</param>
+        /// <returns>Single movie</returns>
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(MovieResponse), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetMovieById([FromRoute] int id)
+        {
+            var query = new GetMovieByIdQuery(id);
+            var result = await _bus.Send(query);
+
+            return Ok(_mapper.Map<MovieResponse>(result));
+        }
+
+
+        /// <summary>
+        /// Search the movie database by query
+        /// </summary>
+        /// <param name="query">(part) title</param>
+        /// <returns>Collection of movies from the movie database</returns>
+        [HttpGet("search")]
+        [ProducesResponseType(typeof(IEnumerable<SearchMovie>), 200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> SearchMovieByQuery([FromQuery] string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return BadRequest(new {message = "The search query can not be empty"});
+            }
+
+            var requestQuery = new GetMovieFromDatabaseQuery(query);
+            var result = await _bus.Send(requestQuery);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Add movie to system
+        /// </summary>
+        /// <param name="movie">Movie to add</param>
+        /// <returns>Status response</returns>
+        [HttpPost]
+        [ProducesResponseType(typeof(RadarrMovie), 201)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> AddMovie([FromBody] MovieRequest movie)
+        {
+            var command = new AddMovieCommand(_mapper.Map<RadarrMovieRequest>(movie));
+            var result = await _bus.Send(command);
+
+            return Created("", _mapper.Map<MovieResponse>(result));
+        }
+
+
+        #endregion endpoints
     }
 }

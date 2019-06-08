@@ -8,7 +8,7 @@ namespace Din.Domain.Clients.Radarr.Responses
     {
         [JsonProperty("id")] public int SystemId { get; set; }
         [JsonProperty("tmdbid")] public int TmdbId { get; set; }
-        [JsonProperty("imdbid")] public int ImdbId { get; set; }
+        [JsonProperty("imdbid")] public string ImdbId { get; set; }
         [JsonProperty("title")] public string Title { get; set; }
         [JsonProperty("genres")] public IEnumerable<string> Genres { get; set; }
         [JsonProperty("status")] public string Status { get; set; }
