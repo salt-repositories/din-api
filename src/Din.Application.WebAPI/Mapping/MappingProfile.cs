@@ -3,7 +3,6 @@ using Din.Application.WebAPI.Mapping.Converters;
 using Din.Application.WebAPI.Models.Response;
 using Din.Application.WebAPI.Querying;
 using Din.Domain.Clients.Giphy.Responses;
-using Din.Domain.Clients.ResponseObjects;
 using Din.Domain.Clients.Unsplash.Responses;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Models.Entities;
@@ -25,9 +24,6 @@ namespace Din.Application.WebAPI.Mapping
 
             CreateMap<UnsplashImage, BackgroundResponse>()
                 .ConvertUsing<ToBackgroundResponseConverter>();
-
-            CreateMap<McCalendar, CalendarItemDto>().ConvertUsing<McCalendarConverter>();
-            CreateMap<TcCalendar, CalendarItemDto>().ConvertUsing<TcCalendarConverter>();
         }
     }
 }

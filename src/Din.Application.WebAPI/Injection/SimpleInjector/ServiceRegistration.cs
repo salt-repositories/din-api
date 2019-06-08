@@ -1,6 +1,4 @@
-﻿using Din.Domain.Clients.Concrete;
-using Din.Domain.Clients.Interfaces;
-using Din.Domain.Services.Interfaces;
+﻿using Din.Domain.Services.Interfaces;
 using SimpleInjector;
 
 namespace Din.Application.WebAPI.Injection.SimpleInjector
