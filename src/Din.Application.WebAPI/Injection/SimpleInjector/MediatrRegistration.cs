@@ -5,6 +5,8 @@ using Din.Domain.Authorization.Handlers.Concrete;
 using Din.Domain.Authorization.Handlers.Interfaces;
 using Din.Domain.Commands.Authentication;
 using Din.Domain.Extensions;
+using Din.Domain.Loggers;
+using Din.Domain.Loggers.Concrete;
 using Din.Domain.Middlewares.Mediatr;
 using Din.Domain.Queries.Accounts;
 using Din.Infrastructure.DataAccess.Mediatr.Concrete;
@@ -26,7 +28,8 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 new[]
                 {
                     typeof(RequestPreProcessorBehavior<,>),
-                    typeof(TransactionProcessorBehaviour<,>)
+                    typeof(TransactionProcessorBehaviour<,>),
+                    typeof(RequestPostProcessorBehavior<,>)
                 }
             );
 
@@ -37,7 +40,14 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                     typeof(FluentValidationMiddleware<>)
                 }
             );
-           
+
+            container.Collection.Register(typeof(IRequestPostProcessor<,>), 
+                new []
+                {
+                    typeof(AuthenticationLogger<,>)
+                }
+            );
+
             container.Register(typeof(IAuthorizationHandler<>), typeof(AuthorizationHandler<>));
 
             var authorizers = new[]

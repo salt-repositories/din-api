@@ -1,9 +1,12 @@
-﻿using Din.Domain.Models.Dtos;
+﻿using Din.Domain.Loggers;
+using Din.Domain.Loggers.Interfaces;
+using Din.Domain.Models.Dtos;
+using Din.Infrastructure.DataAccess.Mediatr.Interfaces;
 using MediatR;
 
 namespace Din.Domain.Commands.Authentication
 {
-    public class GenerateTokenCommand : IRequest<TokenDto>
+    public class GenerateTokenCommand : IAuthenticationRequest, ITransactionRequest, IRequest<TokenDto>
     {
         public AuthenticationDto AuthenticationDetails { get; }
 
