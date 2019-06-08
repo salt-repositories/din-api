@@ -5,15 +5,16 @@ using AutoMapper;
 using Din.Domain.Authorization.Context;
 using Din.Domain.Clients.IpStack.Interfaces;
 using Din.Domain.Clients.IpStack.Responses;
-using Din.Domain.Loggers.Interfaces;
+using Din.Domain.Logging.Loggers.Interfaces;
+using Din.Domain.Logging.Requests;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
-using MediatR.Pipeline;
+using MediatR;
 using UAParser;
 
-namespace Din.Domain.Loggers.Concrete
+namespace Din.Domain.Logging.Loggers.Concrete
 {
-    public class AuthenticationLogger<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse> where TRequest : IAuthenticationRequest
+    public class AuthenticationLogger<TRequest, TResponse> : IRequestLogger<TRequest, TResponse> where TRequest : IAuthenticationRequest
     {
         private readonly ILoginAttemptRepository _repository;
         private readonly IRequestContext _context;
@@ -28,7 +29,7 @@ namespace Din.Domain.Loggers.Concrete
             _mapper = mapper;
         }
 
-        public async Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
+        public async Task Log(TRequest request, TResponse response, CancellationToken cancellationToken)
         {
             string ipAddress;
             IpStackLocation location;
@@ -58,7 +59,7 @@ namespace Din.Domain.Loggers.Concrete
                 Status = response == null ? LoginStatus.Failed : LoginStatus.Success
             };
 
-            _repository.Insert<LoginAttempt>(loginAttempt);
+            _repository.Insert(loginAttempt);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Din.Domain.Authorization.Handlers.Concrete
 
         public async Task Authorize(TRequest input)
         {
-            foreach (IRequestAuthorizer<TRequest> authorizer in _requestAuthorizers)
+            foreach (var authorizer in _requestAuthorizers)
             {
                 await authorizer.Authorize(input).ConfigureAwait(false);
             }

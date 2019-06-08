@@ -1,5 +1,4 @@
-﻿using Din.Domain.Loggers;
-using Din.Domain.Loggers.Interfaces;
+﻿using Din.Domain.Logging.Requests;
 using Din.Domain.Models.Dtos;
 using Din.Infrastructure.DataAccess.Mediatr.Interfaces;
 using MediatR;

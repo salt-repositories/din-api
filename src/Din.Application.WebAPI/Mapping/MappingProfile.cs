@@ -1,5 +1,6 @@
 ﻿using AutoMapper.Configuration;
 using Din.Application.WebAPI.Mapping.Converters;
+using Din.Application.WebAPI.Models.Request;
 using Din.Application.WebAPI.Models.Response;
 using Din.Application.WebAPI.Querying;
 using Din.Domain.Clients.Giphy.Responses;
@@ -24,6 +25,8 @@ namespace Din.Application.WebAPI.Mapping
 
             CreateMap<UnsplashImage, BackgroundResponse>()
                 .ConvertUsing<ToBackgroundResponseConverter>();
+
+            CreateMap<AccountRequest, Account>();
         }
     }
 }

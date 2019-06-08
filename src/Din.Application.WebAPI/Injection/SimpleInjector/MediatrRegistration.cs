@@ -5,8 +5,10 @@ using Din.Domain.Authorization.Handlers.Concrete;
 using Din.Domain.Authorization.Handlers.Interfaces;
 using Din.Domain.Commands.Authentication;
 using Din.Domain.Extensions;
-using Din.Domain.Loggers;
-using Din.Domain.Loggers.Concrete;
+using Din.Domain.Logging.Handlers.Concrete;
+using Din.Domain.Logging.Handlers.Interfaces;
+using Din.Domain.Logging.Loggers.Concrete;
+using Din.Domain.Logging.Loggers.Interfaces;
 using Din.Domain.Middlewares.Mediatr;
 using Din.Domain.Queries.Accounts;
 using Din.Infrastructure.DataAccess.Mediatr.Concrete;
@@ -44,11 +46,12 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.Collection.Register(typeof(IRequestPostProcessor<,>), 
                 new []
                 {
-                    typeof(AuthenticationLogger<,>)
+                    typeof(LoggingMiddleware<,>)
                 }
             );
 
             container.Register(typeof(IAuthorizationHandler<>), typeof(AuthorizationHandler<>));
+            container.Register(typeof(ILoggingHandler<,>), typeof(LoggingHandler<,>));
 
             var authorizers = new[]
             {
@@ -59,6 +62,13 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.Collection.Register(typeof(IRequestAuthorizer<>), authorizers);
 
             container.Collection.Register(typeof(IValidator<>), assemblies);
+
+            var loggers = new[]
+            {
+                typeof(AuthenticationLogger<,>).Assembly
+            }.GetGenericInterfaceImplementationTypes(typeof(IRequestLogger<,>));
+
+            container.Collection.Register(typeof(IRequestLogger<,>), loggers);
 
             container.Register(typeof(IRequestHandler<>), new []
             {
