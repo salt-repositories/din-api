@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Din.Domain.Models.Dtos;
-using TMDbLib.Objects.Search;
 
 namespace Din.Domain.Services.Interfaces
 {
