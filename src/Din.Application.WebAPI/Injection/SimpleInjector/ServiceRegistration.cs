@@ -1,5 +1,4 @@
-﻿using Din.Domain.Services.Interfaces;
-using SimpleInjector;
+﻿using SimpleInjector;
 
 namespace Din.Application.WebAPI.Injection.SimpleInjector
 {

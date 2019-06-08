@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Din.Application.WebAPI.Versioning;
-using Din.Domain.Models.Dtos;
-using Din.Domain.Services.Interfaces;
+﻿using Din.Application.WebAPI.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Din.Application.WebAPI.Versioning.ApiVersions;

@@ -1,12 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Din.Application.WebAPI.Models.Request;
-using Din.Application.WebAPI.Versioning;
-using Din.Domain.Models.Dtos;
-using Din.Domain.Services.Interfaces;
+﻿using Din.Application.WebAPI.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TMDbLib.Objects.Search;
 using static Din.Application.WebAPI.Versioning.ApiVersions;
 
 namespace Din.Application.WebAPI.Controllers
