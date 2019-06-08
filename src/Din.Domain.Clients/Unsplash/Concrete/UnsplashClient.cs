@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+using Din.Domain.Clients.Abstractions;
 using Din.Domain.Clients.Configuration.Interfaces;
 using Din.Domain.Clients.Unsplash.Interfaces;
-using Din.Domain.Clients.Unsplash.Response;
+using Din.Domain.Clients.Unsplash.Responses;
 
 namespace Din.Domain.Clients.Unsplash.Concrete
 {
@@ -17,12 +19,12 @@ namespace Din.Domain.Clients.Unsplash.Concrete
             _config = config;
         }
 
-        public async Task<IEnumerable<UnsplashImage>> GetImagesAsync()
+        public async Task<IEnumerable<UnsplashImage>> GetImagesAsync(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, 
                 new Uri($"{_config.Url}photos/random?client_id={_config.Key}&query=nature&orientation=landscape&count=20&featured"));
 
-            return await SendRequest<IEnumerable<UnsplashImage>>(request);
+            return await SendRequest<IEnumerable<UnsplashImage>>(request, cancellationToken);
         }
     }
 }

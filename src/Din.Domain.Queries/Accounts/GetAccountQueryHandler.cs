@@ -17,7 +17,7 @@ namespace Din.Domain.Queries.Accounts
 
         public async Task<Account> Handle(GetAccountQuery request, CancellationToken cancellationToken)
         {
-            return await _repository.GetAccount(request.Identity, cancellationToken);
+            return await _repository.GetAccountById(request.Identity, cancellationToken);
         }
     }
 }

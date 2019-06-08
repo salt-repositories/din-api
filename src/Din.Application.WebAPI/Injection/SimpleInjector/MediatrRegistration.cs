@@ -3,6 +3,7 @@ using Din.Domain.Authorization.Authorizers.Concrete;
 using Din.Domain.Authorization.Authorizers.Interfaces;
 using Din.Domain.Authorization.Handlers.Concrete;
 using Din.Domain.Authorization.Handlers.Interfaces;
+using Din.Domain.Commands.Authentication;
 using Din.Domain.Extensions;
 using Din.Domain.Middlewares.Mediatr;
 using Din.Domain.Queries.Accounts;
@@ -49,8 +50,18 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
 
             container.Collection.Register(typeof(IValidator<>), assemblies);
 
-            container.Register(typeof(IRequestHandler<>), new [] { typeof(GetAccountsQuery).Assembly }, Lifestyle.Scoped);
-            container.Register(typeof(IRequestHandler<,>), new [] { typeof(GetAccountsQuery).Assembly }, Lifestyle.Scoped);
+            container.Register(typeof(IRequestHandler<>), new []
+            {
+                typeof(GetAccountQueryHandler).Assembly,
+                typeof(GetAddedContentQueryHandler).Assembly,
+                typeof(GenerateTokenCommandHandler).Assembly
+            }, Lifestyle.Scoped);
+            container.Register(typeof(IRequestHandler<,>), new []
+            {
+                typeof(GetAccountQueryHandler).Assembly,
+                typeof(GetAddedContentQueryHandler).Assembly,
+                typeof(GenerateTokenCommandHandler).Assembly
+            }, Lifestyle.Scoped);
         }
     }
 }

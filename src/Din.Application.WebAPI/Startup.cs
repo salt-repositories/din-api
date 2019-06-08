@@ -80,7 +80,11 @@ namespace Din.Application.WebAPI
             _container.RegisterRepositories();
             _container.RegisterAutoMapper();
             _container.RegisterConfigurations(Configuration);
-            _container.RegisterServices();
+            _container.RegisterClients();
+            _container.RegisterStores();
+
+
+            _container.RegisterServices(); //TODO delete
 
             _container.Verify();
         }

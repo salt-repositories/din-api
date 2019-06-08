@@ -20,17 +20,22 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
 
         public async Task<IList<Account>> GetAccounts(QueryParameters<Account> queryParameters, CancellationToken cancellationToken)
         {
-            IQueryable<Account> query = _context.Set<Account>().Include(a => a.Image);
+            IQueryable<Account> query = Context.Set<Account>().Include(a => a.Image);
             query = query.ApplyQueryParameters(queryParameters);
 
             return await query.ToListAsync(cancellationToken);
         }
 
-        public async Task<Account> GetAccount(Guid id, CancellationToken cancellationToken)
+        public async Task<Account> GetAccountById(Guid id, CancellationToken cancellationToken)
         {
-            return await _context.Account
+            return await Context.Account
                 .Include(a => a.Image)
                 .FirstAsync(a => a.Id.Equals(id), cancellationToken);
+        }
+
+        public async Task<Account> GetAccountByUsername(string username, CancellationToken cancellationToken)
+        {
+            return await Context.Account.FirstAsync(a => a.Username.Equals(username), cancellationToken);
         }
     }
 }

@@ -8,23 +8,33 @@ namespace Din.Infrastructure.DataAccess.Repositories.Abstractions
 {
     public class BaseRepository : IBaseRepository
     { 
-        protected readonly DinContext _context;
+        protected readonly DinContext Context;
 
         protected BaseRepository(DinContext context)
         {
-            _context = context;
+            Context = context;
         }
 
         public async Task<int> Count<T>(CancellationToken cancellationToken) where T : class
         {
-            IQueryable<T> query = _context.Set<T>();
+            IQueryable<T> query = Context.Set<T>();
  
             return await query.CountAsync(cancellationToken);
         }
 
         public void Insert<T>(T entity) where T : class
         {
-            _context.Add(entity);
+            Context.Add(entity);
+        }
+
+        public void Update<T>(T entity) where T : class
+        {
+            Context.Update(entity);
+        }
+
+        public void Delete<T>(T entity) where T : class
+        {
+            Context.Remove(entity);
         }
     }
 }

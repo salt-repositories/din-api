@@ -9,6 +9,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
         public static void RegisterRepositories(this Container container)
         {
             container.Register<IAccountRepository, AccountRepository>(Lifestyle.Scoped);
+            container.Register<IAddedContentRepository, AddedContentRepository>(Lifestyle.Scoped);
         }
     }
 }

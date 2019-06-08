@@ -9,7 +9,6 @@ using Din.Domain.Commands.Accounts;
 using Din.Domain.Models.Entities;
 using Din.Domain.Models.Querying;
 using Din.Domain.Queries.Accounts;
-using Din.Domain.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
@@ -29,18 +28,15 @@ namespace Din.Application.WebAPI.Controllers
         #region fields
 
         private readonly IMediator _bus;
-        private readonly IAccountService _service;
         private readonly IMapper _mapper;
-
 
         #endregion fields
 
         #region constructors
 
-        public AccountController(IMediator bus, IAccountService service, IMapper mapper)
+        public AccountController(IMediator bus, IMapper mapper)
         {
             _bus = bus;
-            _service = service;
             _mapper = mapper;
         }
 
@@ -48,8 +44,9 @@ namespace Din.Application.WebAPI.Controllers
 
         #region endpoints
         /// <summary>
-        /// Get all accounts
+        /// Get accounts
         /// </summary>
+        /// <param name="queryParameters">Optional query parameters</param>
         /// <returns>Collection containing all accounts</returns>
         [HttpGet]
         [ProducesResponseType(typeof(QueryResponse<AccountResponse>), 200)]
@@ -72,12 +69,14 @@ namespace Din.Application.WebAPI.Controllers
         public async Task<IActionResult> GetAccountById([FromRoute] Guid id)
         {
             var query = new GetAccountQuery(id);
+
             return Ok(_mapper.Map<AccountResponse>(await _bus.Send(query)));
         }
 
         /// <summary>
         /// Get added content from account by ID
         /// </summary>
+        /// <param name="queryParameters">Optional query parameters</param>
         /// <param name="id">Account ID</param>
         /// <returns></returns>
         [HttpGet("{id}/added_content")]
@@ -94,43 +93,48 @@ namespace Din.Application.WebAPI.Controllers
         /// <summary>
         /// Create account
         /// </summary>
-        /// <param name="account">Account model</param>
+        /// <param name="account">Account request model</param>
         /// <returns>Created account</returns>
         [HttpPost]
         [ProducesResponseType(typeof(AccountResponse), 201)]
         public async Task<IActionResult> CreateAccount([FromBody] AccountRequest account)
         {
             var command = new CreateAccountCommand(_mapper.Map<Account>(account), account.Password);
-           
-            var response = _bus.Send(command);
+            var result = await _bus.Send(command);
 
-            return Created("", _mapper.Map<AccountResponse>(response));
+            return Created("", _mapper.Map<AccountResponse>(result));
         }
 
         /// <summary>
-        /// Update existing account
+        /// Update existing account by ID
         /// </summary>
         /// <param name="id">Account ID</param>
-        /// <param name="account">updated data/ properties</param>
+        /// <param name="update">JSON patch document</param>
         /// <returns>Updated Account</returns>
         [HttpPatch("{id}")]
         [ProducesResponseType(typeof(AccountResponse), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateAccount([FromRoute] Guid id, [FromBody] JsonPatchDocument<AccountRequest> account)
+        public async Task<IActionResult> UpdateAccount([FromRoute] Guid id, [FromBody] JsonPatchDocument<AccountRequest> update)
         {
-            var currentAccount = await _service.GetAccountByIdAsync(id);
-            var update =_mapper.Map<JsonPatchDocument<Account>>(account);
-            update.ApplyTo(currentAccount);
+            var command = new UpdateAccountCommand(id, _mapper.Map<JsonPatchDocument<Account>>(update));
+            var result = await _bus.Send(command);
 
-            return Ok(_mapper.Map<AccountResponse>(await _service.UpdateAccountAsync(currentAccount)));
+            return Ok(_mapper.Map<AccountResponse>(result));
         }
 
+        /// <summary>
+        /// Delete account by ID
+        /// </summary>
+        /// <param name="id">Account ID</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteAccount([FromRoute] Guid id)
         {
-            await _service.DeleteAccountById(id);
+            var command = new DeleteAccountCommand(id);
+            await _bus.Send(command);
+
             return NoContent();
         }
 

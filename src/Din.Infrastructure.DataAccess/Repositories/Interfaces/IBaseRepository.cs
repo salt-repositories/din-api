@@ -7,5 +7,7 @@ namespace Din.Infrastructure.DataAccess.Repositories.Interfaces
     {
         Task<int> Count<T>(CancellationToken cancellationToken) where T : class;
         void Insert<T>(T entity) where T : class;
+        void Update<T>(T entity) where T : class;
+        void Delete<T>(T entity) where T : class;
     }
 }

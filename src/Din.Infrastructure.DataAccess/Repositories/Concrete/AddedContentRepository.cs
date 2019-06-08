@@ -14,14 +14,14 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
 {
     public class AddedContentRepository : BaseRepository, IAddedContentRepository
     {
-        protected AddedContentRepository(DinContext context) : base(context)
+        public AddedContentRepository(DinContext context) : base(context)
         {
         }
 
         public async Task<IList<AddedContent>> GetAddedContentByAccountId(QueryParameters<AddedContent> queryParameters, Guid id,
             CancellationToken cancellationToken)
         {
-            IQueryable<AddedContent> query = _context.Set<AddedContent>().Where(ac => ac.AccountId.Equals(id));
+            IQueryable<AddedContent> query = Context.Set<AddedContent>().Where(ac => ac.AccountId.Equals(id));
             query = query.ApplyQueryParameters(queryParameters);
 
             return await query.ToListAsync(cancellationToken);

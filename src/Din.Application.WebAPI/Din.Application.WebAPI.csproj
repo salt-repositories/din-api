@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Din.Domain.Authorization\Din.Domain.Authorization.csproj" />
+    <ProjectReference Include="..\Din.Domain.Clients\Din.Domain.Clients.csproj" />
     <ProjectReference Include="..\Din.Domain.Commands\Din.Domain.Commands.csproj" />
     <ProjectReference Include="..\Din.Domain.Exceptions\Din.Domain.Exceptions.csproj" />
     <ProjectReference Include="..\Din.Domain.Middlewares\Din.Domain.Middlewares.csproj" />

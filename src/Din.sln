@@ -42,9 +42,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Domain.Exceptions", "Di
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Domain.Queries", "Din.Domain.Queries\Din.Domain.Queries.csproj", "{2505DD9B-7339-40F6-8E46-90DCD7742C57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Din.Domain.Clients", "Din.Domain.Clients\Din.Domain.Clients.csproj", "{1A593B52-1A01-4484-9E7B-7A649E705AF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Domain.Clients", "Din.Domain.Clients\Din.Domain.Clients.csproj", "{1A593B52-1A01-4484-9E7B-7A649E705AF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Din.Domain.Commands", "Din.Domain.Commands\Din.Domain.Commands.csproj", "{6F5044BA-24E6-4AD7-B941-447E7F2817C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Domain.Commands", "Din.Domain.Commands\Din.Domain.Commands.csproj", "{6F5044BA-24E6-4AD7-B941-447E7F2817C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

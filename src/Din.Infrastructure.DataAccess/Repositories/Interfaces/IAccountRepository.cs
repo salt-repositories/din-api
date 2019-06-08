@@ -10,6 +10,8 @@ namespace Din.Infrastructure.DataAccess.Repositories.Interfaces
     public interface IAccountRepository : IBaseRepository
     {
         Task<IList<Account>> GetAccounts(QueryParameters<Account> queryParameters, CancellationToken cancellationToken);
-        Task<Account> GetAccount(Guid id, CancellationToken cancellationToken);
+        Task<Account> GetAccountById(Guid id, CancellationToken cancellationToken);
+        Task<Account> GetAccountByUsername(string username, CancellationToken cancellationToken);
+
     }
 }

@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using Din.Domain.Clients.Giphy.Response;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Din.Domain.Clients.Giphy.Interfaces
 {
     public interface IGiphyClient
     {
-        Task<GiphyResponse> GetRandomGifAsync(string query);
+        Task<Responses.Giphy> GetRandomGifByTagAsync(string tag, CancellationToken cancellationToken);
     }
 }
