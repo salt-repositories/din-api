@@ -16,9 +16,4 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Din.Application.WebAPI\Din.Application.WebAPI.csproj" />
-    <ProjectReference Include="..\Din.Domain\Din.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

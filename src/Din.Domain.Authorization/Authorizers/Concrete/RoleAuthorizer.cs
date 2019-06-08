@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Din.Domain.Authorization.Authorizers.Interfaces;
-using Din.Domain.Authorization.Context;
 using Din.Domain.Authorization.Requests;
+using Din.Domain.Context;
 using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Models.Entities;
 
@@ -22,7 +22,7 @@ namespace Din.Domain.Authorization.Authorizers.Concrete
 
             if (role != request.Role && role != AccountRole.Admin)
             {
-                throw new AuthorizationException("Requester is not authorized to perform this operation");
+                throw new AuthorizationException();
             }
 
             return Task.CompletedTask;

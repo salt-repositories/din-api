@@ -39,7 +39,6 @@
     <ProjectReference Include="..\Din.Domain.Queries\Din.Domain.Queries.csproj" />
     <ProjectReference Include="..\Din.Domain\Din.Domain.csproj" />
     <ProjectReference Include="..\Din.Infrastructure.DataAccess\Din.Infrastructure.DataAccess.csproj" />
-    <ProjectReference Include="..\Din.Infrastructure.Migrations\Din.Infrastructure.Migrations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

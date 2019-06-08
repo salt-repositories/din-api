@@ -7,7 +7,7 @@ namespace Din.Domain.Exceptions.Concrete
     {
         public override HttpStatusCode StatusCode => HttpStatusCode.Forbidden;
 
-        public AuthorizationException(string message) : base(message)
+        public AuthorizationException(string message = "Requester is not authorized to perform this operation") : base(message)
         {
         }
     }

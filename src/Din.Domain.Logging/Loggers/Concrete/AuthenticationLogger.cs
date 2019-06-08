@@ -2,14 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Din.Domain.Authorization.Context;
 using Din.Domain.Clients.IpStack.Interfaces;
 using Din.Domain.Clients.IpStack.Responses;
+using Din.Domain.Context;
 using Din.Domain.Logging.Loggers.Interfaces;
 using Din.Domain.Logging.Requests;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
-using MediatR;
 using UAParser;
 
 namespace Din.Domain.Logging.Loggers.Concrete

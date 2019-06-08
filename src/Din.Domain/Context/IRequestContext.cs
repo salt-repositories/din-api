@@ -1,7 +1,7 @@
 ﻿using System;
 using Din.Domain.Models.Entities;
 
-namespace Din.Domain.Authorization.Context
+namespace Din.Domain.Context
 {
     public interface IRequestContext
     {

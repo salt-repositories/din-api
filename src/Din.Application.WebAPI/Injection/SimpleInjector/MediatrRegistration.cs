@@ -53,22 +53,10 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.Register(typeof(IAuthorizationHandler<>), typeof(AuthorizationHandler<>));
             container.Register(typeof(ILoggingHandler<,>), typeof(LoggingHandler<,>));
 
-            var authorizers = new[]
-            {
-                typeof(IdentityAuthorizer<>).Assembly,
-                typeof(RoleAuthorizer<>).Assembly
-            }.GetGenericInterfaceImplementationTypes(typeof(IRequestAuthorizer<>));
 
-            container.Collection.Register(typeof(IRequestAuthorizer<>), authorizers);
-
+            container.Collection.Register(typeof(IRequestAuthorizer<>), assemblies.GetGenericInterfaceImplementationTypes(typeof(IRequestAuthorizer<>)));
             container.Collection.Register(typeof(IValidator<>), assemblies);
-
-            var loggers = new[]
-            {
-                typeof(AuthenticationLogger<,>).Assembly
-            }.GetGenericInterfaceImplementationTypes(typeof(IRequestLogger<,>));
-
-            container.Collection.Register(typeof(IRequestLogger<,>), loggers);
+            container.Collection.Register(typeof(IRequestLogger<,>), assemblies.GetGenericInterfaceImplementationTypes(typeof(IRequestLogger<,>)));
 
             container.Register(typeof(IRequestHandler<>), new []
             {
