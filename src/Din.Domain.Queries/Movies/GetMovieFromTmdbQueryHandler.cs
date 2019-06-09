@@ -8,16 +8,16 @@ using TMDbLib.Objects.Search;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMovieFromDatabaseQueryHandler : IRequestHandler<GetMovieFromDatabaseQuery, IEnumerable<SearchMovie>>
+    public class GetMovieFromTmdbQueryHandler : IRequestHandler<GetMovieFromTmdbQuery, IEnumerable<SearchMovie>>
     {
         private readonly TMDbClient _client;
 
-        public GetMovieFromDatabaseQueryHandler(ITmdbClientConfig config)
+        public GetMovieFromTmdbQueryHandler(ITmdbClientConfig config)
         {
             _client = new TMDbClient(config.Key);
         }
 
-        public async Task<IEnumerable<SearchMovie>> Handle(GetMovieFromDatabaseQuery request,
+        public async Task<IEnumerable<SearchMovie>> Handle(GetMovieFromTmdbQuery request,
             CancellationToken cancellationToken)
         {
             return (await _client.SearchMovieAsync(request.Query, 0, false, 0, cancellationToken)).Results;

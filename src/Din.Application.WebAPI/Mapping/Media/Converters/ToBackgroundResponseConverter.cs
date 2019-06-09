@@ -2,7 +2,7 @@
 using Din.Application.WebAPI.Models.Response;
 using Din.Domain.Clients.Unsplash.Responses;
 
-namespace Din.Application.WebAPI.Mapping.Converters
+namespace Din.Application.WebAPI.Mapping.Media.Converters
 {
     public class ToBackgroundResponseConverter : ITypeConverter<UnsplashImage, BackgroundResponse>
     {

@@ -2,7 +2,7 @@
 using Din.Application.WebAPI.Querying;
 using Din.Domain.Models.Querying;
 
-namespace Din.Application.WebAPI.Mapping.Converters
+namespace Din.Application.WebAPI.Mapping.Querying.Converters
 {
     public class ToQueryParametersConverter<T> : ITypeConverter<QueryParametersRequest, QueryParameters<T>>
     {

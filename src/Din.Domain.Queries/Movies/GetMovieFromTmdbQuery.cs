@@ -4,11 +4,11 @@ using TMDbLib.Objects.Search;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMovieFromDatabaseQuery : IRequest<IEnumerable<SearchMovie>>
+    public class GetMovieFromTmdbQuery : IRequest<IEnumerable<SearchMovie>>
     {
         public string Query { get; }
 
-        public GetMovieFromDatabaseQuery(string query)
+        public GetMovieFromTmdbQuery(string query)
         {
             Query = query;
         }

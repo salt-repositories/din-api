@@ -2,7 +2,7 @@
 using Din.Application.WebAPI.Models.Response;
 using Din.Domain.Clients.Giphy.Responses;
 
-namespace Din.Application.WebAPI.Mapping.Converters
+namespace Din.Application.WebAPI.Mapping.Media.Converters
 {
     public class ToGifResponseConverter : ITypeConverter<Giphy, GifResponse>
     {

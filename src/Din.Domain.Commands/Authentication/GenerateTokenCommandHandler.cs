@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Configurations.Interfaces;
-using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
@@ -37,12 +36,12 @@ namespace Din.Domain.Commands.Authentication
             }
             catch (InvalidOperationException)
             {
-                throw new AuthenticationException("Incorrect username");
+                return null;
             }
 
             if (!BC.Verify(request.AuthenticationDetails.Password, account.Hash))
             {
-                throw new AuthenticationException("Incorrect password");
+                return null;
             }
 
             return new TokenDto

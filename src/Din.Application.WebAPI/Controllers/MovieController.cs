@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Din.Application.WebAPI.Models.Request;
@@ -100,7 +101,7 @@ namespace Din.Application.WebAPI.Controllers
                 return BadRequest(new {message = "The search query can not be empty"});
             }
 
-            var requestQuery = new GetMovieFromDatabaseQuery(query);
+            var requestQuery = new GetMovieFromTmdbQuery(query);
             var result = await _bus.Send(requestQuery);
 
             return Ok(result);
@@ -122,6 +123,25 @@ namespace Din.Application.WebAPI.Controllers
             return Created("", _mapper.Map<MovieResponse>(result));
         }
 
+        [HttpGet("calendar")]
+        [ProducesResponseType(typeof(IEnumerable<MovieCalendarResponse>), 200)]
+        public async Task<IActionResult> GetCalendar([FromQuery] string from, [FromQuery] string till)
+        {
+            var query = new GetMovieCalendarQuery((DateTime.Parse(from), DateTime.Parse(till)));
+            var result = await _bus.Send(query);
+
+            return Ok(_mapper.Map<IEnumerable<MovieCalendarResponse>>(result));
+        }
+
+        [HttpGet("queue")]
+        [ProducesResponseType(typeof(IEnumerable<RadarrQueue>), 200)]
+        public async Task<IActionResult> GetQueue()
+        {
+            var query = new GetMovieQueueQuery();
+            var result = await _bus.Send(query);
+
+            return Ok(result);
+        }
 
         #endregion endpoints
     }

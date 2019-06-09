@@ -4,7 +4,7 @@ using Din.Application.WebAPI.Models.Request;
 using Din.Domain.Clients.Abstractions;
 using Din.Domain.Clients.Radarr.Requests;
 
-namespace Din.Application.WebAPI.Mapping.Converters
+namespace Din.Application.WebAPI.Mapping.Movies.Converters
 {
     public class ToRadarrMovieRequestConverter : ITypeConverter<MovieRequest, RadarrMovieRequest>
     {

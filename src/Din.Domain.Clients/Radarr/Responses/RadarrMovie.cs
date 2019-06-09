@@ -10,6 +10,7 @@ namespace Din.Domain.Clients.Radarr.Responses
         [JsonProperty("tmdbid")] public int TmdbId { get; set; }
         [JsonProperty("imdbid")] public string ImdbId { get; set; }
         [JsonProperty("title")] public string Title { get; set; }
+        [JsonProperty("overview")] public string Overview { get; set; }
         [JsonProperty("genres")] public IEnumerable<string> Genres { get; set; }
         [JsonProperty("status")] public string Status { get; set; }
         [JsonProperty("downloaded")] public bool Downloaded { get; set; }

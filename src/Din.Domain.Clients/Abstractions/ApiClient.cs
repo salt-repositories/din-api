@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,9 @@ namespace Din.Domain.Clients.Abstractions
         {
             using (var client = _clientFactory.CreateClient())
             {
-                var response = await client.SendAsync(request, cancellationToken);
+                SetClientProperties(client);
+
+                var response = await Request(client, request, cancellationToken);
 
                 await CheckResponse(request, response);
             }
@@ -30,11 +33,32 @@ namespace Din.Domain.Clients.Abstractions
         {
             using (var client = _clientFactory.CreateClient())
             {
-                var response = await client.SendAsync(request, cancellationToken);
+                SetClientProperties(client);
+
+                var response = await Request(client, request, cancellationToken);
 
                 await CheckResponse(request, response);
 
                 return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
+            }
+        }
+
+        private void SetClientProperties(HttpClient client)
+        {
+            client.Timeout = TimeSpan.FromSeconds(5);
+            client.DefaultRequestHeaders.Add("User-Agent", "DinApi");
+        }
+
+        private async Task<HttpResponseMessage> Request(HttpClient client, HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await client.SendAsync(request, cancellationToken);
+            }
+            catch
+            {
+                throw new HttpClientException($"[{GetType().Name}]: Timeout", null);
             }
         }
 
@@ -43,8 +67,11 @@ namespace Din.Domain.Clients.Abstractions
             if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.Created)
             {
                 var path = $"{request.RequestUri.Scheme}://{request.RequestUri.Host}{request.RequestUri.AbsolutePath}";
+
                 throw new HttpClientException(
-                    $"[{GetType().Name}]: {request.Method} {path} \n Response: {response.StatusCode} {await response.Content.ReadAsStringAsync()}");
+                    $"[{GetType().Name}]: {request.Method} {path} \n Response: {response.StatusCode}",
+                    JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync())
+                );
             }
         }
     }
