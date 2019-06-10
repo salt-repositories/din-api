@@ -13,7 +13,6 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
         {
             container.Register<IMapper>(() => new Mapper(new MapperConfiguration(config =>
             {
-                config.CreateMissingTypeMaps = true;
                 config.AddProfile(new AccountsMappingProfile());
                 config.AddProfile(new MovieMappingProfile());
                 config.AddProfile(new TvShowMappingProfile());
