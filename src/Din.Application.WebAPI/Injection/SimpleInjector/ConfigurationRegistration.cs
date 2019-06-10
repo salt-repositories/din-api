@@ -24,7 +24,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             var giphyClientConfig = configuration.GetSection("Giphy").Get<GiphyClientConfig>();
             var ipStackClientConfig = configuration.GetSection("IpStack").Get<IpStackClientConfig>();
             var radarrClientConfig = configuration.GetSection("Radarr").Get<RadarrClientConfig>();
-            var sonarrClientConfig = configuration.GetSection("TvShowClient").Get<SonarrClientConfig>();
+            var sonarrClientConfig = configuration.GetSection("Sonarr").Get<SonarrClientConfig>();
             var unsplashConfig = configuration.GetSection("Unsplash").Get<UnsplashClientConfig>();
 
             container.RegisterInstance<IJwtConfig>(jwtConfig);

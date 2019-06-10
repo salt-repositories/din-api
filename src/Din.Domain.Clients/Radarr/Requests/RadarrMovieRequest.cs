@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Din.Domain.Clients.Radarr.Requests
 {
-    public class RadarrMovieRequest : Content
+    public class RadarrMovieRequest : ContentRequest
     {
         [JsonProperty("year")] public int Year { get; set; }
         [JsonProperty("tmdbid")] public int TmdbId { get; set; }

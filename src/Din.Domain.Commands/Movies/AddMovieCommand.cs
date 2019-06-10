@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Din.Domain.Commands.Movies
 {
-    public class AddMovieCommand : IMediaAdditionRequest, ITransactionRequest, IRequest<RadarrMovie>
+    public class AddMovieCommand : IContentAdditionRequest, ITransactionRequest, IRequest<RadarrMovie>
     {
         public RadarrMovieRequest Movie { get; }
 

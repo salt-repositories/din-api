@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.Clients.Radarr.Interfaces;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Stores.Interfaces;
 using MediatR;
@@ -10,27 +9,16 @@ namespace Din.Domain.Queries.Movies
 {
     public class GetMoviesByTitleQueryHandler : IRequestHandler<GetMoviesByTitleQuery, IEnumerable<RadarrMovie>>
     {
-        private readonly IMediaStore _store;
-        private readonly IRadarrClient _client;
+        private readonly IContentStore<RadarrMovie> _store;
 
-        public GetMoviesByTitleQueryHandler(IMediaStore store, IRadarrClient client)
+        public GetMoviesByTitleQueryHandler(IContentStore<RadarrMovie> store)
         {
             _store = store;
-            _client = client;
         }
 
-        public async Task<IEnumerable<RadarrMovie>> Handle(GetMoviesByTitleQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<RadarrMovie>> Handle(GetMoviesByTitleQuery request, CancellationToken cancellationToken)
         {
-            var movies = _store.GetMoviesByTitle(request.Title);
-
-            if (movies != null)
-            {
-                return movies;
-            }
-
-            _store.SetMovies(await _client.GetMoviesAsync(cancellationToken));
-
-            return _store.GetMoviesByTitle(request.Title);
+            return Task.FromResult((IEnumerable<RadarrMovie>) _store.GetMultipleByTitle(request.Title));
         }
     }
 }

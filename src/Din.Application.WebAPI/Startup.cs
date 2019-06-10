@@ -74,14 +74,16 @@ namespace Din.Application.WebAPI
                 options.UseLogging();
             });
 
-            _container.RegisterMediatr(AppDomain.CurrentDomain.GetApplicationAssemblies());
+            var assemblies = AppDomain.CurrentDomain.GetApplicationAssemblies();
+
+            _container.RegisterMediatr(assemblies);
             _container.RegisterDbContext(Configuration, env);
             _container.RegisterContexts();
             _container.RegisterRepositories();
             _container.RegisterAutoMapper();
             _container.RegisterConfigurations(Configuration);
             _container.RegisterClients();
-            _container.RegisterStores();
+            _container.RegisterStores(assemblies);
 
 
             _container.RegisterServices(); //TODO delete

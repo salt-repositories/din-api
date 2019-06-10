@@ -9,6 +9,7 @@ namespace Din.Application.WebAPI.Models.Response
         public int TmdbId { get; set; }
         public string ImdbId { get; set; }
         public string Title { get; set; }
+        public string Overview { get; set; }
         public IEnumerable<string> Genres { get; set; }
         public string Status { get; set; }
         public bool Downloaded { get; set; }

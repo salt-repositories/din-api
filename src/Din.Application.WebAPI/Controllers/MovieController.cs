@@ -123,6 +123,12 @@ namespace Din.Application.WebAPI.Controllers
             return Created("", _mapper.Map<MovieResponse>(result));
         }
 
+        /// <summary>
+        /// Get the movie release calendar for a specific timespan
+        /// </summary>
+        /// <param name="from">From date</param>
+        /// <param name="till">Till date</param>
+        /// <returns>movie release calendar</returns>
         [HttpGet("calendar")]
         [ProducesResponseType(typeof(IEnumerable<MovieCalendarResponse>), 200)]
         public async Task<IActionResult> GetCalendar([FromQuery] string from, [FromQuery] string till)
@@ -133,6 +139,10 @@ namespace Din.Application.WebAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<MovieCalendarResponse>>(result));
         }
 
+        /// <summary>
+        /// Get the current movie queue
+        /// </summary>
+        /// <returns>movie queue</returns>
         [HttpGet("queue")]
         [ProducesResponseType(typeof(IEnumerable<RadarrQueue>), 200)]
         public async Task<IActionResult> GetQueue()

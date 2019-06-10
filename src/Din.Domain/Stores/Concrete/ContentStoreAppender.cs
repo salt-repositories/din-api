@@ -7,25 +7,27 @@ using MediatR.Pipeline;
 
 namespace Din.Domain.Stores.Concrete
 {
-    public class MediaStoreUpdater<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse> where TRequest : IMediaAdditionRequest
+    public class ContentStoreAppender<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse> where TRequest : IContentAdditionRequest
     {
-        private readonly IMediaStore _store;
+        private readonly IContentStore<RadarrMovie> _movieStore;
+        private readonly IContentStore<SonarrTvShow> _tvShowStore;
 
-        public MediaStoreUpdater(IMediaStore store)
+        public ContentStoreAppender(IContentStore<RadarrMovie> movieStore, IContentStore<SonarrTvShow> tvShowStore)
         {
-            _store = store;
+            _movieStore = movieStore;
+            _tvShowStore = tvShowStore;
         }
 
         public Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
         {
             if (response.GetType() == typeof(RadarrMovie))
             {
-                _store.AddMovie(response as RadarrMovie);
+                _movieStore.AddOne(response as RadarrMovie);
             }
 
             if (response.GetType() == typeof(SonarrTvShow))
             {
-                _store.AddTvShow(response as SonarrTvShow);
+                _tvShowStore.AddOne(response as SonarrTvShow);
             }
 
             return Task.CompletedTask;

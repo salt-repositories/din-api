@@ -2,7 +2,7 @@
 
 namespace Din.Domain.Stores.Interfaces
 {
-    public interface IMediaAdditionRequest : IBaseRequest
+    public interface IContentRetrievalRequest : IBaseRequest
     {
     }
 }

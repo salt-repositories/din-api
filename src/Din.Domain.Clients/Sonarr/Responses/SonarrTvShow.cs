@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
+using Din.Domain.Clients.Abstractions;
 using Newtonsoft.Json;
 
 namespace Din.Domain.Clients.Sonarr.Responses
 {
-    public class SonarrTvShow
+    public class SonarrTvShow : Content
     {
-        [JsonProperty("id")] public int SystemId { get; set; }
         [JsonProperty("tvdbId")] public int TvdbId { get; set; }
-        [JsonProperty("title")] public string Title { get; set; }
-        [JsonProperty("status")] public string Status { get; set; }
         [JsonProperty("seasons")] public ICollection<Season> Seasons { get; set; }
     }
     public class Season

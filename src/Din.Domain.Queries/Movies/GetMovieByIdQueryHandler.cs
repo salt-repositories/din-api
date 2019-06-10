@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.Clients.Radarr.Interfaces;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Stores.Interfaces;
 using MediatR;
@@ -9,25 +8,16 @@ namespace Din.Domain.Queries.Movies
 {
     public class GetMovieByIdQueryHandler : IRequestHandler<GetMovieByIdQuery, RadarrMovie>
     {
-        private readonly IMediaStore _store;
-        private readonly IRadarrClient _client;
+        private readonly IContentStore<RadarrMovie> _store;
 
-        public GetMovieByIdQueryHandler(IMediaStore store, IRadarrClient client)
+        public GetMovieByIdQueryHandler(IContentStore<RadarrMovie> store)
         {
             _store = store;
-            _client = client;
         }
 
-        public async Task<RadarrMovie> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
+        public Task<RadarrMovie> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
         {
-            var movie = _store.GetMovieById(request.Id);
-
-            if (movie != null)
-            {
-                return movie;
-            }
-
-            return await _client.GetMovieByIdAsync(request.Id, cancellationToken);
+            return Task.FromResult(_store.GetOneById(request.Id));
         }
     }
 }

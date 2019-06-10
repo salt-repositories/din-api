@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Din.Domain.Authorization.Authorizers.Concrete;
 using Din.Domain.Authorization.Authorizers.Interfaces;
 using Din.Domain.Authorization.Handlers.Concrete;
 using Din.Domain.Authorization.Handlers.Interfaces;
@@ -7,7 +6,6 @@ using Din.Domain.Commands.Authentication;
 using Din.Domain.Extensions;
 using Din.Domain.Logging.Handlers.Concrete;
 using Din.Domain.Logging.Handlers.Interfaces;
-using Din.Domain.Logging.Loggers.Concrete;
 using Din.Domain.Logging.Loggers.Interfaces;
 using Din.Domain.Middlewares.Mediatr;
 using Din.Domain.Queries.Accounts;
@@ -40,7 +38,8 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 new []
                 {
                     typeof(AuthorizationMiddleware<>),
-                    typeof(FluentValidationMiddleware<>)
+                    typeof(FluentValidationMiddleware<>),
+                    typeof(ContentStoreUpdater<>)
                 }
             );
 
@@ -48,7 +47,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 new []
                 {
                     typeof(LoggingMiddleware<,>),
-                    typeof(MediaStoreUpdater<,>)
+                    typeof(ContentStoreAppender<,>)
                 }
             );
 

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Din.Domain.Clients.Sonarr.Requests
 {
-    public class SonarrTvShowRequest : Content
+    public class SonarrTvShowRequest : ContentRequest
     {
         [JsonProperty("tvdbid")] public string TvShowId { get; set; }
         [JsonProperty("seasons")] public ICollection<SonarrRequestSeason> Seasons { get; set; }
