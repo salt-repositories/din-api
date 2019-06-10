@@ -48,7 +48,7 @@ namespace Din.Application.WebAPI.Authentication
         [ProducesResponseType(400)]
         public async Task<IActionResult> LoginAsync([FromBody] CredentialRequest credentials)
         {
-            var command = new GenerateTokenCommand(_mapper.Map<AuthenticationDto>(credentials));
+            var command = new GenerateTokenCommand(_mapper.Map<CredentialsDto>(credentials));
             var result = await _bus.Send(command);
 
             return Ok(_mapper.Map<TokenResponse>(result));

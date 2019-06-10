@@ -5,6 +5,6 @@ namespace Din.Domain.Logging.Requests
 {
     public interface IAuthenticationRequest : IBaseRequest
     {
-        AuthenticationDto AuthenticationDetails { get; }
+        CredentialsDto Credentials { get; }
     }
 }
