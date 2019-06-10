@@ -3,19 +3,10 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="8.1.0" />
-    <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
-    <PackageReference Include="FluentValidation" Version="8.4.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.4.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.4.0" />
-    <PackageReference Include="TMDbLib" Version="1.2.0-alpha" />
-    <PackageReference Include="UAParser" Version="3.1.38" />
+    <PackageReference Include="MediatR" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Din.Domain.Clients\Din.Domain.Clients.csproj" />
     <ProjectReference Include="..\Din.Domain.Models\Din.Domain.Models.csproj" />
-    <ProjectReference Include="..\Din.Infrastructure.DataAccess\Din.Infrastructure.DataAccess.csproj" />
   </ItemGroup>
 </Project>

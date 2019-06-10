@@ -7,11 +7,11 @@ namespace Din.Domain.Commands.Authentication
 {
     public class GenerateTokenCommand : IAuthenticationRequest, ITransactionRequest, IRequest<TokenDto>
     {
-        public AuthenticationDto AuthenticationDetails { get; }
+        public CredentialsDto Credentials { get; }
 
-        public GenerateTokenCommand(AuthenticationDto authenticationDetails)
+        public GenerateTokenCommand(CredentialsDto credentials)
         {
-            AuthenticationDetails = authenticationDetails;
+            Credentials = credentials;
         }
     }
 }

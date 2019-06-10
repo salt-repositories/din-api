@@ -32,14 +32,14 @@ namespace Din.Domain.Commands.Authentication
 
             try
             {
-                account = await _repository.GetAccountByUsername(request.AuthenticationDetails.Username, cancellationToken);
+                account = await _repository.GetAccountByUsername(request.Credentials.Username, cancellationToken);
             }
             catch (InvalidOperationException)
             {
                 return null;
             }
 
-            if (!BC.Verify(request.AuthenticationDetails.Password, account.Hash))
+            if (!BC.Verify(request.Credentials.Password, account.Hash))
             {
                 return null;
             }

@@ -51,7 +51,7 @@ namespace Din.Domain.Logging.Loggers.Concrete
 
             var loginAttempt = new LoginAttempt
             {
-                Username = request.AuthenticationDetails.Username,
+                Username = request.Credentials.Username,
                 Device = clientInformation.Device.Family,
                 Os = clientInformation.OS.Family,
                 Browser = clientInformation.UA.Family,

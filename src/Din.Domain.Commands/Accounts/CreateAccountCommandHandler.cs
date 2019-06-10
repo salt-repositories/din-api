@@ -16,13 +16,13 @@ namespace Din.Domain.Commands.Accounts
             _repository = repository;
         }
 
-        public async Task<Account> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
+        public Task<Account> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
         {
             request.Account.Hash = BC.HashPassword(request.Password);
             
             _repository.Insert(request.Account);
 
-            return request.Account;
+            return Task.FromResult(request.Account);
         }
     }
 }

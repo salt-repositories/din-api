@@ -6,10 +6,10 @@ namespace Din.Domain.Commands.Authentication
     {
         public GenerateTokenCommandValidator()
         {
-            RuleFor(cmd => cmd.AuthenticationDetails.Username)
+            RuleFor(cmd => cmd.Credentials.Username)
                 .NotEmpty().WithMessage("Request must contain a username");
 
-            RuleFor(cmd => cmd.AuthenticationDetails.Password)
+            RuleFor(cmd => cmd.Credentials.Password)
                 .NotEmpty().WithMessage("Request must contain a valid password")
                 .MinimumLength(8).WithMessage("The password is always at least eight characters");
         }
