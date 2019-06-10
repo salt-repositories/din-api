@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Din.Application.WebAPI.Accounts.Mapping;
+using Din.Application.WebAPI.Authentication.Mapping;
 using Din.Application.WebAPI.Media.Mapping;
 using Din.Application.WebAPI.Movies.Mapping;
 using Din.Application.WebAPI.TvShows.Mapping;
@@ -13,6 +14,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
         {
             container.Register<IMapper>(() => new Mapper(new MapperConfiguration(config =>
             {
+                config.AddProfile(new AuthenticationMappingProfile());
                 config.AddProfile(new AccountsMappingProfile());
                 config.AddProfile(new MovieMappingProfile());
                 config.AddProfile(new TvShowMappingProfile());

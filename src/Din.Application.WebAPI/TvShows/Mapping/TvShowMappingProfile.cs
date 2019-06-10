@@ -6,7 +6,6 @@ using Din.Application.WebAPI.TvShows.Requests;
 using Din.Application.WebAPI.TvShows.Responses;
 using Din.Domain.Clients.Sonarr.Requests;
 using Din.Domain.Clients.Sonarr.Responses;
-using TMDbLib.Objects.Search;
 using TMDbLib.Objects.TvShows;
 
 namespace Din.Application.WebAPI.TvShows.Mapping
@@ -15,12 +14,12 @@ namespace Din.Application.WebAPI.TvShows.Mapping
     {
         public TvShowMappingProfile()
         {
-            CreateMap<SonarrTvShow, TvShowResponse>()
-                .ForMember(dest => dest.Id, 
-                    opt => opt.MapFrom<ContentIdResolver<SonarrTvShow, TvShowResponse>>());
-
             CreateMap<TvShowRequest, SonarrTvShowRequest>()
                 .ConvertUsing<ToSonarrTvShowRequestConverter>();
+
+            CreateMap<SonarrTvShow, TvShowResponse>()
+                .ForMember(dest => dest.Id,
+                    opt => opt.MapFrom<ContentIdResolver<SonarrTvShow, TvShowResponse>>());
 
             CreateMap<TvShow, TvShowSearchResponse>()
                 .ForMember(dest => dest.TmdbId, opt => opt.MapFrom<TvShowSearchIdResolver>())
