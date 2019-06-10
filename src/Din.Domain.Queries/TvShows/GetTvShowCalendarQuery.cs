@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Din.Domain.Queries.TvShows
 {
-    public class GetTvShowCalendarQuery : IRequest<IEnumerable<SonarrCalendar>>
+    public class GetTvShowCalendarQuery : IRequest<IEnumerable<SonarrTvShow>>
     {
         public (DateTime from, DateTime till) DateRange { get; }
 

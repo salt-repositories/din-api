@@ -10,14 +10,14 @@ using MediatR.Pipeline;
 
 namespace Din.Domain.Stores.Concrete
 {
-    public class ContentStoreUpdater<TRequest> : IRequestPreProcessor<TRequest> where TRequest : IContentRetrievalRequest
+    public class ContentStorePreRequestUpdater<TRequest> : IRequestPreProcessor<TRequest> where TRequest : IContentRetrievalRequest
     {
         private readonly IContentStore<RadarrMovie> _movieStore;
         private readonly IContentStore<SonarrTvShow> _tvShowStore;
         private readonly IRadarrClient _radarrClient;
         private readonly ISonarrClient _sonarrClient;
 
-        public ContentStoreUpdater(IContentStore<RadarrMovie> movieStore, IContentStore<SonarrTvShow> tvShowStore,
+        public ContentStorePreRequestUpdater(IContentStore<RadarrMovie> movieStore, IContentStore<SonarrTvShow> tvShowStore,
             IRadarrClient radarrClient, ISonarrClient sonarrClient)
         {
             _movieStore = movieStore;

@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMovieCalendarQueryHandler : IRequestHandler<GetMovieCalendarQuery, IEnumerable<RadarrCalendar>>
+    public class GetMovieCalendarQueryHandler : IRequestHandler<GetMovieCalendarQuery, IEnumerable<RadarrMovie>>
     {
         private readonly IRadarrClient _client;
 
@@ -16,7 +16,7 @@ namespace Din.Domain.Queries.Movies
             _client = client;
         }
 
-        public async Task<IEnumerable<RadarrCalendar>> Handle(GetMovieCalendarQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RadarrMovie>> Handle(GetMovieCalendarQuery request, CancellationToken cancellationToken)
         {
            return await _client.GetCalendarAsync(request.DateRange, cancellationToken);
         }

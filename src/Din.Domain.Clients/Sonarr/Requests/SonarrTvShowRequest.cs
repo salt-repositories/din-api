@@ -6,7 +6,7 @@ namespace Din.Domain.Clients.Sonarr.Requests
 {
     public class SonarrTvShowRequest : ContentRequest
     {
-        [JsonProperty("tvdbid")] public string TvShowId { get; set; }
+        [JsonProperty("tvdbid")] public string TvdbId { get; set; }
         [JsonProperty("seasons")] public ICollection<SonarrRequestSeason> Seasons { get; set; }
     }
 

@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMovieCalendarQuery : IRequest<IEnumerable<RadarrCalendar>>
+    public class GetMovieCalendarQuery : IRequest<IEnumerable<RadarrMovie>>
     {
         public (DateTime from, DateTime till) DateRange { get; }
 

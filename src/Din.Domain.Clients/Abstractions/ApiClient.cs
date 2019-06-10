@@ -69,7 +69,7 @@ namespace Din.Domain.Clients.Abstractions
                 var path = $"{request.RequestUri.Scheme}://{request.RequestUri.Host}{request.RequestUri.AbsolutePath}";
 
                 throw new HttpClientException(
-                    $"[{GetType().Name}]: {request.Method} {path} \n Response: {response.StatusCode}",
+                    $"[{GetType().Name}]: {request.Method} {path} [{response.StatusCode}]",
                     JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync())
                 );
             }

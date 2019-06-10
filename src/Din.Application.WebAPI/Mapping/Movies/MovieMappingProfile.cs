@@ -1,6 +1,6 @@
 ﻿using AutoMapper.Configuration;
+using Din.Application.WebAPI.Mapping.Content.Resolvers;
 using Din.Application.WebAPI.Mapping.Movies.Converters;
-using Din.Application.WebAPI.Mapping.Movies.Resolvers;
 using Din.Application.WebAPI.Models.Request;
 using Din.Application.WebAPI.Models.Response;
 using Din.Domain.Clients.Radarr.Requests;
@@ -14,14 +14,10 @@ namespace Din.Application.WebAPI.Mapping.Movies
         {
             CreateMap<RadarrMovie, MovieResponse>()
                 .ForMember(dest => dest.Id, 
-                    opt => opt.MapFrom<RadarrIdResolver<RadarrMovie, MovieResponse>>());
+                    opt => opt.MapFrom<ContentIdResolver<RadarrMovie, MovieResponse>>());
 
             CreateMap<MovieRequest, RadarrMovieRequest>()
                 .ConvertUsing<ToRadarrMovieRequestConverter>();
-
-            CreateMap<RadarrCalendar, MovieCalendarResponse>()
-                .ForMember(dest => dest.Id,
-                    opt => opt.MapFrom<RadarrIdResolver<RadarrCalendar, MovieCalendarResponse>>());
         }
     }
 }

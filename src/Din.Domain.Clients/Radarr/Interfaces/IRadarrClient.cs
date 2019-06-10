@@ -12,7 +12,7 @@ namespace Din.Domain.Clients.Radarr.Interfaces
         Task<IEnumerable<RadarrMovie>> GetMoviesAsync(CancellationToken cancellationToken);
         Task<RadarrMovie> GetMovieByIdAsync(int id, CancellationToken cancellationToken);
         Task<RadarrMovie> AddMovieAsync(RadarrMovieRequest movie, CancellationToken cancellationToken);
-        Task<IEnumerable<RadarrCalendar>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken);
+        Task<IEnumerable<RadarrMovie>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken);
         Task<IEnumerable<RadarrQueue>> GetQueueAsync(CancellationToken cancellationToken);
     }
 }

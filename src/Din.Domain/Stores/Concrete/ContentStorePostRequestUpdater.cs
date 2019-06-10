@@ -7,12 +7,12 @@ using MediatR.Pipeline;
 
 namespace Din.Domain.Stores.Concrete
 {
-    public class ContentStoreAppender<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse> where TRequest : IContentAdditionRequest
+    public class ContentStorePostRequestUpdater<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse> where TRequest : IContentAdditionRequest
     {
         private readonly IContentStore<RadarrMovie> _movieStore;
         private readonly IContentStore<SonarrTvShow> _tvShowStore;
 
-        public ContentStoreAppender(IContentStore<RadarrMovie> movieStore, IContentStore<SonarrTvShow> tvShowStore)
+        public ContentStorePostRequestUpdater(IContentStore<RadarrMovie> movieStore, IContentStore<SonarrTvShow> tvShowStore)
         {
             _movieStore = movieStore;
             _tvShowStore = tvShowStore;

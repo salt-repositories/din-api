@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Din.Domain.Clients.Radarr.Responses;
+﻿using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Clients.Sonarr.Responses;
 using Din.Domain.Stores.Concrete;
 using Din.Domain.Stores.Interfaces;
@@ -9,7 +8,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
 {
     public static class StoreRegistration
     {
-        public static void RegisterStores(this Container container, Assembly[] assemblies)
+        public static void RegisterStores(this Container container)
         {
             container.Register<IMediaStore, MediaStore>(Lifestyle.Singleton);
             container.Register(typeof(IContentStore<>), 

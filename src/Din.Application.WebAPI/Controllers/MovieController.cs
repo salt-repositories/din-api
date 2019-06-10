@@ -111,7 +111,7 @@ namespace Din.Application.WebAPI.Controllers
         /// Add movie to system
         /// </summary>
         /// <param name="movie">Movie to add</param>
-        /// <returns>Status response</returns>
+        /// <returns>Added movie</returns>
         [HttpPost]
         [ProducesResponseType(typeof(RadarrMovie), 201)]
         [ProducesResponseType(400)]
@@ -124,19 +124,19 @@ namespace Din.Application.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Get the movie release calendar for a specific timespan
+        /// Get the movies for a specific timespan
         /// </summary>
         /// <param name="from">From date</param>
         /// <param name="till">Till date</param>
         /// <returns>movie release calendar</returns>
         [HttpGet("calendar")]
-        [ProducesResponseType(typeof(IEnumerable<MovieCalendarResponse>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<MovieResponse>), 200)]
         public async Task<IActionResult> GetCalendar([FromQuery] string from, [FromQuery] string till)
         {
             var query = new GetMovieCalendarQuery((DateTime.Parse(from), DateTime.Parse(till)));
             var result = await _bus.Send(query);
 
-            return Ok(_mapper.Map<IEnumerable<MovieCalendarResponse>>(result));
+            return Ok(_mapper.Map<IEnumerable<MovieResponse>>(result));
         }
 
         /// <summary>

@@ -39,7 +39,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 {
                     typeof(AuthorizationMiddleware<>),
                     typeof(FluentValidationMiddleware<>),
-                    typeof(ContentStoreUpdater<>)
+                    typeof(ContentStorePreRequestUpdater<>)
                 }
             );
 
@@ -47,7 +47,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 new []
                 {
                     typeof(LoggingMiddleware<,>),
-                    typeof(ContentStoreAppender<,>)
+                    typeof(ContentStorePostRequestUpdater<,>)
                 }
             );
 

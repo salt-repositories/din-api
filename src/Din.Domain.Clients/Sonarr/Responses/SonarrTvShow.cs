@@ -7,6 +7,11 @@ namespace Din.Domain.Clients.Sonarr.Responses
     public class SonarrTvShow : Content
     {
         [JsonProperty("tvdbId")] public int TvdbId { get; set; }
+        [JsonProperty("seasonCount")] public int SeasonCount { get; set; }
+        [JsonProperty("totalEpisodeCount")] public int TotalEpisodeCount { get; set; }
+        [JsonProperty("episodeCount")] public int EpisodeCount { get; set; }
+        [JsonProperty("network")] public string Network { get; set; }
+        [JsonProperty("airTime")] public string AirTime { get; set; }
         [JsonProperty("seasons")] public ICollection<Season> Seasons { get; set; }
     }
     public class Season

@@ -49,13 +49,13 @@ namespace Din.Domain.Clients.Radarr.Concrete
             return await SendRequest<RadarrMovie>(request, cancellationToken);
         }
 
-        public async Task<IEnumerable<RadarrCalendar>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RadarrMovie>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken)
         {
             var (dateTime, till) = dateRange;
             var request = new HttpRequestMessage(HttpMethod.Get, 
                 new Uri($"{_config.Url}api/calendar?apikey={_config.Key}&start={dateTime:yyyy-MM-dd}&end={till:yyyy-MM-dd}"));
 
-            return await SendRequest<IEnumerable<RadarrCalendar>>(request, cancellationToken);
+            return await SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
         }
 
         public async Task<IEnumerable<RadarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
