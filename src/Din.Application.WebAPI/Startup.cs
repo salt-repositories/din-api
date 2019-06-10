@@ -70,16 +70,23 @@ namespace Din.Application.WebAPI
         {
             app.UseSimpleInjector(_container, options =>
             {
-                options.UseMiddleware<ErrorHandlingMiddleware>(app);
+                options.UseMiddleware<ExceptionMiddleware>(app);
                 options.UseLogging();
             });
 
+            var assemblies = AppDomain.CurrentDomain.GetApplicationAssemblies();
+
+            _container.RegisterMediatr(assemblies);
             _container.RegisterDbContext(Configuration, env);
             _container.RegisterContexts();
+            _container.RegisterRepositories();
             _container.RegisterAutoMapper();
             _container.RegisterConfigurations(Configuration);
-            _container.RegisterServices();
-            _container.RegisterValidators(AppDomain.CurrentDomain.GetApplicationAssemblies());
+            _container.RegisterClients();
+            _container.RegisterStores();
+
+
+            _container.RegisterServices(); //TODO delete
 
             _container.Verify();
         }

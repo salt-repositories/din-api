@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.0" />
+    <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.4" />
@@ -30,9 +31,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Din.Domain.Authorization\Din.Domain.Authorization.csproj" />
+    <ProjectReference Include="..\Din.Domain.Clients\Din.Domain.Clients.csproj" />
+    <ProjectReference Include="..\Din.Domain.Commands\Din.Domain.Commands.csproj" />
+    <ProjectReference Include="..\Din.Domain.Exceptions\Din.Domain.Exceptions.csproj" />
+    <ProjectReference Include="..\Din.Domain.Middlewares\Din.Domain.Middlewares.csproj" />
+    <ProjectReference Include="..\Din.Domain.Queries\Din.Domain.Queries.csproj" />
     <ProjectReference Include="..\Din.Domain\Din.Domain.csproj" />
     <ProjectReference Include="..\Din.Infrastructure.DataAccess\Din.Infrastructure.DataAccess.csproj" />
-    <ProjectReference Include="..\Din.Infrastructure.Migrations\Din.Infrastructure.Migrations.csproj" />
   </ItemGroup>
 
   <ItemGroup>
