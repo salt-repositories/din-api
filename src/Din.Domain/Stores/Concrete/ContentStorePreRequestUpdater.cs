@@ -28,12 +28,12 @@ namespace Din.Domain.Stores.Concrete
         
         public async Task Process(TRequest request, CancellationToken cancellationToken)
         {
-            if (request.GetType().Name.Contains("Movie") && _movieStore.Content == null)
+            if (request.GetType().Name.Contains("Movie") && _movieStore.ShouldUpdate())
             {
                 _movieStore.Set((await _radarrClient.GetMoviesAsync(cancellationToken)).ToList());
             }
 
-            if (request.GetType().Name.Contains("TvShow") && _tvShowStore.Content == null)
+            if (request.GetType().Name.Contains("TvShow") && _tvShowStore.ShouldUpdate())
             {
                 _tvShowStore.Set((await _sonarrClient.GetTvShowsAsync(cancellationToken)).ToList());
             }

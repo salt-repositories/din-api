@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Din.Domain.Clients.Abstractions;
 using Din.Domain.Extensions;
@@ -9,6 +10,12 @@ namespace Din.Domain.Stores.Concrete
     public class ContentStore<T> : IContentStore<T> where T : Content 
     {
         public ICollection<T> Content { get; private set; }
+        private DateTime _storeDare;
+
+        public bool ShouldUpdate()
+        {
+            return Content == null || _storeDare.AddHours(1) <= DateTime.Now;
+        }
 
         public ICollection<T> GetAll()
         {
@@ -27,6 +34,7 @@ namespace Din.Domain.Stores.Concrete
 
         public void Set(ICollection<T> contentCollection)
         {
+            _storeDare = DateTime.Now;
             Content = contentCollection;
         }
 
