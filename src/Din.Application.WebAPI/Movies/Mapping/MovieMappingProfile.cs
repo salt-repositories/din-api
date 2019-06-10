@@ -14,12 +14,12 @@ namespace Din.Application.WebAPI.Movies.Mapping
     {
         public MovieMappingProfile()
         {
+            CreateMap<MovieRequest, RadarrMovieRequest>()
+                .ConvertUsing<ToRadarrMovieRequestConverter>();
+
             CreateMap<RadarrMovie, MovieResponse>()
                 .ForMember(dest => dest.Id,
                     opt => opt.MapFrom<ContentIdResolver<RadarrMovie, MovieResponse>>());
-
-            CreateMap<MovieRequest, RadarrMovieRequest>()
-                .ConvertUsing<ToRadarrMovieRequestConverter>();
 
             CreateMap<SearchMovie, MovieSearchResponse>()
                 .ForMember(dest => dest.TmdbId,
