@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using MediatR;
-using TMDbLib.Objects.Search;
+using TMDbLib.Objects.TvShows;
 
 namespace Din.Domain.Queries.TvShows
 {
-    public class GetTvShowFromTmdbQuery : IRequest<IEnumerable<SearchTv>>
+    public class GetTvShowFromTmdbQuery : IRequest<IEnumerable<TvShow>>
     {
         public string Query { get; }
 

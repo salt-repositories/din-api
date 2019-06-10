@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Din.Application.WebAPI.Mapping.Accounts;
-using Din.Application.WebAPI.Mapping.Media;
-using Din.Application.WebAPI.Mapping.Movies;
-using Din.Application.WebAPI.Mapping.TvShows;
+using Din.Application.WebAPI.Accounts.Mapping;
+using Din.Application.WebAPI.Media.Mapping;
+using Din.Application.WebAPI.Movies.Mapping;
+using Din.Application.WebAPI.TvShows.Mapping;
 using SimpleInjector;
 
 namespace Din.Application.WebAPI.Injection.SimpleInjector
