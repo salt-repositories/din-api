@@ -12,7 +12,7 @@ namespace Din.Domain.Clients.Sonarr.Interfaces
         Task<IEnumerable<SonarrTvShow>> GetTvShowsAsync(CancellationToken cancellationToken);
         Task<SonarrTvShow> GetTvShowByIdAsync(int id, CancellationToken cancellationToken);
         Task<SonarrTvShow> AddTvShowAsync(SonarrTvShowRequest tvShow, CancellationToken cancellationToken);
-        Task<IEnumerable<SonarrTvShow>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken);
+        Task<IEnumerable<SonarrCalendar>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken);
         Task<IEnumerable<SonarrQueue>> GetQueueAsync(CancellationToken cancellationToken);
     }
 }

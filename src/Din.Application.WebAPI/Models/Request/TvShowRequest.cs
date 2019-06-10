@@ -1,11 +1,13 @@
-﻿using System;
-using TMDbLib.Objects.Search;
+﻿using System.Collections.Generic;
 
 namespace Din.Application.WebAPI.Models.Request
 {
     public class TvShowRequest
     {
-        public Guid AccountId { get; set; }
-        public SearchTv TvShow { get; set; }
+        public string TvdbId { get; set; }
+        public string Title { get; set; }
+        public int Year { get; set; }
+        public IEnumerable<int> SeasonNumbers { get; set; }
+        public string PosterPath { get; set; }
     }
 }

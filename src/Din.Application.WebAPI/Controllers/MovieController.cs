@@ -133,6 +133,11 @@ namespace Din.Application.WebAPI.Controllers
         [ProducesResponseType(typeof(IEnumerable<MovieResponse>), 200)]
         public async Task<IActionResult> GetCalendar([FromQuery] string from, [FromQuery] string till)
         {
+            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(till))
+            {
+                return BadRequest(new {message = "Both dates are needed for this query"});
+            }
+
             var query = new GetMovieCalendarQuery((DateTime.Parse(from), DateTime.Parse(till)));
             var result = await _bus.Send(query);
 

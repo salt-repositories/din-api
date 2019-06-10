@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Din.Domain.Queries.TvShows
 {
-    public class GetTvShowCalendarQueryHandler : IRequestHandler<GetTvShowCalendarQuery, IEnumerable<SonarrTvShow>>
+    public class GetTvShowCalendarQueryHandler : IRequestHandler<GetTvShowCalendarQuery, IEnumerable<SonarrCalendar>>
     {
         private readonly ISonarrClient _client;
 
@@ -16,7 +16,7 @@ namespace Din.Domain.Queries.TvShows
             _client = client;
         }
 
-        public async Task<IEnumerable<SonarrTvShow>> Handle(GetTvShowCalendarQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<SonarrCalendar>> Handle(GetTvShowCalendarQuery request, CancellationToken cancellationToken)
         {
             return await _client.GetCalendarAsync(request.DateRange, cancellationToken);
         }

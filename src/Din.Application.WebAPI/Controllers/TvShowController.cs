@@ -90,7 +90,7 @@ namespace Din.Application.WebAPI.Controllers
         /// </summary>
         /// <param name="query">(part) title</param>
         /// <returns>Collection of tv shows fro the tv show database</returns>
-        [HttpPost("search")]
+        [HttpGet("search")]
         [ProducesResponseType(typeof(IEnumerable<SearchTv>), 200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> SearchTvShowAsync([FromQuery] string query)
@@ -129,13 +129,18 @@ namespace Din.Application.WebAPI.Controllers
         /// <param name="till">Till date</param>
         /// <returns>Tv Show release calendar</returns>
         [HttpGet("calendar")]
-        [ProducesResponseType(typeof(IEnumerable<TvShowResponse>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<TvShowCalendarResponse>), 200)]
         public async Task<IActionResult> GetCalendar([FromQuery] string from, [FromQuery] string till)
         {
+            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(till))
+            {
+                return BadRequest(new {message = "Both dates are needed for this query"});
+            }
+
             var query = new GetTvShowCalendarQuery((DateTime.Parse(from), DateTime.Parse(till)));
             var result = await _bus.Send(query);
 
-            return Ok(_mapper.Map<IEnumerable<TvShowResponse>>(result));
+            return Ok(_mapper.Map<IEnumerable<TvShowCalendarResponse>>(result));
         }
 
         /// <summary>

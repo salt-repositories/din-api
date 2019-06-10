@@ -49,14 +49,14 @@ namespace Din.Domain.Clients.Sonarr.Concrete
             return await SendRequest<SonarrTvShow>(request, cancellationToken);
         }
 
-        public async Task<IEnumerable<SonarrTvShow>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken)
+        public async Task<IEnumerable<SonarrCalendar>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken)
         {
             var (from, till) = dateRange;
 
             var request = new HttpRequestMessage(HttpMethod.Get, 
                 new Uri($"{_config.Url}api/calendar?apikey={_config.Key}&start={from:yyyy-MM-dd}&end={till:yyyy-MM-dd}"));
 
-            return await SendRequest<IEnumerable<SonarrTvShow>>(request, cancellationToken);
+            return await SendRequest<IEnumerable<SonarrCalendar>>(request, cancellationToken);
         }
 
         public async Task<IEnumerable<SonarrQueue>> GetQueueAsync(CancellationToken cancellationToken)

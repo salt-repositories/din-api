@@ -12,7 +12,7 @@ namespace Din.Domain.Clients.Sonarr.Requests
 
     public class SonarrRequestSeason
     {
-        [JsonProperty("seasonNumber")] public string SeasonNumber { get; set; }
+        [JsonProperty("seasonNumber")] public int SeasonNumber { get; set; }
         [JsonProperty("monitored")] public bool Monitored { get; set; }
     }
 }
