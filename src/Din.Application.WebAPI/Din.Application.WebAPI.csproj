@@ -15,24 +15,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="8.1.0" />
+    <PackageReference Include="AutoMapper" Version="8.1.1" />
+    <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
-    <PackageReference Include="NETCore.Encrypt" Version="2.0.7" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
     <PackageReference Include="Sentry.AspNetCore" Version="1.2.0" />
     <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
-    <PackageReference Include="TMDbLib" Version="1.2.0-alpha" />
     <PackageReference Include="VaultSharp" Version="0.11.1000" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Din.Domain.Authorization\Din.Domain.Authorization.csproj" />
+    <ProjectReference Include="..\Din.Domain.Clients\Din.Domain.Clients.csproj" />
+    <ProjectReference Include="..\Din.Domain.Commands\Din.Domain.Commands.csproj" />
+    <ProjectReference Include="..\Din.Domain.Exceptions\Din.Domain.Exceptions.csproj" />
+    <ProjectReference Include="..\Din.Domain.Middlewares\Din.Domain.Middlewares.csproj" />
+    <ProjectReference Include="..\Din.Domain.Queries\Din.Domain.Queries.csproj" />
     <ProjectReference Include="..\Din.Domain\Din.Domain.csproj" />
     <ProjectReference Include="..\Din.Infrastructure.DataAccess\Din.Infrastructure.DataAccess.csproj" />
-    <ProjectReference Include="..\Din.Infrastructure.Migrations\Din.Infrastructure.Migrations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

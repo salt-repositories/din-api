@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using BC = BCrypt.Net.BCrypt;
 
 namespace Din.Domain.Tests.Utils
 {
@@ -10,12 +11,12 @@ namespace Din.Domain.Tests.Utils
         [Test]
         public void HashTestSimpleString()
         {
-            var hashed = BCrypt.Net.BCrypt.HashPassword(Password);
+            var hashed = BC.HashPassword(Password);
 
             Assert.NotNull(hashed);
             Assert.IsNotEmpty(hashed);
             Assert.AreNotEqual(Password, hashed);
-            Assert.True(BCrypt.Net.BCrypt.Verify(Password, hashed));
+            Assert.True(BC.Verify(Password, hashed));
         }
     }
 }
