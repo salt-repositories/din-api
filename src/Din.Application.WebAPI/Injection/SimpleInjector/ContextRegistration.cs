@@ -16,16 +16,25 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.Register<IRequestContext, RequestContext>(Lifestyle.Scoped);
         }
 
-        public static void RegisterDbContext(this Container container, IConfiguration configuration,
-            IHostingEnvironment environment)
+        public static void RegisterDbContext(this Container container, IConfiguration configuration, IHostingEnvironment environment)
         {
-            var connectionString = environment.IsDevelopment()
-                ? configuration.GetConnectionString("DevContext")
-                : configuration.GetConnectionString("DinContext");
+            string connectionString;
+
+            switch (environment.EnvironmentName)
+            {
+                case "Production":
+                    connectionString = configuration.GetConnectionString("DinContext");
+                    break;
+                case "Nightly":
+                    connectionString = configuration.GetConnectionString("DinNightlyContext");
+                    break;
+                default:
+                    connectionString = configuration.GetConnectionString("DinDevContext");
+                    break;
+            }
 
             container.Register(() => new DinContext(connectionString), Lifestyle.Scoped);
-            container.Register<IHealthCheckConnection>(() => new HealthCheckConnection(connectionString),
-                Lifestyle.Scoped);
+            container.Register<IHealthCheckConnection>(() => new HealthCheckConnection(connectionString), Lifestyle.Scoped);
         }
     }
 }
