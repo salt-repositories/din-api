@@ -16,6 +16,7 @@ namespace Din.Infrastructure.DataAccess
         public DbSet<Account> Account { get; set; }
         public DbSet<AddedContent> AddedContent { get; set; }
         public DbSet<LoginAttempt> LoginAttempt { get; set; }
+        public DbSet<LoginLocation> LoginLocation { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

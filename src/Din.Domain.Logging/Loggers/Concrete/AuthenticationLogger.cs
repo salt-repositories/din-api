@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Din.Domain.Clients.IpStack.Interfaces;
-using Din.Domain.Clients.IpStack.Responses;
 using Din.Domain.Context;
 using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Logging.Loggers.Interfaces;
@@ -34,17 +33,19 @@ namespace Din.Domain.Logging.Loggers.Concrete
         public async Task Log(TRequest request, TResponse response, CancellationToken cancellationToken)
         {
             var ipAddress = _context.GetRequestIpAsString();
-            IpStackLocation location;
+            LoginLocation location = null;
 
-            try
+            if (!string.IsNullOrEmpty(ipAddress))
             {
-                location = !string.IsNullOrEmpty(ipAddress)
-                    ? await _client.GetLocationAsync(ipAddress, cancellationToken)
-                    : null;
-            }
-            catch
-            {
-                location = null;
+                try
+                {
+                    location = _mapper.Map<LoginLocation>(await _client.GetLocationAsync(ipAddress, cancellationToken));
+                    location = await _repository.FindLoginLocationByCoordinates(location.Latitude, location.Longitude) ?? location;
+                }
+                catch
+                {
+                    location = null;
+                }
             }
 
             var clientInformation = Parser.GetDefault().Parse(_context.GetUserAgentAsString());
@@ -57,7 +58,7 @@ namespace Din.Domain.Logging.Loggers.Concrete
                 Browser = clientInformation.UA.Family,
                 PublicIp = ipAddress,
                 DateAndTime = DateTime.Now,
-                Location = _mapper.Map<LoginLocation>(location),
+                Location = location,
                 Status = response == null ? LoginStatus.Failed : LoginStatus.Success
             };
 
