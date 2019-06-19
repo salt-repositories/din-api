@@ -12,6 +12,6 @@ namespace Din.Infrastructure.DataAccess.Repositories.Interfaces
         Task<IList<Account>> GetAccounts(QueryParameters<Account> queryParameters, CancellationToken cancellationToken);
         Task<Account> GetAccountById(Guid id, CancellationToken cancellationToken);
         Task<Account> GetAccountByUsername(string username, CancellationToken cancellationToken);
-
+        Task<Account> GetAccountByEmail(string email, CancellationToken cancellationToken);
     }
 }

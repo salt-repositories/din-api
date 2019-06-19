@@ -37,5 +37,10 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
             return await Context.Account.FirstAsync(a => a.Username.Equals(username), cancellationToken);
         }
+
+        public async Task<Account> GetAccountByEmail(string email, CancellationToken cancellationToken)
+        {
+            return await Context.Account.FirstAsync(a => a.Email.Equals(email), cancellationToken);
+        }
     }
 }
