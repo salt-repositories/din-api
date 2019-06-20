@@ -5,7 +5,6 @@ using System.Security.Claims;
 using Din.Domain.Context;
 using Din.Domain.Models.Entities;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Din.Application.WebAPI.Context
 {

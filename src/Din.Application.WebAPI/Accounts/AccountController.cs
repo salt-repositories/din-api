@@ -79,8 +79,8 @@ namespace Din.Application.WebAPI.Accounts
         /// <param name="code"></param>
         /// <returns>Single account</returns>
         [HttpGet("{id}/activate")]
-        [ProducesResponseType(typeof(AccountResponse), 200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType( 204)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> ActivateAccountByEmailAndCode([FromRoute] Guid id, [FromQuery] string code)
         {
             var query = new ActivateAccountCommand(id, code);
