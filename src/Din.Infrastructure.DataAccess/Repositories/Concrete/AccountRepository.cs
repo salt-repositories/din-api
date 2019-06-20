@@ -30,17 +30,21 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
             return await Context.Account
                 .Include(a => a.Image)
-                .FirstAsync(a => a.Id.Equals(id), cancellationToken);
+                .FirstOrDefaultAsync(a => a.Id.Equals(id), cancellationToken);
         }
 
         public async Task<Account> GetAccountByUsername(string username, CancellationToken cancellationToken)
         {
-            return await Context.Account.FirstAsync(a => a.Username.Equals(username), cancellationToken);
+            return await Context.Account
+                .Include(a => a.Image)
+                .FirstOrDefaultAsync(a => a.Username.Equals(username), cancellationToken);
         }
 
         public async Task<Account> GetAccountByEmail(string email, CancellationToken cancellationToken)
         {
-            return await Context.Account.FirstAsync(a => a.Email.Equals(email), cancellationToken);
+            return await Context.Account
+                .Include(a => a.Image)
+                .FirstOrDefaultAsync(a => a.Email.Equals(email), cancellationToken);
         }
     }
 }

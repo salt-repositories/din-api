@@ -52,12 +52,6 @@ namespace Din.Application.WebAPI.Context
             return _httpContextAccessor.HttpContext.Request.Headers["X-Real-IP"].ToString();
         }
 
-        public string GetApplicationUrl()
-        {
-            var request = _httpContextAccessor.HttpContext.Request;
-            return UriHelper.BuildAbsolute(request.Scheme, request.Host);
-        }
-
         private Claim GetClaimByType(string type)
         {
             var claim = _httpContextAccessor.HttpContext.User.Claims.SingleOrDefault(c => c.Type == type);
