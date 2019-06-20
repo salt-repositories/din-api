@@ -32,17 +32,7 @@ namespace Din.Domain.Commands.Authentication
                 ? await _repository.GetAccountByUsername(request.Credentials.Username, cancellationToken)
                 : await _repository.GetAccountByEmail(request.Credentials.Email, cancellationToken);
 
-            if (account == null)
-            {
-                return new TokenDto {ErrorMessage = "Invalid Credentials"};
-            }
-
-            if (!account.Active)
-            {
-                return new TokenDto {ErrorMessage = "Account is not activated"};
-            }
-
-            if (!BC.Verify(request.Credentials.Password, account.Hash))
+            if (account == null || !BC.Verify(request.Credentials.Password, account.Hash))
             {
                 return new TokenDto {ErrorMessage = "Invalid credentials"};
             }

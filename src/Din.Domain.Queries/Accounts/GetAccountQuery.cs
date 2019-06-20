@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Din.Domain.Queries.Accounts
 {
-    public class GetAccountQuery : IAuthorizedIdentityRequest, IRequest<Account>
+    public class GetAccountQuery : IAuthorizedIdentityRequest, IActivatedRequest, IRequest<Account>
     {
         public Guid Identity { get; }
         public GetAccountQuery(Guid id)

@@ -20,7 +20,10 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
 
         public async Task<IList<Account>> GetAccounts(QueryParameters<Account> queryParameters, CancellationToken cancellationToken)
         {
-            IQueryable<Account> query = Context.Set<Account>().Include(a => a.Image);
+            IQueryable<Account> query = Context.Set<Account>()
+                .Include(a => a.Image)
+                .Include(a => a.Codes);
+
             query = query.ApplyQueryParameters(queryParameters);
 
             return await query.ToListAsync(cancellationToken);
@@ -30,6 +33,7 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
             return await Context.Account
                 .Include(a => a.Image)
+                .Include(a => a.Codes)
                 .FirstOrDefaultAsync(a => a.Id.Equals(id), cancellationToken);
         }
 
@@ -37,6 +41,7 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
             return await Context.Account
                 .Include(a => a.Image)
+                .Include(a => a.Codes)
                 .FirstOrDefaultAsync(a => a.Username.Equals(username), cancellationToken);
         }
 
@@ -44,6 +49,7 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
             return await Context.Account
                 .Include(a => a.Image)
+                .Include(a => a.Codes)
                 .FirstOrDefaultAsync(a => a.Email.Equals(email), cancellationToken);
         }
     }
