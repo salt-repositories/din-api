@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Din.Domain.Context;
 using Din.Domain.Models.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Din.Application.WebAPI.Context
 {
@@ -49,6 +50,12 @@ namespace Din.Application.WebAPI.Context
         public string GetRequestIpAsString()
         {
             return _httpContextAccessor.HttpContext.Request.Headers["X-Real-IP"].ToString();
+        }
+
+        public string GetApplicationUrl()
+        {
+            var request = _httpContextAccessor.HttpContext.Request;
+            return UriHelper.BuildAbsolute(request.Scheme, request.Host);
         }
 
         private Claim GetClaimByType(string type)

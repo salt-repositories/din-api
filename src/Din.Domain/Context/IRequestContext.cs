@@ -9,5 +9,6 @@ namespace Din.Domain.Context
         AccountRole GetAccountRole();
         string GetUserAgentAsString();
         string GetRequestIpAsString();
+        string GetApplicationUrl();
     }
 }

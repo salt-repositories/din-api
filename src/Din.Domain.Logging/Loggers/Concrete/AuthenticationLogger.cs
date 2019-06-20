@@ -7,6 +7,7 @@ using Din.Domain.Context;
 using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Logging.Loggers.Interfaces;
 using Din.Domain.Logging.Requests;
+using Din.Domain.Models.Dtos;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using UAParser;
@@ -14,7 +15,7 @@ using UAParser;
 namespace Din.Domain.Logging.Loggers.Concrete
 {
     public class AuthenticationLogger<TRequest, TResponse> : IRequestLogger<TRequest, TResponse>
-        where TRequest : IAuthenticationRequest
+        where TRequest : IAuthenticationRequest where TResponse : TokenDto
     {
         private readonly ILoginAttemptRepository _repository;
         private readonly IRequestContext _context;
@@ -52,21 +53,21 @@ namespace Din.Domain.Logging.Loggers.Concrete
 
             var loginAttempt = new LoginAttempt
             {
-                Username = request.Credentials.Username,
+                Username = string.IsNullOrEmpty(request.Credentials.Email) ? request.Credentials.Username : request.Credentials.Email,
                 Device = clientInformation.Device.Family,
                 Os = clientInformation.OS.Family,
                 Browser = clientInformation.UA.Family,
                 PublicIp = ipAddress,
                 DateAndTime = DateTime.Now,
                 Location = location,
-                Status = response == null ? LoginStatus.Failed : LoginStatus.Success
+                Status = string.IsNullOrEmpty(response.ErrorMessage) ? LoginStatus.Success : LoginStatus.Failed
             };
 
             _repository.Insert(loginAttempt);
 
-            if (response == null)
+            if (!string.IsNullOrEmpty(response.ErrorMessage))
             {
-                throw new AuthenticationException("Invalid credentials");
+                throw new AuthenticationException(response.ErrorMessage);
             }
         }
     }
