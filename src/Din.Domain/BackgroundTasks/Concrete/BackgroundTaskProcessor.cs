@@ -28,13 +28,13 @@ namespace Din.Domain.BackgroundTasks.Concrete
             return Task.CompletedTask;
         }
 
-        private void ExecuteTasks(object state)
+        private async void ExecuteTasks(object state)
         {
             using (AsyncScopedLifestyle.BeginScope(_container))
             {
                 var tasks = _container.GetAllInstances<IBackgroundTask>().Select(task => task.Execute(_cancellationToken)).ToList();
 
-                Task.WhenAll(tasks);
+                await Task.WhenAll(tasks);
             }
         }
 

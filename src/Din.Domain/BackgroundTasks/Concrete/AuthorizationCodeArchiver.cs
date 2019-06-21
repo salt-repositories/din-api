@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundTasks.Interfaces;
@@ -17,7 +18,14 @@ namespace Din.Domain.BackgroundTasks.Concrete
 
         public async Task Execute(CancellationToken cancellationToken)
         {
-            foreach (var code in await _repository.GetAll(cancellationToken))
+            var codes = (await _repository.GetAll(cancellationToken)).ToList();
+
+            if (codes.Count.Equals(0))
+            {
+                return;
+            }
+
+            foreach (var code in codes)
             {
                 if (code.Generated >= DateTime.Now.AddDays(3))
                 {
