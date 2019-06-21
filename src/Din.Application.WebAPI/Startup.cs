@@ -87,9 +87,7 @@ namespace Din.Application.WebAPI
             _container.RegisterConfigurations(Configuration);
             _container.RegisterClients();
             _container.RegisterStores();
-
-
-            _container.RegisterServices(); //TODO delete
+            _container.RegisterBackgroundTasks(assemblies);
 
             _container.Verify();
         }

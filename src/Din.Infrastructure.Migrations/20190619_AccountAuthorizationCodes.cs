@@ -4,7 +4,7 @@ using static Din.Infrastructure.Migrations.Constants;
 namespace Din.Infrastructure.Migrations
 {
     [Migration(20190619)]
-    public class AccountAuthenticationCodes : Migration
+    public class AccountAuthorizationCodes : Migration
     {
         public override void Up()
         {

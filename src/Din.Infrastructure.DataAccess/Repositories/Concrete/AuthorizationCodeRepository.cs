@@ -10,7 +10,7 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
 {
     public class AuthorizationCodeRepository : BaseRepository, IAuthorizationCodeRepository
     {
-        protected AuthorizationCodeRepository(DinContext context) : base(context)
+        public AuthorizationCodeRepository(DinContext context) : base(context)
         {
         }
 
