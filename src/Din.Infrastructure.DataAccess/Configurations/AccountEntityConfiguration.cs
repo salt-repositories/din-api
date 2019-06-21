@@ -21,6 +21,12 @@ namespace Din.Infrastructure.DataAccess.Configurations
             builder.HasIndex(a => a.Username)
                 .IsUnique();
 
+            builder.Property(a => a.Email)
+                .HasColumnName("email")
+                .IsRequired();
+            builder.HasIndex(a => a.Email)
+                .IsUnique();
+
             builder.Property(a => a.Hash)
                 .HasColumnName("hash")
                 .IsRequired();
@@ -29,6 +35,10 @@ namespace Din.Infrastructure.DataAccess.Configurations
                 .HasColumnName("account_role")
                 .IsRequired()
                 .HasConversion(new EnumToStringConverter<AccountRole>());
+
+            builder.Property(a => a.Active)
+                .HasColumnName("active")
+                .IsRequired();
 
             builder.HasOne(a => a.Image)
                 .WithOne()
@@ -39,6 +49,11 @@ namespace Din.Infrastructure.DataAccess.Configurations
                 .WithOne(ac => ac.Account)
                 .HasForeignKey(ac => ac.AccountId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasMany(a => a.Codes)
+                .WithOne(c => c.Account)
+                .HasForeignKey(c => c.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -28,20 +28,13 @@ namespace Din.Domain.Commands.Authentication
 
         public async Task<TokenDto> Handle(GenerateTokenCommand request, CancellationToken cancellationToken)
         {
-            Account account;
+            var account = string.IsNullOrEmpty(request.Credentials.Email)
+                ? await _repository.GetAccountByUsername(request.Credentials.Username, cancellationToken)
+                : await _repository.GetAccountByEmail(request.Credentials.Email, cancellationToken);
 
-            try
+            if (account == null || !BC.Verify(request.Credentials.Password, account.Hash))
             {
-                account = await _repository.GetAccountByUsername(request.Credentials.Username, cancellationToken);
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
-
-            if (!BC.Verify(request.Credentials.Password, account.Hash))
-            {
-                return null;
+                return new TokenDto {ErrorMessage = "Invalid credentials"};
             }
 
             return new TokenDto
@@ -69,7 +62,7 @@ namespace Din.Domain.Commands.Authentication
                 signingCredentials: credentials
             );
 
-            return  new JwtSecurityTokenHandler().WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

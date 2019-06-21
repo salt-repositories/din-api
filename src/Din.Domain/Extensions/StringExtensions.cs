@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Din.Domain.Extensions
 {
@@ -20,6 +21,16 @@ namespace Din.Domain.Extensions
 
             double stepsToSame = ComputeLevenshteinDistance(source, target);
             return 1.0 - stepsToSame / Math.Max(source.Length, target.Length);
+        }
+
+        public static string GenerateRandomString(this string source, int length)
+        {
+            var random = new Random();
+
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
         /// <summary>

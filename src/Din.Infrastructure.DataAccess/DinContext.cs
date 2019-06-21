@@ -23,6 +23,7 @@ namespace Din.Infrastructure.DataAccess
             modelBuilder.ApplyConfiguration(new AccountEntityConfiguration());
             modelBuilder.ApplyConfiguration(new AccountImageEntityConfiguration());
             modelBuilder.ApplyConfiguration(new AddedContentEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountAuthenticationCodeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new LoginAttemptEntityConfiguration());
             modelBuilder.ApplyConfiguration(new LoginLocationEntityConfiguration());
         }

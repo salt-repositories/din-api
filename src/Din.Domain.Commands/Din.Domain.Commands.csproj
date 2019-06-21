@@ -9,6 +9,7 @@
     <PackageReference Include="FluentValidation" Version="8.4.0" />
     <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="2.2.0" />
+    <PackageReference Include="Sendgrid" Version="9.11.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.1.0" />
     <PackageReference Include="TMDbLib" Version="1.3.2-alpha" />
   </ItemGroup>

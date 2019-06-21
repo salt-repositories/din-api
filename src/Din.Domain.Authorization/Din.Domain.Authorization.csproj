@@ -13,6 +13,7 @@
     <ProjectReference Include="..\Din.Domain.Exceptions\Din.Domain.Exceptions.csproj" />
     <ProjectReference Include="..\Din.Domain.Models\Din.Domain.Models.csproj" />
     <ProjectReference Include="..\Din.Domain\Din.Domain.csproj" />
+    <ProjectReference Include="..\Din.Infrastructure.DataAccess\Din.Infrastructure.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
