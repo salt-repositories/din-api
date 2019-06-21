@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class AccountAuthenticationCodeEntityConfiguration : IEntityTypeConfiguration<AccountAuthenticationCode>
+    public class AccountAuthorizationCodeEntityConfiguration : IEntityTypeConfiguration<AccountAuthorizationCode>
     {
-        public void Configure(EntityTypeBuilder<AccountAuthenticationCode> builder)
+        public void Configure(EntityTypeBuilder<AccountAuthorizationCode> builder)
         {
-            builder.ToTable("account_authentication_code");
+            builder.ToTable("account_authorization_code");
 
             builder.HasKey(a => a.Id)
                 .HasName("id");

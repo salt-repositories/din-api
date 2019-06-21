@@ -13,7 +13,7 @@ namespace Din.Domain.Models.Entities
         public bool Active { get; set; }
         public AccountImage Image { get; set; }
         public ICollection<AddedContent> AddedContent { get; set; }
-        public ICollection<AccountAuthenticationCode> Codes { get; set; }
+        public ICollection<AccountAuthorizationCode> Codes { get; set; }
     }
 
     public class AccountImage
@@ -31,7 +31,7 @@ namespace Din.Domain.Models.Entities
         Admin
     }
 
-    public class AccountAuthenticationCode
+    public class AccountAuthorizationCode
     {
         public Guid Id { get; set; }
         public Account Account { get; set; }
