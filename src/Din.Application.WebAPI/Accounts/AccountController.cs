@@ -81,7 +81,7 @@ namespace Din.Application.WebAPI.Accounts
         [HttpGet("{id}/activate")]
         [ProducesResponseType( 204)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> ActivateAccountByEmailAndCode([FromRoute] Guid id, [FromQuery] string code)
+        public async Task<IActionResult> ActivateAccountByCode([FromRoute] Guid id, [FromQuery] string code)
         {
             var query = new ActivateAccountCommand(id, code);
             await _bus.Send(query);
