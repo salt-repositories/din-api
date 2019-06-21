@@ -42,9 +42,9 @@ namespace Din.Domain.Commands.Accounts
 
             var authenticationCode = new string("").GenerateRandomString(30);
 
-            request.Account.Codes = new List<AccountAuthenticationCode>
+            request.Account.Codes = new List<AccountAuthorizationCode>
             {
-                new AccountAuthenticationCode
+                new AccountAuthorizationCode
                 {
                     Account = request.Account,
                     Active = true,

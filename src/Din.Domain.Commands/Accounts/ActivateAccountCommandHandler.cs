@@ -27,9 +27,14 @@ namespace Din.Domain.Commands.Accounts
 
             foreach (var code in account.Codes)
             {
-                if (!code.Active || !BC.Verify(request.Code, code.Code))
+                if (!BC.Verify(request.Code, code.Code))
                 {
                     continue;
+                }
+
+                if (!code.Active)
+                {
+                    throw new AccountActivationException("The authorization code has expired");
                 }
 
                 account.Active = true;

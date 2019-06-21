@@ -3,11 +3,13 @@ using Din.Application.WebAPI.ConfigurtionProviders;
 using Din.Application.WebAPI.Injection.DotNet;
 using Din.Application.WebAPI.Injection.SimpleInjector;
 using Din.Application.WebAPI.Middleware;
+using Din.Domain.BackgroundTasks.Concrete;
 using Din.Domain.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -36,6 +38,7 @@ namespace Din.Application.WebAPI
             services.RegisterAuthentication(Configuration);
             services.RegisterSwagger();
             services.AddHttpClient();
+            services.AddSingleton<IHostedService>(new BackgroundTaskProcessor(_container));
 
             IntegrateSimpleInjector(services);
         }
@@ -84,9 +87,7 @@ namespace Din.Application.WebAPI
             _container.RegisterConfigurations(Configuration);
             _container.RegisterClients();
             _container.RegisterStores();
-
-
-            _container.RegisterServices(); //TODO delete
+            _container.RegisterBackgroundTasks(assemblies);
 
             _container.Verify();
         }

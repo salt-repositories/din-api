@@ -11,6 +11,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.Register<IAccountRepository, AccountRepository>(Lifestyle.Scoped);
             container.Register<IAddedContentRepository, AddedContentRepository>(Lifestyle.Scoped);
             container.Register<ILoginAttemptRepository, LoginAttemptRepository>(Lifestyle.Scoped);
+            container.Register<IAuthorizationCodeRepository, AuthorizationCodeRepository>(Lifestyle.Scoped);
         }
     }
 }
