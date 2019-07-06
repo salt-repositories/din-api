@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Stores.Interfaces;
@@ -27,6 +28,11 @@ namespace Din.Domain.Stores.Concrete
         public void Invoke(RefreshTokenDto refreshToken)
         {
             _tokens.Remove(refreshToken);
+        }
+
+        public void Invoke(Guid id)
+        {
+            _tokens.Remove(_tokens.FirstOrDefault(t => t.AccountIdentity.Equals(id)));
         }
     }
 }

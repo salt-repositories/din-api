@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Managers.Interfaces;
 using Din.Domain.Models.Dtos;
+using Din.Domain.Stores.Interfaces;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
 using BC = BCrypt.Net.BCrypt;
@@ -12,11 +13,13 @@ namespace Din.Domain.Commands.Authentication
     public class GenerateTokenCommandHandler : IRequestHandler<GenerateTokenCommand, TokenDto>
     {
         private readonly IAccountRepository _repository;
+        private readonly IRefreshTokenStore _store;
         private readonly ITokenManager _tokenManager;
 
-        public GenerateTokenCommandHandler(IAccountRepository repository, ITokenManager tokenManager)
+        public GenerateTokenCommandHandler(IAccountRepository repository, IRefreshTokenStore store, ITokenManager tokenManager)
         {
             _repository = repository;
+            _store = store;
             _tokenManager = tokenManager;
         }
 
@@ -30,6 +33,8 @@ namespace Din.Domain.Commands.Authentication
             {
                 return new TokenDto {ErrorMessage = "Invalid credentials"};
             }
+
+            _store.Invoke(account.Id);
 
             return new TokenDto
             {
