@@ -25,7 +25,7 @@ namespace Din.Domain.Commands.Authentication
 
         public async Task<TokenDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            var refreshToken = _store.Get(request.RefreshToken) ?? throw new AuthenticationException("Invalid RefreshToken");
+            var refreshToken = _store.Get(request.RefreshToken) ?? throw new AuthenticationException("Invalid Refresh token");
 
             _store.Invoke(refreshToken);
 
