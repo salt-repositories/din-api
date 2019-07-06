@@ -6,6 +6,7 @@
     <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
     <PackageReference Include="SimpleInjector" Version="4.6.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.5.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Din.Domain.Clients\Din.Domain.Clients.csproj" />
