@@ -42,8 +42,8 @@ namespace Din.Application.WebAPI.Authentication
         /// <summary>
         /// Request JWT Token
         /// </summary>
-        /// <param name="credentials">Token Credentials</param>
-        /// <returns>Authentication response</returns>
+        /// <param name="credentials">Credentials</param>
+        /// <returns>JWT token & Refresh token</returns>
         [AllowAnonymous, HttpPost("token")]
         [ProducesResponseType(typeof(TokenResponse), 200)]
         [ProducesResponseType(400)]
@@ -55,6 +55,11 @@ namespace Din.Application.WebAPI.Authentication
             return Ok(_mapper.Map<TokenResponse>(result));
         }
 
+        /// <summary>
+        /// Request JWT Token through a Refresh token
+        /// </summary>
+        /// <param name="refreshToken">Refresh token</param>
+        /// <returns>Jwt Token & Refresh token</returns>
         [AllowAnonymous, HttpGet("refresh/{refreshToken}")]
         [ProducesResponseType(typeof(TokenResponse), 200)]
         [ProducesResponseType(400)]
