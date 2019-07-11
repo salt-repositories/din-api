@@ -9,3 +9,4 @@ FROM microsoft/dotnet:2.2-sdk
 WORKDIR /app
 COPY --from=build /app .
 RUN dotnet tool install -g FluentMigrator.DotNet.Cli
+ENV PATH="/root/.dotnet/tools:${PATH}"
