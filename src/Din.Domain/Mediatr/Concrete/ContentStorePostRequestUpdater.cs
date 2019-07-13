@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Clients.Sonarr.Responses;
+using Din.Domain.Mediatr.Interfaces;
 using Din.Domain.Stores.Interfaces;
 using MediatR.Pipeline;
 
-namespace Din.Domain.Stores.Concrete
+namespace Din.Domain.Mediatr.Concrete
 {
     public class ContentStorePostRequestUpdater<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse> where TRequest : IContentAdditionRequest
     {

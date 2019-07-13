@@ -7,6 +7,7 @@ using Din.Domain.Extensions;
 using Din.Domain.Logging.Handlers.Concrete;
 using Din.Domain.Logging.Handlers.Interfaces;
 using Din.Domain.Logging.Loggers.Interfaces;
+using Din.Domain.Mediatr.Concrete;
 using Din.Domain.Middlewares.Mediatr;
 using Din.Domain.Queries.Accounts;
 using Din.Domain.Stores.Concrete;

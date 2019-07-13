@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Din.Domain.Stores.Interfaces
+namespace Din.Domain.Mediatr.Interfaces
 {
     public interface IContentAdditionRequest : IBaseRequest
     {
