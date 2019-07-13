@@ -5,6 +5,7 @@ using Din.Application.WebAPI.Authentication.Requests;
 using Din.Application.WebAPI.Authentication.Responses;
 using Din.Application.WebAPI.Versioning;
 using Din.Domain.Commands.Authentication;
+using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Models.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -43,7 +44,7 @@ namespace Din.Application.WebAPI.Authentication
         /// Request JWT Token
         /// </summary>
         /// <param name="credentials">Credentials</param>
-        /// <returns>JWT token & Refresh token</returns>
+        /// <returns>JWT token and Refresh token</returns>
         [AllowAnonymous, HttpPost("token")]
         [ProducesResponseType(typeof(TokenResponse), 200)]
         [ProducesResponseType(400)]
@@ -52,6 +53,11 @@ namespace Din.Application.WebAPI.Authentication
             var command = new GenerateTokenCommand(_mapper.Map<CredentialsDto>(credentials));
             var result = await _bus.Send(command);
 
+            if (!string.IsNullOrEmpty(result.ErrorMessage))
+            {
+                throw new AuthenticationException(result.ErrorMessage);
+            }
+
             return Ok(_mapper.Map<TokenResponse>(result));
         }
 
@@ -59,7 +65,7 @@ namespace Din.Application.WebAPI.Authentication
         /// Request JWT Token through a Refresh token
         /// </summary>
         /// <param name="refreshToken">Refresh token</param>
-        /// <returns>Jwt Token & Refresh token</returns>
+        /// <returns>Jwt Token and Refresh token</returns>
         [AllowAnonymous, HttpGet("refresh/{refreshToken}")]
         [ProducesResponseType(typeof(TokenResponse), 200)]
         [ProducesResponseType(400)]

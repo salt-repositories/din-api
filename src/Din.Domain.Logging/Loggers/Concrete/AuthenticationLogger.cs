@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Din.Domain.Clients.IpStack.Interfaces;
 using Din.Domain.Context;
-using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Logging.Loggers.Interfaces;
 using Din.Domain.Logging.Requests;
 using Din.Domain.Models.Dtos;
@@ -64,11 +63,6 @@ namespace Din.Domain.Logging.Loggers.Concrete
             };
 
             _repository.Insert(loginAttempt);
-
-            if (!string.IsNullOrEmpty(response.ErrorMessage))
-            {
-                throw new AuthenticationException(response.ErrorMessage);
-            }
         }
     }
 }

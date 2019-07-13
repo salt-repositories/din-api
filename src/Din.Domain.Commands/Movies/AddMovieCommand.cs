@@ -1,6 +1,7 @@
 ﻿using Din.Domain.Authorization.Requests;
 using Din.Domain.Clients.Radarr.Requests;
 using Din.Domain.Clients.Radarr.Responses;
+using Din.Domain.Mediatr.Interfaces;
 using Din.Domain.Stores.Interfaces;
 using Din.Infrastructure.DataAccess.Mediatr.Interfaces;
 using MediatR;

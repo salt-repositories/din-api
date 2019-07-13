@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Din.Domain.Configurations.Interfaces;
+using Din.Domain.Helpers;
 using Din.Domain.Managers.Interfaces;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Models.Entities;
@@ -47,26 +48,16 @@ namespace Din.Domain.Managers.Concrete
 
         public string GenerateRefreshToken(Guid id, DateTime creationDate)
         {
-            using (var provider = new RNGCryptoServiceProvider())
+            var token = RandomCodeGenerator.GenerateRandomCode(128);
+
+            _store.Insert(new RefreshTokenDto
             {
-                var bytes = new byte[128];
-                provider.GetBytes(bytes);
+                Token = token,
+                AccountIdentity = id,
+                CreationDate = creationDate
+            });
 
-                var token = Convert.ToBase64String(bytes)
-                    .Replace("+", "")
-                    .Replace("-", "")
-                    .Replace("=", "")
-                    .Replace("/", "");
-
-                _store.Insert(new RefreshTokenDto
-                {
-                    Token = token,
-                    AccountIdentity = id,
-                    CreationDate = creationDate
-                });
-
-                return token;
-            }
+            return token;
         }
     }
 }

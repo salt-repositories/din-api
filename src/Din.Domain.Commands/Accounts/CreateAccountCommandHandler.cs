@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Din.Domain.Configurations.Interfaces;
 using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Extensions;
+using Din.Domain.Helpers;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
@@ -40,7 +41,7 @@ namespace Din.Domain.Commands.Accounts
             request.Account.Hash = BC.HashPassword(request.Password);
             request.Account.Active = false;
 
-            var authenticationCode = new string("").GenerateRandomString(30);
+            var authenticationCode = RandomCodeGenerator.GenerateRandomCode(30, false);
 
             request.Account.Codes = new List<AccountAuthorizationCode>
             {

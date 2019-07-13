@@ -5,10 +5,11 @@ using Din.Domain.Clients.Radarr.Interfaces;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Clients.Sonarr.Interfaces;
 using Din.Domain.Clients.Sonarr.Responses;
+using Din.Domain.Mediatr.Interfaces;
 using Din.Domain.Stores.Interfaces;
 using MediatR.Pipeline;
 
-namespace Din.Domain.Stores.Concrete
+namespace Din.Domain.Mediatr.Concrete
 {
     public class ContentStorePreRequestUpdater<TRequest> : IRequestPreProcessor<TRequest> where TRequest : IContentRetrievalRequest
     {
