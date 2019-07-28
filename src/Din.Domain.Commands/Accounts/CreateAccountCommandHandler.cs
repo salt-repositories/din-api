@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.Configurations.Interfaces;
 using Din.Domain.Exceptions.Concrete;
-using Din.Domain.Extensions;
 using Din.Domain.Helpers;
+using Din.Domain.Managers.Interfaces;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 using BC = BCrypt.Net.BCrypt;
 
 namespace Din.Domain.Commands.Accounts
@@ -18,12 +15,12 @@ namespace Din.Domain.Commands.Accounts
     public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, Account>
     {
         private readonly IAccountRepository _repository;
-        private readonly ISendGridConfiguration _configuration;
+        private readonly IEmailManager _emailManager;
 
-        public CreateAccountCommandHandler(IAccountRepository repository, ISendGridConfiguration configuration)
+        public CreateAccountCommandHandler(IAccountRepository repository, IEmailManager emailManager)
         {
             _repository = repository;
-            _configuration = configuration;
+            _emailManager = emailManager;
         }
 
         public async Task<Account> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
@@ -41,7 +38,7 @@ namespace Din.Domain.Commands.Accounts
             request.Account.Hash = BC.HashPassword(request.Password);
             request.Account.Active = false;
 
-            var authenticationCode = RandomCodeGenerator.GenerateRandomCode(30, false);
+            var authorizationCode = RandomCodeGenerator.GenerateRandomCode(30, false);
 
             request.Account.Codes = new List<AccountAuthorizationCode>
             {
@@ -49,36 +46,22 @@ namespace Din.Domain.Commands.Accounts
                 {
                     Account = request.Account,
                     Active = true,
-                    Code = BC.HashPassword(authenticationCode),
+                    Code = BC.HashPassword(authorizationCode),
                     Generated = DateTime.Now
                 }
             };
 
-            await SendInvitationEmail(request.Account.Username, request.Account.Email, request.Account.Role,
-                authenticationCode);
+            await _emailManager.SendInvitation(
+                request.Account.Email,
+                request.Account.Username,
+                request.Account.Role.ToString(),
+                authorizationCode,
+                cancellationToken
+            );
 
             _repository.Insert(request.Account);
 
             return request.Account;
-        }
-
-        private async Task SendInvitationEmail(string username, string email, AccountRole role, string code)
-        {
-            var client = new SendGridClient(_configuration.Key);
-
-            var msg = MailHelper.CreateSingleTemplateEmail(
-                new EmailAddress("info@thedin.nl", "DIN"),
-                new EmailAddress(email, username),
-                _configuration.InviteTemplateId,
-                new
-                {
-                    Username = username,
-                    Role = role.ToString(),
-                    Code = code
-                }
-            );
-
-            await client.SendEmailAsync(msg);
         }
     }
 }

@@ -76,6 +76,21 @@ namespace Din.Application.WebAPI.Authentication
 
             return Ok(_mapper.Map<TokenResponse>(result));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [AllowAnonymous, HttpGet("authorization_code")]
+        public async Task<IActionResult> RequestAuthorizationCode([FromQuery] string email)
+        {
+            var command = new SendAuthorizationCodeCommand(email);
+            await _bus.Send(command);
+
+            return Ok();
+        }
+
        
         #endregion endpoints
     }

@@ -7,7 +7,7 @@ namespace Din.Domain.Exceptions.Concrete
     {
         public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
 
-        public AccountActivationException(string message) : base(message)
+        public AccountActivationException(string message) : base(message, null)
         {
         }
     }

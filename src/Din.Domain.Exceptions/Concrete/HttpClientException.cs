@@ -8,7 +8,7 @@ namespace Din.Domain.Exceptions.Concrete
         public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
         public object ClientResponse { get; }
 
-        public HttpClientException(string message, object clientResponse) : base(message)
+        public HttpClientException(string message, object clientResponse) : base(message, null)
         {
             ClientResponse = clientResponse;
         }

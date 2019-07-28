@@ -9,6 +9,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
         public static void RegisterManagers(this Container container)
         {
             container.Register<ITokenManager, TokenManager>(Lifestyle.Scoped);
+            container.Register<IEmailManager, EmailManager>(Lifestyle.Scoped);
         }
     }
 }
