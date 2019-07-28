@@ -47,6 +47,7 @@ namespace Din.Application.WebAPI.Middleware
             }
 
             _logger.LogWarning(exception, "A unidentified exception has been thrown");
+
             return CreateResponse(context, exception.Message, (int) HttpStatusCode.InternalServerError, null);
         }
 
