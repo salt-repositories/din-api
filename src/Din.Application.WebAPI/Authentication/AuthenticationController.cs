@@ -78,11 +78,13 @@ namespace Din.Application.WebAPI.Authentication
         }
 
         /// <summary>
-        /// 
+        /// Request authorization code
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
         [AllowAnonymous, HttpGet("authorization_code")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> RequestAuthorizationCode([FromQuery] string email)
         {
             var command = new SendAuthorizationCodeCommand(email);
