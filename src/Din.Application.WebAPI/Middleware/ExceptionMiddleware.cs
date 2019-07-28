@@ -40,7 +40,7 @@ namespace Din.Application.WebAPI.Middleware
                     return CreateResponse(context, clientException.Message, (int) clientException.StatusCode, clientException.ClientResponse);
                 case DinException dinException:
                     _logger.LogWarning(dinException, "A Din exception has been thrown");
-                    return CreateResponse(context, dinException.Message, (int) dinException.StatusCode, null);
+                    return CreateResponse(context, dinException.Message, (int) dinException.StatusCode, dinException.Details);
                 case ValidationException _:
                     _logger.LogWarning(exception, "A validation exception has been thrown");
                     return CreateResponse(context, exception.Message, (int) HttpStatusCode.BadRequest, null);

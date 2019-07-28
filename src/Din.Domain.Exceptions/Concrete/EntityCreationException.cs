@@ -7,7 +7,7 @@ namespace Din.Domain.Exceptions.Concrete
     {
         public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
 
-        public EntityCreationException(string message) : base(message)
+        public EntityCreationException(string message) : base(message, null)
         {
         }
     }
