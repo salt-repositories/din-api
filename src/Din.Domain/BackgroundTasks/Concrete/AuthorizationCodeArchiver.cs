@@ -25,12 +25,9 @@ namespace Din.Domain.BackgroundTasks.Concrete
                 return;
             }
 
-            foreach (var code in codes)
+            foreach (var code in codes.Where(code => DateTime.Now.AddDays(3)>= code.Generated))
             {
-                if (code.Generated >= DateTime.Now.AddDays(3))
-                {
-                    code.Active = false;
-                }
+                code.Active = false;
             }
 
             await _repository.SaveChangesAsync(cancellationToken);
