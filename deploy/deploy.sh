@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $1 = "Production"]; then
+if [ $1 = "Production" ]; then
     echo "Starting production deployment"
     source deploy/production.vars
 else
