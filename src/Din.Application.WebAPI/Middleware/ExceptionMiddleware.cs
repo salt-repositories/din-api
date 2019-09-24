@@ -7,6 +7,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Din.Application.WebAPI.Middleware
 {
@@ -56,7 +57,19 @@ namespace Din.Application.WebAPI.Middleware
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
 
-            return context.Response.WriteAsync(JsonConvert.SerializeObject(new { Message = message, Details = details }));
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(new ErrorResponse 
+                { 
+                    Message = message,
+                    Details = details 
+                },
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new SnakeCaseNamingStrategy()
+                    }
+                }
+            ));
         }
     }
 }

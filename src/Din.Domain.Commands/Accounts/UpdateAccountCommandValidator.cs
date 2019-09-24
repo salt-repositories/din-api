@@ -13,7 +13,7 @@ namespace Din.Domain.Commands.Accounts
                     RuleFor(cmd =>
                             cmd.Update.Operations.FirstOrDefault(operation => operation.path.Equals("password")).value
                                 .ToString().Length)
-                        .GreaterThanOrEqualTo(8).WithMessage("The new password must at least be eight characters");
+                        .GreaterThanOrEqualTo(8).WithMessage("The new password must be at least eight characters");
                 });
         }
     }
