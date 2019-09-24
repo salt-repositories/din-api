@@ -25,7 +25,7 @@ namespace Din.Domain.BackgroundTasks.Concrete
                 return;
             }
 
-            foreach (var code in codes.Where(code => DateTime.Now.AddDays(3)>= code.Generated))
+            foreach (var code in codes.Where(code => DateTime.Now >= code.Generated.AddDays(3)))
             {
                 code.Active = false;
             }
