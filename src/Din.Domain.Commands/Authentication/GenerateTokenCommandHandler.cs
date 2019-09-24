@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.Configurations.Interfaces;
+using Din.Domain.Managers.Interfaces;
 using Din.Domain.Models.Dtos;
-using Din.Domain.Models.Entities;
+using Din.Domain.Stores.Interfaces;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
-using Microsoft.IdentityModel.Tokens;
 using BC = BCrypt.Net.BCrypt;
 
 namespace Din.Domain.Commands.Authentication
@@ -18,58 +13,36 @@ namespace Din.Domain.Commands.Authentication
     public class GenerateTokenCommandHandler : IRequestHandler<GenerateTokenCommand, TokenDto>
     {
         private readonly IAccountRepository _repository;
-        private readonly IJwtConfig _config;
+        private readonly IRefreshTokenStore _store;
+        private readonly ITokenManager _tokenManager;
 
-        public GenerateTokenCommandHandler(IAccountRepository repository, IJwtConfig config)
+        public GenerateTokenCommandHandler(IAccountRepository repository, IRefreshTokenStore store, ITokenManager tokenManager)
         {
             _repository = repository;
-            _config = config;
+            _store = store;
+            _tokenManager = tokenManager;
         }
 
         public async Task<TokenDto> Handle(GenerateTokenCommand request, CancellationToken cancellationToken)
         {
-            Account account;
+            var account = string.IsNullOrEmpty(request.Credentials.Email)
+                ? await _repository.GetAccountByUsername(request.Credentials.Username, cancellationToken)
+                : await _repository.GetAccountByEmail(request.Credentials.Email, cancellationToken);
 
-            try
+            if (account == null || !BC.Verify(request.Credentials.Password, account.Hash))
             {
-                account = await _repository.GetAccountByUsername(request.Credentials.Username, cancellationToken);
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
+                return new TokenDto {ErrorMessage = "Invalid credentials"};
             }
 
-            if (!BC.Verify(request.Credentials.Password, account.Hash))
-            {
-                return null;
-            }
+            _store.Invoke(account.Id);
 
             return new TokenDto
             {
-                AccessToken = GenerateJWtToken(account.Id, account.Role),
+                AccessToken = _tokenManager.GenerateJWtToken(account.Id, account.Role),
                 ExpiresIn = 3600,
+                RefreshToken = _tokenManager.GenerateRefreshToken(account.Id, DateTime.Now),
                 TokenType = "Bearer"
             };
-        }
-
-        private string GenerateJWtToken(Guid id, AccountRole role)
-        {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Key));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
-
-            var token = new JwtSecurityToken(
-                _config.Issuer,
-                _config.Issuer,
-                new List<Claim>
-                {
-                    new Claim("Identity", id.ToString()),
-                    new Claim("Role", role.ToString())
-                },
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: credentials
-            );
-
-            return  new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

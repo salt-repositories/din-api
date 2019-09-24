@@ -7,6 +7,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Din.Application.WebAPI.Middleware
 {
@@ -40,13 +41,14 @@ namespace Din.Application.WebAPI.Middleware
                     return CreateResponse(context, clientException.Message, (int) clientException.StatusCode, clientException.ClientResponse);
                 case DinException dinException:
                     _logger.LogWarning(dinException, "A Din exception has been thrown");
-                    return CreateResponse(context, dinException.Message, (int) dinException.StatusCode, null);
+                    return CreateResponse(context, dinException.Message, (int) dinException.StatusCode, dinException.Details);
                 case ValidationException _:
                     _logger.LogWarning(exception, "A validation exception has been thrown");
                     return CreateResponse(context, exception.Message, (int) HttpStatusCode.BadRequest, null);
             }
 
             _logger.LogWarning(exception, "A unidentified exception has been thrown");
+
             return CreateResponse(context, exception.Message, (int) HttpStatusCode.InternalServerError, null);
         }
 
@@ -55,7 +57,19 @@ namespace Din.Application.WebAPI.Middleware
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
 
-            return context.Response.WriteAsync(JsonConvert.SerializeObject(new { Message = message, Details = details }));
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(new ErrorResponse 
+                { 
+                    Message = message,
+                    Details = details 
+                },
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new SnakeCaseNamingStrategy()
+                    }
+                }
+            ));
         }
     }
 }

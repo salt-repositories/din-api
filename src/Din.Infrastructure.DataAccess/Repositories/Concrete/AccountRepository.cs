@@ -20,7 +20,10 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
 
         public async Task<IList<Account>> GetAccounts(QueryParameters<Account> queryParameters, CancellationToken cancellationToken)
         {
-            IQueryable<Account> query = Context.Set<Account>().Include(a => a.Image);
+            IQueryable<Account> query = Context.Set<Account>()
+                .Include(a => a.Image)
+                .Include(a => a.Codes);
+
             query = query.ApplyQueryParameters(queryParameters);
 
             return await query.ToListAsync(cancellationToken);
@@ -30,12 +33,24 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
             return await Context.Account
                 .Include(a => a.Image)
-                .FirstAsync(a => a.Id.Equals(id), cancellationToken);
+                .Include(a => a.Codes)
+                .FirstOrDefaultAsync(a => a.Id.Equals(id), cancellationToken);
         }
 
         public async Task<Account> GetAccountByUsername(string username, CancellationToken cancellationToken)
         {
-            return await Context.Account.FirstAsync(a => a.Username.Equals(username), cancellationToken);
+            return await Context.Account
+                .Include(a => a.Image)
+                .Include(a => a.Codes)
+                .FirstOrDefaultAsync(a => a.Username.Equals(username), cancellationToken);
+        }
+
+        public async Task<Account> GetAccountByEmail(string email, CancellationToken cancellationToken)
+        {
+            return await Context.Account
+                .Include(a => a.Image)
+                .Include(a => a.Codes)
+                .FirstOrDefaultAsync(a => a.Email.Equals(email), cancellationToken);
         }
     }
 }

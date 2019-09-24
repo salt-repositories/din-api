@@ -6,6 +6,7 @@ using Din.Application.WebAPI.TvShows.Requests;
 using Din.Application.WebAPI.TvShows.Responses;
 using Din.Domain.Clients.Sonarr.Requests;
 using Din.Domain.Clients.Sonarr.Responses;
+using TMDbLib.Objects.Search;
 using TMDbLib.Objects.TvShows;
 
 namespace Din.Application.WebAPI.TvShows.Mapping
@@ -25,6 +26,8 @@ namespace Din.Application.WebAPI.TvShows.Mapping
                 .ForMember(dest => dest.TmdbId, opt => opt.MapFrom<TvShowSearchIdResolver>())
                 .ForMember(dest => dest.TvdbId, opt => opt.MapFrom<TvShowSearchTvdbIdResolver>())
                 .ForMember(dest => dest.Genres, opt => opt.MapFrom<TvShowSearchGenreResolver>());
+
+            CreateMap<SearchTvSeason, TvShowSearchSeason>();
         }
     }
 }

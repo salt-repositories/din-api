@@ -26,6 +26,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             var radarrClientConfig = configuration.GetSection("Radarr").Get<RadarrClientConfig>();
             var sonarrClientConfig = configuration.GetSection("Sonarr").Get<SonarrClientConfig>();
             var unsplashConfig = configuration.GetSection("Unsplash").Get<UnsplashClientConfig>();
+            var sendGridConfig = configuration.GetSection("SendGrid").Get<SendGridConfiguration>();
 
             container.RegisterInstance<IJwtConfig>(jwtConfig);
             container.RegisterInstance<ITmdbClientConfig>(tmdbClientConfig);
@@ -34,6 +35,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.RegisterInstance<IRadarrClientConfig>(radarrClientConfig);
             container.RegisterInstance<ISonarrClientConfig>(sonarrClientConfig);
             container.RegisterInstance<IUnsplashClientConfig>(unsplashConfig);
+            container.RegisterInstance<ISendGridConfiguration>(sendGridConfig);
         }
     }
 }

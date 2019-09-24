@@ -73,6 +73,23 @@ namespace Din.Application.WebAPI.Accounts
         }
 
         /// <summary>
+        /// Activate account by code
+        /// </summary>
+        /// <param name="id">Account ID</param>
+        /// <param name="code"></param>
+        /// <returns>Single account</returns>
+        [HttpGet("{id}/activate")]
+        [ProducesResponseType( 204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> ActivateAccountByCode([FromRoute] Guid id, [FromQuery] string code)
+        {
+            var query = new ActivateAccountCommand(id, code);
+            await _bus.Send(query);
+
+            return NoContent();
+        }
+
+        /// <summary>
         /// Get added content from account by ID
         /// </summary>
         /// <param name="queryParameters">Optional query parameters</param>

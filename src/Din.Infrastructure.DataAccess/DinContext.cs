@@ -15,13 +15,17 @@ namespace Din.Infrastructure.DataAccess
 
         public DbSet<Account> Account { get; set; }
         public DbSet<AddedContent> AddedContent { get; set; }
+        public DbSet<AccountAuthorizationCode> AuthorizationCode { get; set; }
+
         public DbSet<LoginAttempt> LoginAttempt { get; set; }
+        public DbSet<LoginLocation> LoginLocation { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new AccountEntityConfiguration());
             modelBuilder.ApplyConfiguration(new AccountImageEntityConfiguration());
             modelBuilder.ApplyConfiguration(new AddedContentEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountAuthorizationCodeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new LoginAttemptEntityConfiguration());
             modelBuilder.ApplyConfiguration(new LoginLocationEntityConfiguration());
         }

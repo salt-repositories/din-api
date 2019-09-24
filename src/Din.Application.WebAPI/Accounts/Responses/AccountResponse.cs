@@ -7,7 +7,9 @@ namespace Din.Application.WebAPI.Accounts.Responses
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
+        public string Email { get; set; }
         public AccountRole Role { get; set; }
+        public bool Active { get; set; }
         public AccountResponseImage Image { get; set; }
     }
 

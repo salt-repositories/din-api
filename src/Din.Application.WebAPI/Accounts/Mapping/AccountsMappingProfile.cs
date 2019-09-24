@@ -6,6 +6,7 @@ using Din.Domain.Models.Entities;
 using Din.Domain.Models.Querying;
 using Din.Domain.Queries.Querying;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace Din.Application.WebAPI.Accounts.Mapping
 {
@@ -18,12 +19,14 @@ namespace Din.Application.WebAPI.Accounts.Mapping
             CreateMap<QueryParametersRequest, QueryParameters<AddedContent>>()
                 .ConvertUsing<ToQueryParametersConverter<AddedContent>>();
 
-            CreateMap<QueryResult<Account>, QueryResponse<Account>>();
-            CreateMap<QueryResult<AddedContent>, QueryResponse<AddedContent>>();
+            CreateMap<QueryResult<Account>, QueryResponse<AccountResponse>>();
+            CreateMap<QueryResult<AddedContent>, QueryResponse<AddedContentResponse>>();
 
             CreateMap<AccountRequest, Account>();
             CreateMap<Account, AccountResponse>();
+
             CreateMap<JsonPatchDocument<AccountRequest>, JsonPatchDocument<Account>>();
+            CreateMap<Operation<AccountRequest>, Operation<Account>>();
         }
     }
 }

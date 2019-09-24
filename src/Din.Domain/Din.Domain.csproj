@@ -4,9 +4,15 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
+    <PackageReference Include="Sendgrid" Version="9.11.0" />
+    <PackageReference Include="SimpleInjector" Version="4.6.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.5.0" />
+    <PackageReference Include="UAParser" Version="3.1.38" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Din.Domain.Clients\Din.Domain.Clients.csproj" />
     <ProjectReference Include="..\Din.Domain.Models\Din.Domain.Models.csproj" />
+    <ProjectReference Include="..\Din.Infrastructure.DataAccess\Din.Infrastructure.DataAccess.csproj" />
   </ItemGroup>
 </Project>
