@@ -4,15 +4,16 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Din.Application.WebAPI.Movies.Requests;
 using Din.Application.WebAPI.Movies.Responses;
+using Din.Application.WebAPI.Querying;
 using Din.Application.WebAPI.Versioning;
 using Din.Domain.Clients.Radarr.Requests;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Commands.Movies;
+using Din.Domain.Models.Querying;
 using Din.Domain.Queries.Movies;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TMDbLib.Objects.Search;
 
 namespace Din.Application.WebAPI.Movies
 {
@@ -48,24 +49,13 @@ namespace Din.Application.WebAPI.Movies
         /// </summary>
         /// <returns>Collection of movies</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<MovieResponse>), 200)]
-        public async Task<IActionResult> GetMovies([FromQuery] string title)
+        [ProducesResponseType(typeof(QueryResponse<MovieResponse>), 200)]
+        public async Task<IActionResult> GetMovies([FromQuery] QueryParametersRequest queryParameters, string title)
         {
-            IRequest<IEnumerable<RadarrMovie>> query;
-            IEnumerable<RadarrMovie> result;
+            var query = new GetMoviesQuery(_mapper.Map<QueryParameters<RadarrMovie>>(queryParameters), title);
+            var result = await _bus.Send(query);
 
-            if (title == null)
-            {
-                query = new GetMoviesQuery();
-                result = await _bus.Send(query);
-
-                return Ok(_mapper.Map<IEnumerable<MovieResponse>>(result));
-            }
-
-            query = new GetMoviesByTitleQuery(title);
-            result = await _bus.Send(query);
-
-            return Ok(_mapper.Map<IEnumerable<MovieResponse>>(result));
+            return Ok(_mapper.Map<QueryResponse<MovieResponse>>(result));
         }
 
         /// <summary>

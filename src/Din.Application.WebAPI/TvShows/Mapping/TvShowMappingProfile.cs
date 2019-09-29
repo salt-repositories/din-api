@@ -1,11 +1,15 @@
-﻿using AutoMapper.Configuration;
+﻿using System.Linq;
+using AutoMapper.Configuration;
 using Din.Application.WebAPI.Content;
+using Din.Application.WebAPI.Querying;
 using Din.Application.WebAPI.TvShows.Mapping.Converters;
 using Din.Application.WebAPI.TvShows.Mapping.Resolvers;
 using Din.Application.WebAPI.TvShows.Requests;
 using Din.Application.WebAPI.TvShows.Responses;
 using Din.Domain.Clients.Sonarr.Requests;
 using Din.Domain.Clients.Sonarr.Responses;
+using Din.Domain.Models.Querying;
+using Din.Domain.Queries.Querying;
 using TMDbLib.Objects.Search;
 using TMDbLib.Objects.TvShows;
 
@@ -15,8 +19,16 @@ namespace Din.Application.WebAPI.TvShows.Mapping
     {
         public TvShowMappingProfile()
         {
+            CreateMap<QueryParametersRequest, QueryParameters<SonarrTvShow>>()
+                .ConvertUsing<ToQueryParametersConverter<SonarrTvShow>>();
+
+            CreateMap<QueryResult<SonarrTvShow>, QueryResponse<TvShowResponse>>();
+            
             CreateMap<TvShowRequest, SonarrTvShowRequest>()
                 .ConvertUsing<ToSonarrTvShowRequestConverter>();
+
+            CreateMap<Season, SeasonResponse>();
+            CreateMap<SeasonStatistics, SeasonStatisticsResponse>();
 
             CreateMap<SonarrTvShow, TvShowResponse>()
                 .ForMember(dest => dest.Id,

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Din.Domain.Clients.Abstractions;
 using Din.Domain.Extensions;
+using Din.Domain.Models.Querying;
 using Din.Domain.Stores.Interfaces;
 
 namespace Din.Domain.Stores.Concrete
@@ -17,20 +18,22 @@ namespace Din.Domain.Stores.Concrete
             return Content == null || _storeDate.AddHours(1) <= DateTime.Now;
         }
 
-        public ICollection<T> GetAll()
+        public ICollection<T> GetAll(QueryParameters<T> queryParameters, string title)
         {
-            return Content;
+            var collection = string.IsNullOrEmpty(title)
+                ? Content
+                : Content
+                    .Where(content => title.CalculateSimilarity(content.Title) > 0.4)
+                    .Concat(Content.Where(content => content.Title.ToLower().Contains(title.ToLower())));
+
+            collection = collection.ApplyQueryParameters(queryParameters);
+
+            return collection.ToList();
         }
 
         public T GetOneById(int id)
         {
             return Content?.FirstOrDefault(c => c.SystemId.Equals(id));
-        }
-
-        public ICollection<T> GetMultipleByTitle(string title)
-        {
-            return Content.Where(content => title.CalculateSimilarity(content.Title) > 0.4)
-                .Concat(Content.Where(content => content.Title.ToLower().Contains(title.ToLower()))).ToList();
         }
 
         public void Set(ICollection<T> contentCollection)
@@ -41,7 +44,17 @@ namespace Din.Domain.Stores.Concrete
 
         public void AddOne(T content)
         {
-            Content?.Add(content);
+            Content?.ToList().Add(content);
+        }
+
+        public int Count(string title)
+        {
+            return string.IsNullOrEmpty(title)
+                ? Content.Count
+                : Content
+                    .Where(content => title.CalculateSimilarity(content.Title) > 0.4)
+                    .Concat(Content.Where(content => content.Title.ToLower().Contains(title.ToLower())))
+                    .Count();
         }
     }
 }
