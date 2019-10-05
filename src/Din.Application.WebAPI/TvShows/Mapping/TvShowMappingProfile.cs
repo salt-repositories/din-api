@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper.Configuration;
+﻿using AutoMapper.Configuration;
 using Din.Application.WebAPI.Content;
 using Din.Application.WebAPI.Querying;
 using Din.Application.WebAPI.TvShows.Mapping.Converters;
@@ -21,6 +20,8 @@ namespace Din.Application.WebAPI.TvShows.Mapping
         {
             CreateMap<QueryParametersRequest, QueryParameters<SonarrTvShow>>()
                 .ConvertUsing<ToQueryParametersConverter<SonarrTvShow>>();
+
+            CreateMap<FiltersRequest, Filters>();
 
             CreateMap<QueryResult<SonarrTvShow>, QueryResponse<TvShowResponse>>();
             

@@ -18,8 +18,8 @@ namespace Din.Domain.Queries.TvShows
 
         public Task<QueryResult<SonarrTvShow>> Handle(GetTvShowsQuery request, CancellationToken cancellationToken)
         {
-            var tvShows = _store.GetAll(request.QueryParameters, request.Title);
-            var count = _store.Count(request.Title);
+            var tvShows = _store.GetAll(request.QueryParameters, request.Filters);
+            var count = _store.Count(request.Filters);
 
             return Task.FromResult(new QueryResult<SonarrTvShow>(tvShows, count));
         }

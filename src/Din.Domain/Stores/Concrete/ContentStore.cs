@@ -8,7 +8,7 @@ using Din.Domain.Stores.Interfaces;
 
 namespace Din.Domain.Stores.Concrete
 {
-    public class ContentStore<T> : IContentStore<T> where T : Content 
+    public class ContentStore<T> : IContentStore<T> where T : Content
     {
         public ICollection<T> Content { get; private set; }
         private DateTime _storeDate;
@@ -18,14 +18,9 @@ namespace Din.Domain.Stores.Concrete
             return Content == null || _storeDate.AddHours(1) <= DateTime.Now;
         }
 
-        public ICollection<T> GetAll(QueryParameters<T> queryParameters, string title)
+        public ICollection<T> GetAll(QueryParameters<T> queryParameters, Filters filters)
         {
-            var collection = string.IsNullOrEmpty(title)
-                ? Content
-                : Content
-                    .Where(content => title.CalculateSimilarity(content.Title) > 0.4)
-                    .Concat(Content.Where(content => content.Title.ToLower().Contains(title.ToLower())));
-
+            var collection = ApplyFilters(filters);
             collection = collection.ApplyQueryParameters(queryParameters);
 
             return collection.ToList();
@@ -47,14 +42,42 @@ namespace Din.Domain.Stores.Concrete
             Content?.ToList().Add(content);
         }
 
-        public int Count(string title)
+        public int Count(Filters filters)
         {
-            return string.IsNullOrEmpty(title)
-                ? Content.Count
-                : Content
-                    .Where(content => title.CalculateSimilarity(content.Title) > 0.4)
-                    .Concat(Content.Where(content => content.Title.ToLower().Contains(title.ToLower())))
-                    .Count();
+            var content = ApplyFilters(filters);
+
+            return content.Count();
+        }
+
+        private IEnumerable<T> ApplyFilters(Filters filters)
+        {
+            var content = Content;
+
+            foreach (var filter in filters.GetType().GetProperties())
+            {
+                try
+                {
+                    var value = filter.GetValue(filters, null).ToString();
+
+                    if (filter.Name.ToLower().Equals("title") && !string.IsNullOrEmpty(value))
+                    {
+                        content = content
+                            .Where(x => value.CalculateSimilarity(x.Title) > 0.4)
+                            .Concat(content.Where(x => x.Title.ToLower().Contains(value.ToLower())))
+                            .ToList();
+
+                        continue;
+                    }
+
+                    content = content.ApplyFilter(filter.Name, value).ToList();
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+
+            return content;
         }
     }
 }

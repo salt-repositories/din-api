@@ -18,8 +18,8 @@ namespace Din.Domain.Queries.Movies
 
         public Task<QueryResult<RadarrMovie>> Handle(GetMoviesQuery request, CancellationToken cancellationToken)
         {
-            var movies = _store.GetAll(request.QueryParameters, request.Title);
-            var count = _store.Count(request.Title);
+            var movies = _store.GetAll(request.QueryParameters, request.Filters);
+            var count = _store.Count(request.Filters);
             
             return Task.FromResult(new QueryResult<RadarrMovie>(movies, count));
         }
