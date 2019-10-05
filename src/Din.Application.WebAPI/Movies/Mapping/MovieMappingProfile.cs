@@ -19,6 +19,8 @@ namespace Din.Application.WebAPI.Movies.Mapping
         {
             CreateMap<QueryParametersRequest, QueryParameters<RadarrMovie>>()
                 .ConvertUsing<ToQueryParametersConverter<RadarrMovie>>();
+
+            CreateMap<FiltersRequest, Filters>();
             
             CreateMap<QueryResult<RadarrMovie>, QueryResponse<MovieResponse>>();
             

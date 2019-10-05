@@ -50,9 +50,16 @@ namespace Din.Application.WebAPI.Movies
         /// <returns>Collection of movies</returns>
         [HttpGet]
         [ProducesResponseType(typeof(QueryResponse<MovieResponse>), 200)]
-        public async Task<IActionResult> GetMovies([FromQuery] QueryParametersRequest queryParameters, string title)
+        public async Task<IActionResult> GetMovies
+        (
+            [FromQuery] QueryParametersRequest queryParameters,
+            [FromQuery] FiltersRequest filters
+        )
         {
-            var query = new GetMoviesQuery(_mapper.Map<QueryParameters<RadarrMovie>>(queryParameters), title);
+            var query = new GetMoviesQuery(
+                _mapper.Map<QueryParameters<RadarrMovie>>(queryParameters), 
+                _mapper.Map<Filters>(filters)
+            );
             var result = await _bus.Send(query);
 
             return Ok(_mapper.Map<QueryResponse<MovieResponse>>(result));

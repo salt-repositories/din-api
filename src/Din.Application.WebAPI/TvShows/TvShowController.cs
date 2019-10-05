@@ -50,9 +50,16 @@ namespace Din.Application.WebAPI.TvShows
         /// <returns>Collection of tvShows</returns>
         [HttpGet]
         [ProducesResponseType(typeof(QueryResponse<TvShowResponse>), 200)]
-        public async Task<IActionResult> GetTvShows([FromQuery] QueryParametersRequest queryParameters, string title)
+        public async Task<IActionResult> GetTvShows
+        (
+            [FromQuery] QueryParametersRequest queryParameters,
+            [FromQuery] FiltersRequest filters
+        )
         {
-            var query = new GetTvShowsQuery(_mapper.Map<QueryParameters<SonarrTvShow>>(queryParameters), title);
+            var query = new GetTvShowsQuery(
+                _mapper.Map<QueryParameters<SonarrTvShow>>(queryParameters),
+                _mapper.Map<Filters>(filters)
+            );
             var result = await _bus.Send(query);
 
             return Ok(_mapper.Map<QueryResponse<TvShowResponse>>(result));
