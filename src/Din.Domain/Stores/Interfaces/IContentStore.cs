@@ -7,10 +7,9 @@ namespace Din.Domain.Stores.Interfaces
     {
         ICollection<T> Content { get; }
         bool ShouldUpdate();
-        ICollection<T> GetAll(QueryParameters<T> queryParameters, Filters filters);
+        (ICollection<T> collection, int count) GetAll(QueryParameters<T> queryParameters, Filters filters);
         T GetOneById(int id);
         void Set(ICollection<T> contentCollection);
-        void AddOne(T content);
-        int Count(Filters filters);
+        void AddOne(T content); 
     }
 }
