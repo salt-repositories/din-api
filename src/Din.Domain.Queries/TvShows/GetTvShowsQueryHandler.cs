@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Sonarr.Responses;
+using Din.Domain.Queries.Querying;
 using Din.Domain.Stores.Interfaces;
 using MediatR;
 
 namespace Din.Domain.Queries.TvShows
 {
-    public class GetTvShowsQueryHandler : IRequestHandler<GetTvShowsQuery, IEnumerable<SonarrTvShow>>
+    public class GetTvShowsQueryHandler : IRequestHandler<GetTvShowsQuery, QueryResult<SonarrTvShow>>
     {
         private readonly IContentStore<SonarrTvShow> _store;
 
@@ -16,9 +16,11 @@ namespace Din.Domain.Queries.TvShows
             _store = store;
         }
 
-        public Task<IEnumerable<SonarrTvShow>> Handle(GetTvShowsQuery request, CancellationToken cancellationToken)
+        public Task<QueryResult<SonarrTvShow>> Handle(GetTvShowsQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult((IEnumerable<SonarrTvShow>) _store.GetAll());
+            var (tvShows, count) = _store.GetAll(request.QueryParameters, request.Filters);
+
+            return Task.FromResult(new QueryResult<SonarrTvShow>(tvShows, count));
         }
     }
 }

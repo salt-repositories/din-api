@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Radarr.Responses;
+using Din.Domain.Queries.Querying;
 using Din.Domain.Stores.Interfaces;
 using MediatR;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMoviesQueryHandler : IRequestHandler<GetMoviesQuery, IEnumerable<RadarrMovie>>
+    public class GetMoviesQueryHandler : IRequestHandler<GetMoviesQuery, QueryResult<RadarrMovie>>
     {
         private readonly IContentStore<RadarrMovie> _store;
 
@@ -16,9 +16,11 @@ namespace Din.Domain.Queries.Movies
             _store = store;
         }
 
-        public Task<IEnumerable<RadarrMovie>> Handle(GetMoviesQuery request, CancellationToken cancellationToken)
+        public Task<QueryResult<RadarrMovie>> Handle(GetMoviesQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult((IEnumerable<RadarrMovie>) _store.GetAll());
+            var (movies, count) = _store.GetAll(request.QueryParameters, request.Filters);
+            
+            return Task.FromResult(new QueryResult<RadarrMovie>(movies, count));
         }
     }
 }

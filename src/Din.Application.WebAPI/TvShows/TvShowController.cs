@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Din.Application.WebAPI.Querying;
 using Din.Application.WebAPI.TvShows.Requests;
 using Din.Application.WebAPI.TvShows.Responses;
 using Din.Application.WebAPI.Versioning;
 using Din.Domain.Clients.Sonarr.Requests;
 using Din.Domain.Clients.Sonarr.Responses;
 using Din.Domain.Commands.TvShows;
+using Din.Domain.Models.Querying;
 using Din.Domain.Queries.TvShows;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -47,24 +49,20 @@ namespace Din.Application.WebAPI.TvShows
         /// </summary>
         /// <returns>Collection of tvShows</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<TvShowResponse>), 200)]
-        public async Task<IActionResult> GetTvShows([FromQuery] string title)
+        [ProducesResponseType(typeof(QueryResponse<TvShowResponse>), 200)]
+        public async Task<IActionResult> GetTvShows
+        (
+            [FromQuery] QueryParametersRequest queryParameters,
+            [FromQuery] FiltersRequest filters
+        )
         {
-            IRequest<IEnumerable<SonarrTvShow>> query;
-            IEnumerable<SonarrTvShow> result;
+            var query = new GetTvShowsQuery(
+                _mapper.Map<QueryParameters<SonarrTvShow>>(queryParameters),
+                _mapper.Map<Filters>(filters)
+            );
+            var result = await _bus.Send(query);
 
-            if (title == null)
-            {
-                query = new GetTvShowsQuery();
-                result = await _bus.Send(query);
-
-                return Ok(result);
-            }
-
-            query = new GetTvShowsByTitleQuery(title);
-            result = await _bus.Send(query);
-
-            return Ok(result);
+            return Ok(_mapper.Map<QueryResponse<TvShowResponse>>(result));
         }
 
         /// <summary>
