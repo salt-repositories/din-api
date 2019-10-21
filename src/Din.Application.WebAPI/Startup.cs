@@ -3,6 +3,7 @@ using Din.Application.WebAPI.ConfigurtionProviders;
 using Din.Application.WebAPI.Injection.DotNet;
 using Din.Application.WebAPI.Injection.SimpleInjector;
 using Din.Application.WebAPI.Middleware;
+using Din.Application.WebAPI.Movies;
 using Din.Domain.BackgroundTasks.Concrete;
 using Din.Domain.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -37,16 +38,18 @@ namespace Din.Application.WebAPI
             services.AddCors(options => options.AddPolicy("Default", builder =>
             {
                 builder
-                    .AllowAnyOrigin()
+                    .WithOrigins(Configuration.GetSection("CorsOriginDomains").Get<string[]>())
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             }));
             services.RegisterMvcComponents();
             services.RegisterAuthentication(Configuration);
             services.RegisterSwagger();
             services.AddHttpClient();
+            services.AddSignalR();
+            services.RegisterSignalRCorePipeline(_container);
             services.AddSingleton<IHostedService>(new BackgroundTaskProcessor(_container));
-
             IntegrateSimpleInjector(services);
         }
 
@@ -58,9 +61,11 @@ namespace Din.Application.WebAPI
                 : app.UseHsts();
 
             InitializeContainer(app, env);
-
+            
             app.UseCors("Default");
             
+            InitializeHubs(app);
+
             app.UseAuthentication();
             app.UseMvc();
             app.UseSwagger();
@@ -87,7 +92,7 @@ namespace Din.Application.WebAPI
             });
 
             var assemblies = AppDomain.CurrentDomain.GetApplicationAssemblies();
-
+            
             _container.RegisterMediatr(assemblies);
             _container.RegisterDbContext(Configuration, env);
             _container.RegisterContexts();
@@ -98,8 +103,14 @@ namespace Din.Application.WebAPI
             _container.RegisterStores();
             _container.RegisterManagers();
             _container.RegisterBackgroundTasks(assemblies);
-
+            _container.RegisterHubTasks();
+            
             _container.Verify();
+        }
+
+        private void InitializeHubs(IApplicationBuilder app)
+        {
+            app.UseSignalR(routes => { routes.MapHub<MovieHub>("/hubs/movieHub"); });
         }
     }
 }

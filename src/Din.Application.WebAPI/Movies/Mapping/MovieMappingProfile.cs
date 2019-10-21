@@ -36,6 +36,8 @@ namespace Din.Application.WebAPI.Movies.Mapping
                     opt => opt.MapFrom<MovieSearchIdResolver>())
                 .ForMember(dest => dest.Genres,
                     opt => opt.MapFrom<MovieSearchGenreResolver>());
+
+            CreateMap<RadarrQueue, MovieQueueResponse>();
         }
     }
 }
