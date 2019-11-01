@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Din.Application.WebAPI.Content
+namespace Din.Application.WebAPI.Content.Responses
 {
     public class SearchResponse
     {

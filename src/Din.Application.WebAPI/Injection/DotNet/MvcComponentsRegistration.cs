@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Din.Application.WebAPI.Serilization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 
 namespace Din.Application.WebAPI.Injection.DotNet
 {
@@ -17,11 +17,7 @@ namespace Din.Application.WebAPI.Injection.DotNet
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
-                var contractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new SnakeCaseNamingStrategy()
-                };
-                options.SerializerSettings.ContractResolver = contractResolver;
+                options.SerializerSettings.ContractResolver = SerializationSettings.GetContractResolver();
                 options.SerializerSettings.Formatting = Formatting.Indented;
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

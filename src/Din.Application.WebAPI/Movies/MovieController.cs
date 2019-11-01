@@ -57,7 +57,7 @@ namespace Din.Application.WebAPI.Movies
         )
         {
             var query = new GetMoviesQuery(
-                _mapper.Map<QueryParameters<RadarrMovie>>(queryParameters), 
+                _mapper.Map<QueryParameters<RadarrMovie>>(queryParameters),
                 _mapper.Map<Filters>(filters)
             );
             var result = await _bus.Send(query);
@@ -138,20 +138,6 @@ namespace Din.Application.WebAPI.Movies
             var result = await _bus.Send(query);
 
             return Ok(_mapper.Map<IEnumerable<MovieResponse>>(result));
-        }
-
-        /// <summary>
-        /// Get the current movie queue
-        /// </summary>
-        /// <returns>movie queue</returns>
-        [HttpGet("queue")]
-        [ProducesResponseType(typeof(IEnumerable<RadarrQueue>), 200)]
-        public async Task<IActionResult> GetQueue()
-        {
-            var query = new GetMovieQueueQuery();
-            var result = await _bus.Send(query);
-
-            return Ok(result);
         }
 
         #endregion endpoints

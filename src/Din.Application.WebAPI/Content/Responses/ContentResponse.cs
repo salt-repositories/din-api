@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Din.Application.WebAPI.Content
+namespace Din.Application.WebAPI.Content.Responses
 {
-    public abstract class ContentResponse
+    public class ContentResponse
     {
         public int Id { get; set; }
         public string ImdbId { get; set; }

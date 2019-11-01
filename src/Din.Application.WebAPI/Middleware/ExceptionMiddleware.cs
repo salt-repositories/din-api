@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Din.Application.WebAPI.Serilization;
 using Din.Domain.Exceptions.Abstractions;
 using Din.Domain.Exceptions.Concrete;
 using FluentValidation;
@@ -47,7 +48,7 @@ namespace Din.Application.WebAPI.Middleware
                     return CreateResponse(context, exception.Message, (int) HttpStatusCode.BadRequest, null);
             }
 
-            _logger.LogWarning(exception, "A unidentified exception has been thrown");
+            _logger.LogError(exception, "A unidentified exception has been thrown");
 
             return CreateResponse(context, exception.Message, (int) HttpStatusCode.InternalServerError, null);
         }
@@ -62,13 +63,7 @@ namespace Din.Application.WebAPI.Middleware
                     Message = message,
                     Details = details 
                 },
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new DefaultContractResolver
-                    {
-                        NamingStrategy = new SnakeCaseNamingStrategy()
-                    }
-                }
+                SerializationSettings.GetSerializerSettings()
             ));
         }
     }

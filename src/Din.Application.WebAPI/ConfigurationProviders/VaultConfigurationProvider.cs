@@ -9,7 +9,7 @@ using VaultSharp.V1.AuthMethods.AppRole;
 using VaultSharp.V1.AuthMethods.GitHub;
 using VaultSharp.V1.Commons;
 
-namespace Din.Application.WebAPI.ConfigurtionProviders
+namespace Din.Application.WebAPI.ConfigurationProviders
 {
     public static class ConfigurationExtensions
     {
@@ -37,7 +37,7 @@ namespace Din.Application.WebAPI.ConfigurtionProviders
             }
         }
 
-        private class VaultSecretLoader : IDisposable
+        private sealed class VaultSecretLoader : IDisposable
         {
             private bool _disposed;
             private readonly IVaultClient _client;
@@ -90,7 +90,7 @@ namespace Din.Application.WebAPI.ConfigurtionProviders
                 GC.SuppressFinalize(this);
             }
 
-            protected virtual void Dispose(bool disposing)
+            private void Dispose(bool disposing)
             {
                 if (_disposed)
                 {
