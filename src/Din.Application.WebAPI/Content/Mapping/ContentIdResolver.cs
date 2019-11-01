@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace Din.Application.WebAPI.Content
+namespace Din.Application.WebAPI.Content.Mapping
 {
     public class ContentIdResolver<TSource, TDestination> : IValueResolver<TSource, TDestination, int> where TSource : Domain.Clients.Abstractions.Content
     {

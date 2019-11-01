@@ -4,25 +4,29 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Din.Application.WebAPI.Movies.Responses;
+using Din.Application.WebAPI.Content.Responses;
 using Din.Application.WebAPI.Serilization;
 using Din.Domain.Queries.Movies;
+using Din.Domain.Queries.TvShows;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 
-namespace Din.Application.WebAPI.Movies.HubTasks
+namespace Din.Application.WebAPI.Content.HubTasks
 {
-    internal class Connection
+    internal struct Connection
     {
         public string ConnectionId { get; set; }
         public IClientProxy Client { get; set; }
     }
 
-    public class MovieQueueTimedTask
+    public class CurrentQueueTimedTask
     {
+        private const int TaskInterval = 10;
+        private readonly ILogger<CurrentQueueTimedTask> _logger;
         private readonly Container _container;
         private readonly IMediator _bus;
         private readonly IMapper _mapper;
@@ -31,8 +35,9 @@ namespace Din.Application.WebAPI.Movies.HubTasks
         private Timer _timer;
         private bool _running;
 
-        public MovieQueueTimedTask(Container container, IMediator bus, IMapper mapper)
+        public CurrentQueueTimedTask(ILogger<CurrentQueueTimedTask> logger, Container container, IMediator bus, IMapper mapper)
         {
+            _logger = logger;
             _container = container;
             _bus = bus;
             _mapper = mapper;
@@ -42,7 +47,9 @@ namespace Din.Application.WebAPI.Movies.HubTasks
 
         public Task StartSendingQueue(IClientProxy client, string connectionId)
         {
-            if (_connections.FirstOrDefault(conn => conn.ConnectionId.Equals(connectionId)) != null)
+            _logger.LogInformation($"Start sending current queue to {connectionId}");
+            
+            if (_connections.Any(conn => conn.ConnectionId.Equals(connectionId)))
             {
                 return Task.CompletedTask;
             }
@@ -61,7 +68,7 @@ namespace Din.Application.WebAPI.Movies.HubTasks
                     {
                         await Execute();
                     }
-                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(TaskInterval));
             }
 
             return Task.CompletedTask;
@@ -71,10 +78,12 @@ namespace Din.Application.WebAPI.Movies.HubTasks
         {
             var connection = _connections.FirstOrDefault(conn => conn.ConnectionId.Equals(connectionId));
 
-            if (connection == null)
+            if (connection.Equals(default(Connection)))
             {
                 return Task.CompletedTask;
             }
+            
+            _logger.LogInformation($"Stop sending current queue for {connectionId}");
 
             _connections.Remove(connection);
 
@@ -82,6 +91,8 @@ namespace Din.Application.WebAPI.Movies.HubTasks
             {
                 return Task.CompletedTask;
             }
+            
+            _logger.LogInformation("Stop fetching current queue");
 
             while (_running)
             {
@@ -98,6 +109,8 @@ namespace Din.Application.WebAPI.Movies.HubTasks
         {
             try
             {
+                _logger.LogInformation("Start fetching current queue");
+                
                 if (_running)
                 {
                     return;
@@ -105,17 +118,30 @@ namespace Din.Application.WebAPI.Movies.HubTasks
 
                 _running = true;
 
-                var query = new GetMovieQueueQuery();
-                var result = await _bus.Send(query);
+                var movieQuery = new GetMovieQueueQuery();
+                var tvShowQuery = new GetTvShowQueueQuery();
 
-                _connections.ToList().ForEach(async conn => await conn.Client.SendAsync("GetMovieQueue",
-                    JsonConvert.SerializeObject(_mapper.Map<IEnumerable<MovieQueueResponse>>(result),
-                        SerializationSettings.GetSerializerSettings())));
+                var movieTask = _bus.Send(movieQuery);
+                var tvShowTask = _bus.Send(tvShowQuery);
+                
+                var collection = new List<QueueResponse>();
+                collection.AddRange(_mapper.Map<IEnumerable<QueueResponse>>(await movieTask));
+                collection.AddRange(_mapper.Map<IEnumerable<QueueResponse>>(await tvShowTask));
+                
+                var response = JsonConvert.SerializeObject(
+                    collection,
+                    SerializationSettings.GetSerializerSettings()
+                );
+
+                _connections.ToList().ForEach(async conn => await conn.Client.SendAsync("GetCurrentQueue", response));
 
                 _running = false;
+                
+                _logger.LogInformation("Finished fetching current queue");
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 _running = false;
                 _connections.Clear();
                 _timer?.Change(Timeout.Infinite, 0);

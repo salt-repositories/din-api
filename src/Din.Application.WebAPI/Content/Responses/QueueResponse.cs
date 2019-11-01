@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Din.Application.WebAPI.Content
+namespace Din.Application.WebAPI.Content.Responses
 {
     public class QueueResponse
     {
@@ -13,5 +13,6 @@ namespace Din.Application.WebAPI.Content
         public string Status { get; set; }
         public string DownloadId { get; set; }
         public string Protocol { get; set; }
+        public ContentResponse Content { get; set; }
     }
 }

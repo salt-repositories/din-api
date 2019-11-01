@@ -1,9 +1,9 @@
 ﻿using System;
-using Din.Application.WebAPI.ConfigurtionProviders;
+using Din.Application.WebAPI.ConfigurationProviders;
+using Din.Application.WebAPI.Content;
 using Din.Application.WebAPI.Injection.DotNet;
 using Din.Application.WebAPI.Injection.SimpleInjector;
 using Din.Application.WebAPI.Middleware;
-using Din.Application.WebAPI.Movies;
 using Din.Domain.BackgroundTasks.Concrete;
 using Din.Domain.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -110,7 +110,7 @@ namespace Din.Application.WebAPI
 
         private void InitializeHubs(IApplicationBuilder app)
         {
-            app.UseSignalR(routes => { routes.MapHub<MovieHub>("/hubs/movieHub"); });
+            app.UseSignalR(routes => { routes.MapHub<ContentHub>("/hubs/content"); });
         }
     }
 }

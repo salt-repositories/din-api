@@ -12,14 +12,18 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
     {
         public static void RegisterAutoMapper(this Container container)
         {
-            container.Register<IMapper>(() => new Mapper(new MapperConfiguration(config =>
+            var configuration = new MapperConfiguration(config =>
             {
+                config.Advanced.AllowAdditiveTypeMapCreation = true;
+                config.AllowNullCollections = true;
                 config.AddProfile(new AuthenticationMappingProfile());
                 config.AddProfile(new AccountsMappingProfile());
                 config.AddProfile(new MovieMappingProfile());
                 config.AddProfile(new TvShowMappingProfile());
                 config.AddProfile(new MediaMappingProfile());
-            })), Lifestyle.Singleton);
+            });
+            
+            container.Register<IMapper>(() => new Mapper(configuration), Lifestyle.Singleton);
         }
     }
 }

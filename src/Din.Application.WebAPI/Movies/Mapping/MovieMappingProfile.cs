@@ -1,5 +1,8 @@
-﻿using AutoMapper.Configuration;
+﻿using System.Collections.Generic;
+using AutoMapper.Configuration;
 using Din.Application.WebAPI.Content;
+using Din.Application.WebAPI.Content.Mapping;
+using Din.Application.WebAPI.Content.Responses;
 using Din.Application.WebAPI.Movies.Mapping.Converters;
 using Din.Application.WebAPI.Movies.Mapping.Resolvers;
 using Din.Application.WebAPI.Movies.Requests;
@@ -37,7 +40,8 @@ namespace Din.Application.WebAPI.Movies.Mapping
                 .ForMember(dest => dest.Genres,
                     opt => opt.MapFrom<MovieSearchGenreResolver>());
 
-            CreateMap<RadarrQueue, MovieQueueResponse>();
+            CreateMap<RadarrQueue, QueueResponse>()
+                .ConvertUsing<ToQueueResponseConverter<RadarrQueue, RadarrMovie>>();
         }
     }
 }

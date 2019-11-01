@@ -1,4 +1,4 @@
-﻿using Din.Application.WebAPI.Movies.HubTasks;
+﻿using Din.Application.WebAPI.Content.HubTasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Internal;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +18,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
 
         public static void RegisterHubTasks(this Container container)
         {
-            container.Register<MovieQueueTimedTask>(Lifestyle.Singleton);
+            container.Register<CurrentQueueTimedTask>(Lifestyle.Singleton);
         }
     }
 }

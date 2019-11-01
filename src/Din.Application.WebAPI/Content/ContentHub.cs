@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Din.Application.WebAPI.Movies.HubTasks;
+using Din.Application.WebAPI.Content.HubTasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Din.Application.WebAPI.Movies
+namespace Din.Application.WebAPI.Content
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class MovieHub : Hub
+    public class ContentHub : Hub
     {
-        private readonly MovieQueueTimedTask _task;
+        private readonly CurrentQueueTimedTask _task;
         
-        public MovieHub(MovieQueueTimedTask task)
+        public ContentHub(CurrentQueueTimedTask task)
         {
             _task = task;
         }
 
-        public async Task GetMovieQueue()
+        public async Task GetCurrentQueue()
         {
             await _task.StartSendingQueue(Clients.Caller, Context.ConnectionId);
         }
