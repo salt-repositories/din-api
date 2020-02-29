@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Din.Application.WebAPI.Extensions;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace Din.Application.WebAPI.Injection.DotNet
 {
@@ -13,19 +12,17 @@ namespace Din.Application.WebAPI.Injection.DotNet
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "DinApi", Version = "v1" });
-                c.OperationFilter<RemoveVersionFromParameter>();
-                c.DocumentFilter<ReplaceVersionWithExactValueInPath>();
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DinApi", Version = "v1" });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
 
-                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme.",
                     Name = "Authorization",
-                    In = "header"
+                    In = ParameterLocation.Header
                 });
             });
         }
