@@ -53,12 +53,14 @@ namespace Din.Application.WebAPI.Movies
         public async Task<IActionResult> GetMovies
         (
             [FromQuery] QueryParametersRequest queryParameters,
-            [FromQuery] FiltersRequest filters
+            [FromQuery] FiltersRequest filters,
+            [FromQuery] bool plex
         )
         {
             var query = new GetMoviesQuery(
                 _mapper.Map<QueryParameters<RadarrMovie>>(queryParameters),
-                _mapper.Map<Filters>(filters)
+                _mapper.Map<Filters>(filters),
+                plex
             );
             var result = await _bus.Send(query);
 

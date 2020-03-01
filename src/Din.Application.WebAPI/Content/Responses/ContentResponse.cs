@@ -15,5 +15,6 @@ namespace Din.Application.WebAPI.Content.Responses
         public bool HasFile { get; set; }
         public string Year { get; set; }
         public DateTime Added { get; set; }
+        public string PlexUrl { get; set; }
     }
 }
