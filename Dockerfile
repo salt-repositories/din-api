@@ -14,5 +14,5 @@ ENTRYPOINT ["dotnet", "test", "--logger:trx", "--results-directory:/opt/reports"
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 WORKDIR /app
-COPY --from=build /opt/Din.Application.WebAPI/app .
+COPY --from=build /opt/app .
 ENTRYPOINT ["dotnet", "Din.Application.WebAPI.dll"]
