@@ -6,6 +6,7 @@ using Din.Infrastructure.DataAccess.Connections.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
 
 namespace Din.Application.WebAPI.Injection.SimpleInjector
 {

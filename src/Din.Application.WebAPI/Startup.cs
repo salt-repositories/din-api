@@ -47,20 +47,21 @@ namespace Din.Application.WebAPI
             services.RegisterSwagger();
             services.AddHttpClient();
             services.AddSignalR();
-            //services.RegisterSignalRCorePipeline(_container);
+            services.RegisterSignalRCorePipeline(_container);
             services.AddSingleton<IHostedService>(new BackgroundTaskProcessor(_container));
+
             IntegrateSimpleInjector(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
+            InitializeContainer(app, env);
+
             app = env.IsDevelopment()
                 ? app.UseDeveloperExceptionPage()
                 : app.UseHsts();
 
-            InitializeContainer(app, env);
-            
             app.UseCors("Default");
             app.UseRouting();
             
@@ -107,7 +108,7 @@ namespace Din.Application.WebAPI
             _container.RegisterManagers();
             _container.RegisterBackgroundTasks(assemblies);
             _container.RegisterHubTasks();
-            
+
             _container.Verify();
         }
     }
