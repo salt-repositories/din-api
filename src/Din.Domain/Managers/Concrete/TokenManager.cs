@@ -47,7 +47,7 @@ namespace Din.Domain.Managers.Concrete
 
         public string GenerateRefreshToken(Guid id, DateTime creationDate)
         {
-            var token = RandomCodeGenerator.GenerateRandomCode(128);
+            var token = RandomCodeGenerator.GenerateRandomCode(256);
 
             _store.Insert(new RefreshTokenDto
             {

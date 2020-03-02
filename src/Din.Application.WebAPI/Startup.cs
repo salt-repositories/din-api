@@ -7,13 +7,12 @@ using Din.Application.WebAPI.Middleware;
 using Din.Domain.BackgroundTasks.Concrete;
 using Din.Domain.Extensions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace Din.Application.WebAPI
 {
@@ -22,7 +21,7 @@ namespace Din.Application.WebAPI
         public IConfiguration Configuration { get; }
         private readonly Container _container = new Container();
 
-        public Startup(IHostingEnvironment environment)
+        public Startup(IHostEnvironment environment)
         {
             var builder = new ConfigurationBuilder();
             builder.AddJsonFile("appsettings.json");
@@ -50,26 +49,35 @@ namespace Din.Application.WebAPI
             services.AddSignalR();
             services.RegisterSignalRCorePipeline(_container);
             services.AddSingleton<IHostedService>(new BackgroundTaskProcessor(_container));
+
             IntegrateSimpleInjector(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
+            InitializeContainer(app, env);
+
             app = env.IsDevelopment()
                 ? app.UseDeveloperExceptionPage()
                 : app.UseHsts();
 
-            InitializeContainer(app, env);
-            
             app.UseCors("Default");
+            app.UseRouting();
             
-            InitializeHubs(app);
-
             app.UseAuthentication();
-            app.UseMvc();
+            app.UseAuthorization();
+
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "DinApi V1"); });
+
+            app.UseMiddleware<ExceptionMiddleware>(_container);
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHub<ContentHub>("/hubs/content");
+            });
         }
 
         private void IntegrateSimpleInjector(IServiceCollection services)
@@ -83,13 +91,9 @@ namespace Din.Application.WebAPI
             });
         }
 
-        private void InitializeContainer(IApplicationBuilder app, IHostingEnvironment env)
+        private void InitializeContainer(IApplicationBuilder app, IHostEnvironment env)
         {
-            app.UseSimpleInjector(_container, options =>
-            {
-                options.UseMiddleware<ExceptionMiddleware>(app);
-                options.UseLogging();
-            });
+            app.UseSimpleInjector(_container);
 
             var assemblies = AppDomain.CurrentDomain.GetApplicationAssemblies();
             
@@ -104,13 +108,8 @@ namespace Din.Application.WebAPI
             _container.RegisterManagers();
             _container.RegisterBackgroundTasks(assemblies);
             _container.RegisterHubTasks();
-            
-            _container.Verify();
-        }
 
-        private void InitializeHubs(IApplicationBuilder app)
-        {
-            app.UseSignalR(routes => { routes.MapHub<ContentHub>("/hubs/content"); });
+            _container.Verify();
         }
     }
 }

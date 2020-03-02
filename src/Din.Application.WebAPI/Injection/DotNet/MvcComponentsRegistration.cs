@@ -1,5 +1,4 @@
 ﻿using Din.Application.WebAPI.Serilization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -11,7 +10,7 @@ namespace Din.Application.WebAPI.Injection.DotNet
     {
         public static void RegisterMvcComponents(this IServiceCollection services)
         {
-            services.AddMvc().AddJsonOptions(options =>
+            services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -19,7 +18,7 @@ namespace Din.Application.WebAPI.Injection.DotNet
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
                 options.SerializerSettings.ContractResolver = SerializationSettings.GetContractResolver();
                 options.SerializerSettings.Formatting = Formatting.Indented;
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            });
 
             services.AddApiVersioning(o => o.ApiVersionReader = new UrlSegmentApiVersionReader());
         }

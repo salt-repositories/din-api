@@ -2,6 +2,8 @@
 using Din.Domain.Clients.Giphy.Interfaces;
 using Din.Domain.Clients.IpStack.Concrete;
 using Din.Domain.Clients.IpStack.Interfaces;
+using Din.Domain.Clients.Plex.Concrete;
+using Din.Domain.Clients.Plex.Interfaces;
 using Din.Domain.Clients.Radarr.Concrete;
 using Din.Domain.Clients.Radarr.Interfaces;
 using Din.Domain.Clients.Sonarr.Concrete;
@@ -21,6 +23,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.Register<IRadarrClient, RadarrClient>(Lifestyle.Scoped);
             container.Register<ISonarrClient, SonarrClient>(Lifestyle.Scoped);
             container.Register<IUnsplashClient, UnsplashClient>(Lifestyle.Scoped);
+            container.Register<IPlexClient, PlexClient>(Lifestyle.Scoped);
         }
     }
 }

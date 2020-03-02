@@ -35,7 +35,8 @@ namespace Din.Application.WebAPI.Content.HubTasks
         private Timer _timer;
         private bool _running;
 
-        public CurrentQueueTimedTask(ILogger<CurrentQueueTimedTask> logger, Container container, IMediator bus, IMapper mapper)
+        public CurrentQueueTimedTask(ILogger<CurrentQueueTimedTask> logger, Container container, IMediator bus,
+            IMapper mapper)
         {
             _logger = logger;
             _container = container;
@@ -48,7 +49,7 @@ namespace Din.Application.WebAPI.Content.HubTasks
         public Task StartSendingQueue(IClientProxy client, string connectionId)
         {
             _logger.LogInformation($"Start sending current queue to {connectionId}");
-            
+
             if (_connections.Any(conn => conn.ConnectionId.Equals(connectionId)))
             {
                 return Task.CompletedTask;
@@ -82,7 +83,7 @@ namespace Din.Application.WebAPI.Content.HubTasks
             {
                 return Task.CompletedTask;
             }
-            
+
             _logger.LogInformation($"Stop sending current queue for {connectionId}");
 
             _connections.Remove(connection);
@@ -91,7 +92,7 @@ namespace Din.Application.WebAPI.Content.HubTasks
             {
                 return Task.CompletedTask;
             }
-            
+
             _logger.LogInformation("Stop fetching current queue");
 
             while (_running)
@@ -110,7 +111,7 @@ namespace Din.Application.WebAPI.Content.HubTasks
             try
             {
                 _logger.LogInformation("Start fetching current queue");
-                
+
                 if (_running)
                 {
                     return;
@@ -121,13 +122,12 @@ namespace Din.Application.WebAPI.Content.HubTasks
                 var movieQuery = new GetMovieQueueQuery();
                 var tvShowQuery = new GetTvShowQueueQuery();
 
-                var movieTask = _bus.Send(movieQuery);
-                var tvShowTask = _bus.Send(tvShowQuery);
-                
-                var collection = new List<QueueResponse>();
-                collection.AddRange(_mapper.Map<IEnumerable<QueueResponse>>(await movieTask));
-                collection.AddRange(_mapper.Map<IEnumerable<QueueResponse>>(await tvShowTask));
-                
+                var movieQueue = await _bus.Send(movieQuery);
+                var tvShowQueue = await _bus.Send(tvShowQuery);
+
+                var collection = _mapper.Map<IEnumerable<QueueResponse>>(movieQueue)
+                    .Concat(_mapper.Map<IEnumerable<QueueResponse>>(tvShowQueue));
+
                 var response = JsonConvert.SerializeObject(
                     collection,
                     SerializationSettings.GetSerializerSettings()
@@ -136,7 +136,7 @@ namespace Din.Application.WebAPI.Content.HubTasks
                 _connections.ToList().ForEach(async conn => await conn.Client.SendAsync("GetCurrentQueue", response));
 
                 _running = false;
-                
+
                 _logger.LogInformation("Finished fetching current queue");
             }
             catch (Exception exception)

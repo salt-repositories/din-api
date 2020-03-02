@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.AuthMethods.AppRole;
@@ -13,9 +13,9 @@ namespace Din.Application.WebAPI.ConfigurationProviders
 {
     public static class ConfigurationExtensions
     {
-        public static IHostingEnvironment Environment;
+        public static IHostEnvironment Environment;
 
-        public static void AddVaultSecrets(this IConfigurationBuilder builder, IHostingEnvironment environment)
+        public static void AddVaultSecrets(this IConfigurationBuilder builder, IHostEnvironment environment)
         {
             Environment = environment;
             builder.Add(new VaultConfigurationProvider());

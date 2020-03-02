@@ -2,6 +2,8 @@
 using Din.Domain.Clients.Giphy.Interfaces;
 using Din.Domain.Clients.IpStack.Concrete;
 using Din.Domain.Clients.IpStack.Interfaces;
+using Din.Domain.Clients.Plex.Concrete;
+using Din.Domain.Clients.Plex.Interfaces;
 using Din.Domain.Clients.Radarr.Concrete;
 using Din.Domain.Clients.Radarr.Interfaces;
 using Din.Domain.Clients.Sonarr.Concrete;
@@ -27,6 +29,8 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             var sonarrClientConfig = configuration.GetSection("Sonarr").Get<SonarrClientConfig>();
             var unsplashConfig = configuration.GetSection("Unsplash").Get<UnsplashClientConfig>();
             var sendGridConfig = configuration.GetSection("SendGrid").Get<SendGridConfiguration>();
+            var plexConfig = configuration.GetSection("Plex").Get<PlexConfig>();
+            var plexClientConfig = configuration.GetSection("PlexClient").Get<PlexClientConfig>();
 
             container.RegisterInstance<IJwtConfig>(jwtConfig);
             container.RegisterInstance<ITmdbClientConfig>(tmdbClientConfig);
@@ -36,6 +40,8 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.RegisterInstance<ISonarrClientConfig>(sonarrClientConfig);
             container.RegisterInstance<IUnsplashClientConfig>(unsplashConfig);
             container.RegisterInstance<ISendGridConfiguration>(sendGridConfig);
+            container.RegisterInstance<IPlexConfig>(plexConfig);
+            container.RegisterInstance<IPlexClientConfig>(plexClientConfig);
         }
     }
 }

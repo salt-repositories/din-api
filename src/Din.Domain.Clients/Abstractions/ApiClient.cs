@@ -47,6 +47,7 @@ namespace Din.Domain.Clients.Abstractions
         {
             client.Timeout = TimeSpan.FromSeconds(5);
             client.DefaultRequestHeaders.Add("User-Agent", "DinApi");
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
         }
 
         private async Task<HttpResponseMessage> Request(HttpClient client, HttpRequestMessage request,
