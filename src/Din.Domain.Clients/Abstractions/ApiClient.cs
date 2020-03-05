@@ -45,7 +45,7 @@ namespace Din.Domain.Clients.Abstractions
 
         private void SetClientProperties(HttpClient client)
         {
-            client.Timeout = TimeSpan.FromSeconds(30);
+            client.Timeout = TimeSpan.FromSeconds(5);
             client.DefaultRequestHeaders.Add("User-Agent", "DinApi");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         }
@@ -57,9 +57,14 @@ namespace Din.Domain.Clients.Abstractions
             {
                 return await client.SendAsync(request, cancellationToken);
             }
-            catch (TimeoutException)
+            catch (Exception exception)
             {
-                throw new HttpClientException($"[{GetType().Name}]: Timeout", null);
+                if (exception is TimeoutException || exception is TaskCanceledException)
+                {
+                    throw new HttpClientException($"[{GetType().Name}]: Timeout", null);
+                }
+
+                throw;
             }
         }
 
