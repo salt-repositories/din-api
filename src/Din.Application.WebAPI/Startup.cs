@@ -105,7 +105,7 @@ namespace Din.Application.WebAPI
             _container.RegisterConfigurations(Configuration);
             _container.RegisterClients();
             _container.RegisterStores();
-            _container.RegisterManagers();
+            _container.RegisterHelpers();
             _container.RegisterBackgroundTasks(assemblies);
             _container.RegisterHubTasks();
 

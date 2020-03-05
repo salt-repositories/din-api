@@ -53,12 +53,14 @@ namespace Din.Application.WebAPI.TvShows
         public async Task<IActionResult> GetTvShows
         (
             [FromQuery] QueryParametersRequest queryParameters,
-            [FromQuery] FiltersRequest filters
+            [FromQuery] FiltersRequest filters,
+            [FromQuery] bool plex
         )
         {
             var query = new GetTvShowsQuery(
                 _mapper.Map<QueryParameters<SonarrTvShow>>(queryParameters),
-                _mapper.Map<Filters>(filters)
+                _mapper.Map<Filters>(filters),
+                plex
             );
             var result = await _bus.Send(query);
 
@@ -69,13 +71,14 @@ namespace Din.Application.WebAPI.TvShows
         /// Get tv show by ID
         /// </summary>
         /// <param name="id">System ID</param>
+        /// <param name="plex">check is on plex</param>
         /// <returns>Single TvShow</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(TvShowResponse), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetTvShowById([FromRoute] int id)
+        public async Task<IActionResult> GetTvShowById([FromRoute] int id, [FromQuery] bool plex)
         {
-            var query = new GetTvShowByIdQuery(id);
+            var query = new GetTvShowByIdQuery(id, plex);
             var result = await _bus.Send(query);
 
             return Ok(result);

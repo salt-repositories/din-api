@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.Managers.Interfaces;
+using Din.Domain.Helpers.Interfaces;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Stores.Interfaces;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
@@ -14,9 +14,9 @@ namespace Din.Domain.Commands.Authentication
     {
         private readonly IAccountRepository _repository;
         private readonly IRefreshTokenStore _store;
-        private readonly ITokenManager _tokenManager;
+        private readonly ITokenHelper _tokenManager;
 
-        public GenerateTokenCommandHandler(IAccountRepository repository, IRefreshTokenStore store, ITokenManager tokenManager)
+        public GenerateTokenCommandHandler(IAccountRepository repository, IRefreshTokenStore store, ITokenHelper tokenManager)
         {
             _repository = repository;
             _store = store;

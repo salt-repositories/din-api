@@ -3,8 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Context;
 using Din.Domain.Exceptions.Concrete;
-using Din.Domain.Helpers;
-using Din.Domain.Managers.Interfaces;
+using Din.Domain.Helpers.Concrete;
+using Din.Domain.Helpers.Interfaces;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
@@ -16,14 +16,14 @@ namespace Din.Domain.Commands.Authentication
     public class SendAuthorizationCodeCommandHandler : IRequestHandler<SendAuthorizationCodeCommand>
     {
         private readonly IAccountRepository _repository;
-        private readonly IEmailManager _emailManager;
+        private readonly IEmailHelper _emailHelper;
         private readonly IRequestContext _context;
 
-        public SendAuthorizationCodeCommandHandler(IAccountRepository repository, IEmailManager emailManager,
+        public SendAuthorizationCodeCommandHandler(IAccountRepository repository, IEmailHelper emailHelper,
             IRequestContext context)
         {
             _repository = repository;
-            _emailManager = emailManager;
+            _emailHelper = emailHelper;
             _context = context;
         }
 
@@ -43,7 +43,7 @@ namespace Din.Domain.Commands.Authentication
                 }
             );
 
-            await _emailManager.SendAuthorizationCode(
+            await _emailHelper.SendAuthorizationCode(
                 request.Email,
                 account.Username,
                 authorizationCode,

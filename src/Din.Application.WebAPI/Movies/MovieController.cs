@@ -71,13 +71,14 @@ namespace Din.Application.WebAPI.Movies
         /// Get movie by ID
         /// </summary>
         /// <param name="id">system ID</param>
+        /// <param name="plex">check is on plex</param>
         /// <returns>Single movie</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(MovieResponse), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetMovieById([FromRoute] int id)
+        public async Task<IActionResult> GetMovieById([FromRoute] int id, [FromQuery] bool plex)
         {
-            var query = new GetMovieByIdQuery(id);
+            var query = new GetMovieByIdQuery(id, plex);
             var result = await _bus.Send(query);
 
             return Ok(_mapper.Map<MovieResponse>(result));

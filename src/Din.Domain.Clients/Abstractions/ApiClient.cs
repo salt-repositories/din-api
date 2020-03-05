@@ -57,9 +57,14 @@ namespace Din.Domain.Clients.Abstractions
             {
                 return await client.SendAsync(request, cancellationToken);
             }
-            catch
+            catch (Exception exception)
             {
-                throw new HttpClientException($"[{GetType().Name}]: Timeout", null);
+                if (exception is TimeoutException || exception is TaskCanceledException)
+                {
+                    throw new HttpClientException($"[{GetType().Name}]: Timeout", null);
+                }
+
+                throw;
             }
         }
 
