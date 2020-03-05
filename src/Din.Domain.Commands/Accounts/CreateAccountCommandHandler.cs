@@ -15,12 +15,12 @@ namespace Din.Domain.Commands.Accounts
     public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, Account>
     {
         private readonly IAccountRepository _repository;
-        private readonly IEmailHelper _emailManager;
+        private readonly IEmailHelper _emailHelper;
 
-        public CreateAccountCommandHandler(IAccountRepository repository, IEmailHelper emailManager)
+        public CreateAccountCommandHandler(IAccountRepository repository, IEmailHelper emailHelper)
         {
             _repository = repository;
-            _emailManager = emailManager;
+            _emailHelper = emailHelper;
         }
 
         public async Task<Account> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
@@ -51,7 +51,7 @@ namespace Din.Domain.Commands.Accounts
                 }
             };
 
-            await _emailManager.SendInvitation(
+            await _emailHelper.SendInvitation(
                 request.Account.Email,
                 request.Account.Username,
                 request.Account.Role.ToString(),

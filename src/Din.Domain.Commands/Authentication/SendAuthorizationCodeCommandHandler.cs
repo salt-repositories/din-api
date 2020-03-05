@@ -16,14 +16,14 @@ namespace Din.Domain.Commands.Authentication
     public class SendAuthorizationCodeCommandHandler : IRequestHandler<SendAuthorizationCodeCommand>
     {
         private readonly IAccountRepository _repository;
-        private readonly IEmailHelper _emailManager;
+        private readonly IEmailHelper _emailHelper;
         private readonly IRequestContext _context;
 
-        public SendAuthorizationCodeCommandHandler(IAccountRepository repository, IEmailHelper emailManager,
+        public SendAuthorizationCodeCommandHandler(IAccountRepository repository, IEmailHelper emailHelper,
             IRequestContext context)
         {
             _repository = repository;
-            _emailManager = emailManager;
+            _emailHelper = emailHelper;
             _context = context;
         }
 
@@ -43,7 +43,7 @@ namespace Din.Domain.Commands.Authentication
                 }
             );
 
-            await _emailManager.SendAuthorizationCode(
+            await _emailHelper.SendAuthorizationCode(
                 request.Email,
                 account.Username,
                 authorizationCode,

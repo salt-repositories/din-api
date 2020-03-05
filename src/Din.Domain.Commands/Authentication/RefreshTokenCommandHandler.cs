@@ -13,14 +13,14 @@ namespace Din.Domain.Commands.Authentication
     {
         private readonly IRefreshTokenStore _store;
         private readonly IAccountRepository _repository;
-        private readonly ITokenHelper _tokenManager;
+        private readonly ITokenHelper _tokenHelper;
 
         public RefreshTokenCommandHandler(IRefreshTokenStore store, IAccountRepository repository,
-            ITokenHelper tokenManager)
+            ITokenHelper tokenHelper)
         {
             _store = store;
             _repository = repository;
-            _tokenManager = tokenManager;
+            _tokenHelper = tokenHelper;
         }
 
         public async Task<TokenDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
@@ -38,9 +38,9 @@ namespace Din.Domain.Commands.Authentication
 
             return new TokenDto
             {
-                AccessToken = _tokenManager.GenerateJWtToken(account.Id, account.Role),
+                AccessToken = _tokenHelper.GenerateJWtToken(account.Id, account.Role),
                 ExpiresIn = 3600,
-                RefreshToken = _tokenManager.GenerateRefreshToken(account.Id, refreshToken.CreationDate),
+                RefreshToken = _tokenHelper.GenerateRefreshToken(account.Id, refreshToken.CreationDate),
                 TokenType = "Bearer"
             };
         }
