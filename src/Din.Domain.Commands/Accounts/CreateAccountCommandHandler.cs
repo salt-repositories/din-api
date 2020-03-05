@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Exceptions.Concrete;
-using Din.Domain.Helpers;
-using Din.Domain.Managers.Interfaces;
+using Din.Domain.Helpers.Concrete;
+using Din.Domain.Helpers.Interfaces;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
@@ -15,9 +15,9 @@ namespace Din.Domain.Commands.Accounts
     public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, Account>
     {
         private readonly IAccountRepository _repository;
-        private readonly IEmailManager _emailManager;
+        private readonly IEmailHelper _emailManager;
 
-        public CreateAccountCommandHandler(IAccountRepository repository, IEmailManager emailManager)
+        public CreateAccountCommandHandler(IAccountRepository repository, IEmailHelper emailManager)
         {
             _repository = repository;
             _emailManager = emailManager;

@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Exceptions.Concrete;
-using Din.Domain.Managers.Interfaces;
+using Din.Domain.Helpers.Interfaces;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Stores.Interfaces;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
@@ -13,10 +13,10 @@ namespace Din.Domain.Commands.Authentication
     {
         private readonly IRefreshTokenStore _store;
         private readonly IAccountRepository _repository;
-        private readonly ITokenManager _tokenManager;
+        private readonly ITokenHelper _tokenManager;
 
         public RefreshTokenCommandHandler(IRefreshTokenStore store, IAccountRepository repository,
-            ITokenManager tokenManager)
+            ITokenHelper tokenManager)
         {
             _store = store;
             _repository = repository;

@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Din.Domain.Helpers
+namespace Din.Domain.Helpers.Concrete
 {
     public static class RandomCodeGenerator
     {

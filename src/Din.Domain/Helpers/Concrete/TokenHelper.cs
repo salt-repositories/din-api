@@ -4,22 +4,21 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Din.Domain.Configurations.Interfaces;
-using Din.Domain.Helpers;
-using Din.Domain.Managers.Interfaces;
+using Din.Domain.Helpers.Interfaces;
 using Din.Domain.Models.Dtos;
 using Din.Domain.Models.Entities;
 using Din.Domain.Stores.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Din.Domain.Managers.Concrete
+namespace Din.Domain.Helpers.Concrete
 {
-    public class TokenManager : ITokenManager
+    public class TokenHelper : ITokenHelper
 
     {
         private readonly IRefreshTokenStore _store;
         private readonly IJwtConfig _config;
 
-        public TokenManager(IRefreshTokenStore store, IJwtConfig config)
+        public TokenHelper(IRefreshTokenStore store, IJwtConfig config)
         {
             _store = store;
             _config = config;

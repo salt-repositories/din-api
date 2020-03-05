@@ -3,19 +3,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.IpStack.Interfaces;
 using Din.Domain.Configurations.Interfaces;
-using Din.Domain.Managers.Interfaces;
+using Din.Domain.Helpers.Interfaces;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using UAParser;
 
-namespace Din.Domain.Managers.Concrete
+namespace Din.Domain.Helpers.Concrete
 {
-    public class EmailManager : IEmailManager
+    public class EmailHelper : IEmailHelper
     {
         private readonly ISendGridConfiguration _configuration;
         private readonly IIpStackClient _ipStackClient;
 
-        public EmailManager(ISendGridConfiguration configuration, IIpStackClient ipStackClient)
+        public EmailHelper(ISendGridConfiguration configuration, IIpStackClient ipStackClient)
         {
             _configuration = configuration;
             _ipStackClient = ipStackClient;
