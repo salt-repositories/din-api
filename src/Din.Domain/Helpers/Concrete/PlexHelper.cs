@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Abstractions;
@@ -22,19 +24,34 @@ namespace Din.Domain.Helpers.Concrete
 
         public Task CheckIsOnPlex<T>(ICollection<T> content, CancellationToken cancellationToken) where T : Content
         {
+            var exceptions = new ConcurrentQueue<Exception>();
+
             Parallel.ForEach(content, async (item) =>
             {
-                var response = await _client.SearchByTitle(item.Title.ToLower(), cancellationToken);
-
-                if
-                (
-                    response.MediaContainer?.Metadata?.Length > 0 &&
-                    response.MediaContainer.Metadata[0].Title.CalculateSimilarity(item.Title) > 0.6
-                )
+                try
                 {
-                    item.PlexUrl = $"https://app.plex.tv/desktop#!/server/{_config.ServerGuid}/details?key={response.MediaContainer.Metadata[0].Key}";
+                    var response = await _client.SearchByTitle(item.Title.ToLower(), cancellationToken);
+
+                    if
+                    (
+                        response.MediaContainer?.Metadata?.Length > 0 &&
+                        response.MediaContainer.Metadata[0].Title.CalculateSimilarity(item.Title) > 0.6
+                    )
+                    {
+                        item.PlexUrl =
+                            $"https://app.plex.tv/desktop#!/server/{_config.ServerGuid}/details?key={response.MediaContainer.Metadata[0].Key}";
+                    }
+                }
+                catch (Exception exception)
+                {
+                    exceptions.Enqueue(exception);
                 }
             });
+
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
+            }
 
             return Task.CompletedTask;
         }
