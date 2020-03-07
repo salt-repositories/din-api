@@ -45,9 +45,9 @@ namespace Din.Domain.Extensions
             var member = Expression.Property(param, propertyName);
             var valueExpression = GetValueExpression(propertyName, value, param);
             Expression body = Expression.Equal(member, valueExpression);
-            var expresion = Expression.Lambda<Func<T, bool>>(body, param);
+            var expression = Expression.Lambda<Func<T, bool>>(body, param);
 
-            return collection.Where(expresion.Compile());
+            return collection.Where(expression.Compile());
         }
 
         private static UnaryExpression GetValueExpression(string propertyName, string value, ParameterExpression param)
