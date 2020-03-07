@@ -45,7 +45,7 @@ namespace Din.Domain.Clients.Abstractions
 
         private void SetClientProperties(HttpClient client)
         {
-            client.Timeout = TimeSpan.FromSeconds(5);
+            client.Timeout = TimeSpan.FromSeconds(10);
             client.DefaultRequestHeaders.Add("User-Agent", "DinApi");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         }
@@ -76,7 +76,7 @@ namespace Din.Domain.Clients.Abstractions
 
                 throw new HttpClientException(
                     $"[{GetType().Name}]: {request.Method} {path} [{response.StatusCode}]",
-                    JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync())
+                    await response.Content.ReadAsStringAsync()
                 );
             }
         }

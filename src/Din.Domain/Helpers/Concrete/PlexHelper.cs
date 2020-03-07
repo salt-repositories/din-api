@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Din.Domain.Clients.Abstractions;
 using Din.Domain.Clients.Plex.Interfaces;
 using Din.Domain.Configurations.Interfaces;
+using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Extensions;
 using Din.Domain.Helpers.Interfaces;
 
@@ -47,6 +48,14 @@ namespace Din.Domain.Helpers.Concrete
                     exceptions.Enqueue(exception);
                 }
             });
+
+            foreach (var exception in exceptions)
+            {
+                if (exception is HttpClientException)
+                {
+                    exceptions.TryDequeue(out _);
+                }
+            }
 
             if (exceptions.Count > 0)
             {
