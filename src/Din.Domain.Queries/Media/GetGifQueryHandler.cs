@@ -15,9 +15,9 @@ namespace Din.Domain.Queries.Media
             _client = client;
         }
 
-        public async Task<Giphy> Handle(GetGifQuery request, CancellationToken cancellationToken)
+        public Task<Giphy> Handle(GetGifQuery request, CancellationToken cancellationToken)
         {
-            return await _client.GetRandomGifByTagAsync(request.Tag, cancellationToken);
+            return _client.GetRandomGifByTagAsync(request.Tag, cancellationToken);
         }
     }
 }

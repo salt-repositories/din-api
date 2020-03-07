@@ -10,9 +10,9 @@ namespace Din.Infrastructure.DataAccess.Connections.Concrete
         {
         }
 
-        public async Task<bool> CheckContextHealth(CancellationToken cancellationToken)
+        public Task<bool> CheckContextHealth(CancellationToken cancellationToken)
         {
-            return await Database.CanConnectAsync(cancellationToken);
+            return Database.CanConnectAsync(cancellationToken);
         }
     }
 }

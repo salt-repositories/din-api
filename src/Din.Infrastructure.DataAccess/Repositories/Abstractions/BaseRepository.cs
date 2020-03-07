@@ -15,11 +15,11 @@ namespace Din.Infrastructure.DataAccess.Repositories.Abstractions
             Context = context;
         }
 
-        public async Task<int> Count<T>(CancellationToken cancellationToken) where T : class
+        public Task<int> Count<T>(CancellationToken cancellationToken) where T : class
         {
             IQueryable<T> query = Context.Set<T>();
  
-            return await query.CountAsync(cancellationToken);
+            return query.CountAsync(cancellationToken);
         }
 
         public void Insert<T>(T entity) where T : class

@@ -18,7 +18,8 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
         }
 
-        public async Task<IList<Account>> GetAccounts(QueryParameters<Account> queryParameters, CancellationToken cancellationToken)
+        public async Task<IList<Account>> GetAccounts(QueryParameters<Account> queryParameters,
+            CancellationToken cancellationToken)
         {
             IQueryable<Account> query = Context.Set<Account>()
                 .Include(a => a.Image)
@@ -29,25 +30,25 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
             return await query.ToListAsync(cancellationToken);
         }
 
-        public async Task<Account> GetAccountById(Guid id, CancellationToken cancellationToken)
+        public Task<Account> GetAccountById(Guid id, CancellationToken cancellationToken)
         {
-            return await Context.Account
+            return Context.Account
                 .Include(a => a.Image)
                 .Include(a => a.Codes)
                 .FirstOrDefaultAsync(a => a.Id.Equals(id), cancellationToken);
         }
 
-        public async Task<Account> GetAccountByUsername(string username, CancellationToken cancellationToken)
+        public Task<Account> GetAccountByUsername(string username, CancellationToken cancellationToken)
         {
-            return await Context.Account
+            return Context.Account
                 .Include(a => a.Image)
                 .Include(a => a.Codes)
                 .FirstOrDefaultAsync(a => a.Username.Equals(username), cancellationToken);
         }
 
-        public async Task<Account> GetAccountByEmail(string email, CancellationToken cancellationToken)
+        public Task<Account> GetAccountByEmail(string email, CancellationToken cancellationToken)
         {
-            return await Context.Account
+            return Context.Account
                 .Include(a => a.Image)
                 .Include(a => a.Codes)
                 .FirstOrDefaultAsync(a => a.Email.Equals(email), cancellationToken);

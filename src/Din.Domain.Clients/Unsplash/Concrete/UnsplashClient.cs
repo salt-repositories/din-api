@@ -18,12 +18,12 @@ namespace Din.Domain.Clients.Unsplash.Concrete
             _config = config;
         }
 
-        public async Task<IEnumerable<UnsplashImage>> GetImagesAsync(CancellationToken cancellationToken)
+        public Task<IEnumerable<UnsplashImage>> GetImagesAsync(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, 
                 new Uri($"{_config.Url}photos/random?client_id={_config.Key}&query=nature&orientation=landscape&count=20&featured"));
 
-            return await SendRequest<IEnumerable<UnsplashImage>>(request, cancellationToken);
+            return SendRequest<IEnumerable<UnsplashImage>>(request, cancellationToken);
         }
     }
 }

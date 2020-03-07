@@ -16,9 +16,9 @@ namespace Din.Domain.Queries.TvShows
             _client = client;
         }
 
-        public async Task<IEnumerable<SonarrCalendar>> Handle(GetTvShowCalendarQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<SonarrCalendar>> Handle(GetTvShowCalendarQuery request, CancellationToken cancellationToken)
         {
-            return await _client.GetCalendarAsync(request.DateRange, cancellationToken);
+            return _client.GetCalendarAsync(request.DateRange, cancellationToken);
         }
     }
 }

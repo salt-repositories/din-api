@@ -20,23 +20,23 @@ namespace Din.Domain.Clients.Sonarr.Concrete
             _config = config;
         }
 
-        public async Task<IEnumerable<SonarrTvShow>> GetTvShowsAsync(CancellationToken cancellationToken)
+        public Task<IEnumerable<SonarrTvShow>> GetTvShowsAsync(CancellationToken cancellationToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, 
+            var request = new HttpRequestMessage(HttpMethod.Get,
                 new Uri($"{_config.Url}api/series?apikey={_config.Key}"));
 
-            return await SendRequest<IEnumerable<SonarrTvShow>>(request, cancellationToken);
+            return SendRequest<IEnumerable<SonarrTvShow>>(request, cancellationToken);
         }
 
-        public async Task<SonarrTvShow> GetTvShowByIdAsync(int id, CancellationToken cancellationToken)
+        public Task<SonarrTvShow> GetTvShowByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, 
+            var request = new HttpRequestMessage(HttpMethod.Get,
                 new Uri($"{_config.Url}api/series/{id}?apikey={_config.Key}"));
 
-            return await SendRequest<SonarrTvShow>(request, cancellationToken);
+            return SendRequest<SonarrTvShow>(request, cancellationToken);
         }
 
-        public async Task<SonarrTvShow> AddTvShowAsync(SonarrTvShowRequest tvShow, CancellationToken cancellationToken)
+        public Task<SonarrTvShow> AddTvShowAsync(SonarrTvShowRequest tvShow, CancellationToken cancellationToken)
         {
             tvShow.RootFolderPath = _config.SaveLocation;
 
@@ -46,25 +46,27 @@ namespace Din.Domain.Clients.Sonarr.Concrete
                 Content = new StringContent(JsonConvert.SerializeObject(tvShow))
             };
 
-            return await SendRequest<SonarrTvShow>(request, cancellationToken);
+            return SendRequest<SonarrTvShow>(request, cancellationToken);
         }
 
-        public async Task<IEnumerable<SonarrCalendar>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken)
+        public Task<IEnumerable<SonarrCalendar>> GetCalendarAsync((DateTime from, DateTime till) dateRange,
+            CancellationToken cancellationToken)
         {
             var (from, till) = dateRange;
 
-            var request = new HttpRequestMessage(HttpMethod.Get, 
-                new Uri($"{_config.Url}api/calendar?apikey={_config.Key}&start={from:yyyy-MM-dd}&end={till:yyyy-MM-dd}"));
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                new Uri(
+                    $"{_config.Url}api/calendar?apikey={_config.Key}&start={from:yyyy-MM-dd}&end={till:yyyy-MM-dd}"));
 
-            return await SendRequest<IEnumerable<SonarrCalendar>>(request, cancellationToken);
+            return SendRequest<IEnumerable<SonarrCalendar>>(request, cancellationToken);
         }
 
-        public async Task<IEnumerable<SonarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
+        public Task<IEnumerable<SonarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, 
+            var request = new HttpRequestMessage(HttpMethod.Get,
                 new Uri($"{_config.Url}api/queue?apikey={_config.Key}"));
 
-            return await SendRequest<IEnumerable<SonarrQueue>>(request, cancellationToken);
+            return SendRequest<IEnumerable<SonarrQueue>>(request, cancellationToken);
         }
     }
 }

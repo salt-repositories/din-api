@@ -12,9 +12,9 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
         }
 
-        public async Task<LoginLocation> FindLoginLocationByCoordinates(string latitude, string longitude)
+        public Task<LoginLocation> FindLoginLocationByCoordinates(string latitude, string longitude)
         {
-            return await Context.LoginLocation
+            return Context.LoginLocation
                 .FirstOrDefaultAsync(l => l.Latitude.Equals(latitude) && l.Longitude.Equals(longitude));
         }
     }

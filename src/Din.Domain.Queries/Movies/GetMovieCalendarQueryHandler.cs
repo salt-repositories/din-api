@@ -16,9 +16,9 @@ namespace Din.Domain.Queries.Movies
             _client = client;
         }
 
-        public async Task<IEnumerable<RadarrMovie>> Handle(GetMovieCalendarQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<RadarrMovie>> Handle(GetMovieCalendarQuery request, CancellationToken cancellationToken)
         {
-           return await _client.GetCalendarAsync(request.DateRange, cancellationToken);
+           return _client.GetCalendarAsync(request.DateRange, cancellationToken);
         }
     }
 }
