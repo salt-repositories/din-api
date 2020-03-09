@@ -45,6 +45,8 @@ namespace Din.Application.WebAPI.TvShows.Mapping
                 .ForMember(dest => dest.Genres, opt => opt.MapFrom<TvShowSearchGenreResolver>());
 
             CreateMap<SearchTvSeason, TvShowSearchSeason>();
+
+            CreateMap<SonarrCalendar, TvShowCalendarResponse>();
            
             CreateMap<SonarrQueue, QueueResponse>()
                 .ConvertUsing<ToQueueResponseConverter<SonarrQueue, SonarrTvShow>>();
