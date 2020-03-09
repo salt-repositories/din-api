@@ -17,12 +17,12 @@ namespace Din.Domain.Clients.Giphy.Concrete
             _config = config;
         }
 
-        public async Task<Responses.Giphy> GetRandomGifByTagAsync(string tag, CancellationToken cancellationToken)
+        public Task<Responses.Giphy> GetRandomGifByTagAsync(string tag, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, 
                 new Uri($"{_config.Url}{ApiVersion}/gifs/random?api_key={_config.Key}&tag={tag}"));
 
-            return await SendRequest<Responses.Giphy>(request, cancellationToken);
+            return SendRequest<Responses.Giphy>(request, cancellationToken);
         }
     }
 }

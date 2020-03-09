@@ -16,9 +16,9 @@ namespace Din.Domain.Queries.TvShows
             _client = client;
         }
 
-        public async Task<IEnumerable<SonarrQueue>> Handle(GetTvShowQueueQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<SonarrQueue>> Handle(GetTvShowQueueQuery request, CancellationToken cancellationToken)
         {
-            return await _client.GetQueueAsync(cancellationToken);
+            return _client.GetQueueAsync(cancellationToken);
         }
     }
 }

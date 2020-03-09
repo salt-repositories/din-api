@@ -20,23 +20,23 @@ namespace Din.Domain.Clients.Radarr.Concrete
             _config = config;
         }
 
-        public async Task<IEnumerable<RadarrMovie>> GetMoviesAsync(CancellationToken cancellationToken)
+        public Task<IEnumerable<RadarrMovie>> GetMoviesAsync(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, 
                 new Uri($"{_config.Url}api/movie?apikey={_config.Key}"));
 
-            return await SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
+            return SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
         }
 
-        public async Task<RadarrMovie> GetMovieByIdAsync(int id, CancellationToken cancellationToken)
+        public Task<RadarrMovie> GetMovieByIdAsync(int id, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, 
                 new Uri($"{_config.Url}api/movie/{id}?apikey={_config.Key}"));
 
-            return await SendRequest<RadarrMovie>(request, cancellationToken);
+            return SendRequest<RadarrMovie>(request, cancellationToken);
         }
 
-        public async Task<RadarrMovie> AddMovieAsync(RadarrMovieRequest movie, CancellationToken cancellationToken)
+        public Task<RadarrMovie> AddMovieAsync(RadarrMovieRequest movie, CancellationToken cancellationToken)
         {
             movie.RootFolderPath = _config.SaveLocation;
 
@@ -46,24 +46,24 @@ namespace Din.Domain.Clients.Radarr.Concrete
                 Content = new StringContent(JsonConvert.SerializeObject(movie))
             };
 
-            return await SendRequest<RadarrMovie>(request, cancellationToken);
+            return SendRequest<RadarrMovie>(request, cancellationToken);
         }
 
-        public async Task<IEnumerable<RadarrMovie>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken)
+        public Task<IEnumerable<RadarrMovie>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken)
         {
             var (dateTime, till) = dateRange;
             var request = new HttpRequestMessage(HttpMethod.Get, 
                 new Uri($"{_config.Url}api/calendar?apikey={_config.Key}&start={dateTime:yyyy-MM-dd}&end={till:yyyy-MM-dd}"));
 
-            return await SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
+            return SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
         }
 
-        public async Task<IEnumerable<RadarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
+        public Task<IEnumerable<RadarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
                 new Uri($"{_config.Url}api/queue?apikey={_config.Key}"));
 
-            return await SendRequest<IEnumerable<RadarrQueue>>(request, cancellationToken);
+            return SendRequest<IEnumerable<RadarrQueue>>(request, cancellationToken);
         }
     }
 }

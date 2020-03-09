@@ -17,14 +17,14 @@ namespace Din.Domain.Clients.Plex.Concrete
             _config = config;
         }
 
-        public async Task<SearchResponse> SearchByTitle(string title, CancellationToken cancellationToken)
+        public Task<SearchResponse> SearchByTitle(string title, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
                 new Uri($"{_config.Url}search?query={title}&X-Plex-Token={_config.Key}")    
             );
 
-            return await SendRequest<SearchResponse>(request, cancellationToken);
+            return SendRequest<SearchResponse>(request, cancellationToken);
         }
     }
 }

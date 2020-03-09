@@ -17,12 +17,12 @@ namespace Din.Domain.Clients.IpStack.Concrete
             _config = config;
         }
 
-        public async Task<IpStackLocation> GetLocationAsync(string ip, CancellationToken cancellationToken)
+        public Task<IpStackLocation> GetLocationAsync(string ip, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, 
                 new Uri($"{_config.Url}{ip}?access_key={_config.Key}"));
 
-            return await SendRequest<IpStackLocation>(request, cancellationToken);
+            return SendRequest<IpStackLocation>(request, cancellationToken);
         }
     }
 }
