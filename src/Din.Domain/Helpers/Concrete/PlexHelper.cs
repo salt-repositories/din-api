@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Abstractions;
@@ -23,11 +24,10 @@ namespace Din.Domain.Helpers.Concrete
             _config = config;
         }
 
-        public Task CheckIsOnPlex<T>(ICollection<T> content, CancellationToken cancellationToken) where T : Content
+        public async Task CheckIsOnPlex<T>(ICollection<T> content, CancellationToken cancellationToken) where T : Content
         {
             var exceptions = new ConcurrentQueue<Exception>();
-
-            Parallel.ForEach(content, async (item) =>
+            var tasks = content.Select(item => Task.Run(async () =>
             {
                 try
                 {
@@ -38,11 +38,8 @@ namespace Din.Domain.Helpers.Concrete
 
                     var response = await _client.SearchByTitle(item.Title.ToLower(), cancellationToken);
 
-                    if
-                    (
-                        response.MediaContainer?.Metadata?.Length > 0 &&
-                        response.MediaContainer.Metadata[0].Title.CalculateSimilarity(item.Title) > 0.6
-                    )
+                    if (response.MediaContainer?.Metadata?.Length > 0 &&
+                        response.MediaContainer.Metadata[0].Title.CalculateSimilarity(item.Title) > 0.6)
                     {
                         item.PlexUrl =
                             $"https://app.plex.tv/desktop#!/server/{_config.ServerGuid}/details?key={response.MediaContainer.Metadata[0].Key}";
@@ -50,24 +47,19 @@ namespace Din.Domain.Helpers.Concrete
                 }
                 catch (Exception exception)
                 {
-                    exceptions.Enqueue(exception);
+                    if (!(exception is HttpClientException))
+                    {
+                        exceptions.Enqueue(exception);
+                    }
                 }
-            });
+            }, cancellationToken));
 
-            foreach (var exception in exceptions)
-            {
-                if (exception is HttpClientException)
-                {
-                    exceptions.TryDequeue(out _);
-                }
-            }
+            await Task.WhenAll(tasks);
 
             if (exceptions.Count > 0)
             {
                 throw new AggregateException(exceptions);
             }
-
-            return Task.CompletedTask;
         }
     }
 }
