@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using Din.Domain.Clients.Abstractions;
+using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Extensions;
 using Din.Domain.Models.Querying;
 using Din.Domain.Stores.Interfaces;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Din.Domain.Stores.Concrete
 {
@@ -40,6 +44,15 @@ namespace Din.Domain.Stores.Concrete
         public void AddOne(T content)
         {
             Content?.ToList().Add(content);
+        }
+
+        public void UpdateMultiple(ICollection<T> collection)
+        {
+            foreach (var content in collection)
+            {
+                var list = Content.ToList();
+                list[list.FindIndex(c => c.SystemId.Equals(content.SystemId))] = content;
+            }
         }
 
         private (IEnumerable<T> collection, int count) ApplyFilters(Filters filters)

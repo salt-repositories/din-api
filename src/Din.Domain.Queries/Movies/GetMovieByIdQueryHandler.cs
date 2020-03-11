@@ -1,23 +1,28 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Radarr.Responses;
+using Din.Domain.Helpers.Interfaces;
+using Din.Domain.Queries.Abstractions;
 using Din.Domain.Stores.Interfaces;
 using MediatR;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMovieByIdQueryHandler : IRequestHandler<GetMovieByIdQuery, RadarrMovie>
+    public class GetMovieByIdQueryHandler : ContentRetrievalQueryHandler<RadarrMovie>,
+        IRequestHandler<GetMovieByIdQuery, RadarrMovie>
     {
-        private readonly IContentStore<RadarrMovie> _store;
-
-        public GetMovieByIdQueryHandler(IContentStore<RadarrMovie> store)
+        public GetMovieByIdQueryHandler(IPlexHelper plexHelper, IPosterHelper posterHelper,
+            IContentStore<RadarrMovie> store) : base(plexHelper, posterHelper, store)
         {
-            _store = store;
         }
 
-        public Task<RadarrMovie> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
+        public async Task<RadarrMovie> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
         {
-            return Task.FromResult(_store.GetOneById(request.Id));
+            var item = Store.GetOneById(request.Id);
+
+            await RetrieveOptionalData(new[] {item}, request.Plex, request.Poster, cancellationToken);
+
+            return item;
         }
     }
 }

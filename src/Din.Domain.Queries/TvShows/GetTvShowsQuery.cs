@@ -11,12 +11,14 @@ namespace Din.Domain.Queries.TvShows
     {
         public Filters Filters { get; }
         public bool Plex { get; }
+        public bool Poster { get; }
 
 
-        public GetTvShowsQuery(QueryParameters<SonarrTvShow> queryParameters, Filters filters, bool plex) : base(queryParameters)
+        public GetTvShowsQuery(QueryParameters<SonarrTvShow> queryParameters, Filters filters, bool plex, bool poster) : base(queryParameters)
         {
             Filters = filters;
             Plex = plex;
+            Poster = poster;
         }
     }
 }

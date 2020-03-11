@@ -17,5 +17,6 @@ namespace Din.Domain.Clients.Abstractions
         [JsonProperty("year")] public string Year { get; set; }
         [JsonProperty("added")] public DateTime Added { get; set; }
         public string PlexUrl { get; set; }
+        public string PosterPath { get; set; }
     }
 }

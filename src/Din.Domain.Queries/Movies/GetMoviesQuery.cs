@@ -12,11 +12,14 @@ namespace Din.Domain.Queries.Movies
     {
         public Filters Filters { get; }
         public bool Plex { get; }
+        public bool Poster { get; }
 
-        public GetMoviesQuery(QueryParameters<RadarrMovie> queryParameters, Filters filters, bool plex) : base(queryParameters)
+        public GetMoviesQuery(QueryParameters<RadarrMovie> queryParameters, Filters filters, bool plex, bool poster) :
+            base(queryParameters)
         {
             Filters = filters;
             Plex = plex;
+            Poster = poster;
         }
     }
 }
