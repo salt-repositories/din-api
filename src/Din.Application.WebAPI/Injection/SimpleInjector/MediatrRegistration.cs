@@ -31,7 +31,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 {
                     typeof(RequestPreProcessorBehavior<,>),
                     typeof(TransactionProcessorBehaviour<,>),
-                    typeof(RequestPostProcessorBehavior<,>)
+                    typeof(RequestPostProcessorBehavior<,>),
                 }
             );
 
@@ -40,7 +40,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 {
                     typeof(AuthorizationMiddleware<>),
                     typeof(FluentValidationMiddleware<>),
-                    typeof(ContentStorePreRequestUpdater<>)
+                    typeof(ContentStorePreRequestUpdater<>),
                 }
             );
 

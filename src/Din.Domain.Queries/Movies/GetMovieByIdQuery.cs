@@ -9,11 +9,13 @@ namespace Din.Domain.Queries.Movies
     {
         public int Id { get; }
         public bool Plex { get; }
+        public bool Poster { get; }
 
-        public GetMovieByIdQuery(int id, bool plex)
+        public GetMovieByIdQuery(int id, bool plex, bool poster)
         {
             Id = id;
             Plex = plex;
+            Poster = poster;
         }
     }
 }

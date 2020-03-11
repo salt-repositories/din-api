@@ -54,13 +54,15 @@ namespace Din.Application.WebAPI.Movies
         (
             [FromQuery] QueryParametersRequest queryParameters,
             [FromQuery] FiltersRequest filters,
-            [FromQuery] bool plex
+            [FromQuery] bool plex,
+            [FromQuery] bool poster
         )
         {
             var query = new GetMoviesQuery(
                 _mapper.Map<QueryParameters<RadarrMovie>>(queryParameters),
                 _mapper.Map<Filters>(filters),
-                plex
+                plex,
+                poster
             );
             var result = await _bus.Send(query);
 
@@ -72,13 +74,14 @@ namespace Din.Application.WebAPI.Movies
         /// </summary>
         /// <param name="id">system ID</param>
         /// <param name="plex">check is on plex</param>
+        /// <param name="poster">get poster</param>
         /// <returns>Single movie</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(MovieResponse), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetMovieById([FromRoute] int id, [FromQuery] bool plex)
+        public async Task<IActionResult> GetMovieById([FromRoute] int id, [FromQuery] bool plex, [FromQuery] bool poster)
         {
-            var query = new GetMovieByIdQuery(id, plex);
+            var query = new GetMovieByIdQuery(id, plex, poster);
             var result = await _bus.Send(query);
 
             return Ok(_mapper.Map<MovieResponse>(result));

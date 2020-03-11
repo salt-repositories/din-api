@@ -16,5 +16,6 @@ namespace Din.Application.WebAPI.Content.Responses
         public string Year { get; set; }
         public DateTime Added { get; set; }
         public string PlexUrl { get; set; }
+        public string PosterPath { get; set; }
     }
 }

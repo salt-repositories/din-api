@@ -11,6 +11,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.Register<ITokenHelper, TokenHelper>(Lifestyle.Scoped);
             container.Register<IEmailHelper, EmailHelper>(Lifestyle.Scoped);
             container.Register<IPlexHelper, PlexHelper>(Lifestyle.Scoped);
+            container.Register<IPosterHelper, PosterHelper>(Lifestyle.Scoped);
         }
     }
 }

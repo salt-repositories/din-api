@@ -31,6 +31,11 @@ namespace Din.Domain.Helpers.Concrete
             {
                 try
                 {
+                    if (!string.IsNullOrEmpty(item.PlexUrl))
+                    {
+                        return;
+                    }
+
                     var response = await _client.SearchByTitle(item.Title.ToLower(), cancellationToken);
 
                     if

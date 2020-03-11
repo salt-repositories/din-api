@@ -9,11 +9,13 @@ namespace Din.Domain.Queries.TvShows
     {
         public int Id { get; }
         public bool Plex { get; }
+        public bool Poster { get; }
 
-        public GetTvShowByIdQuery(int id, bool plex)
+        public GetTvShowByIdQuery(int id, bool plex, bool poster)
         {
             Id = id;
             Plex = plex;
+            Poster = poster;
         }
     }
 }

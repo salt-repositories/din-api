@@ -1,34 +1,29 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Sonarr.Responses;
 using Din.Domain.Helpers.Interfaces;
+using Din.Domain.Queries.Abstractions;
 using Din.Domain.Queries.Querying;
 using Din.Domain.Stores.Interfaces;
 using MediatR;
 
 namespace Din.Domain.Queries.TvShows
 {
-    public class GetTvShowsQueryHandler : IRequestHandler<GetTvShowsQuery, QueryResult<SonarrTvShow>>
+    public class GetTvShowsQueryHandler : ContentRetrievalQueryHandler<SonarrTvShow>,
+        IRequestHandler<GetTvShowsQuery, QueryResult<SonarrTvShow>>
     {
-        private readonly IContentStore<SonarrTvShow> _store;
-        private readonly IPlexHelper _helper;
-
-        public GetTvShowsQueryHandler(IContentStore<SonarrTvShow> store, IPlexHelper helper)
+        public GetTvShowsQueryHandler(IPlexHelper plexHelper, IPosterHelper posterHelper,
+            IContentStore<SonarrTvShow> store) : base(plexHelper, posterHelper, store)
         {
-            _store = store;
-            _helper = helper;
         }
 
-        public async Task<QueryResult<SonarrTvShow>> Handle(GetTvShowsQuery request, CancellationToken cancellationToken)
+        public async Task<QueryResult<SonarrTvShow>> Handle(GetTvShowsQuery request,
+            CancellationToken cancellationToken)
         {
-            var (tvShows, count) = _store.GetAll(request.QueryParameters, request.Filters);
+            var (tvShows, count) = Store.GetAll(request.QueryParameters, request.Filters);
 
-            if (request.Plex)
-            {
-                await _helper.CheckIsOnPlex(tvShows, cancellationToken);
-            }
-
+            await RetrieveOptionalData(tvShows, request.Plex, request.Poster, cancellationToken);
+            
             return new QueryResult<SonarrTvShow>(tvShows, count);
         }
     }
