@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Abstractions;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Configurations.Interfaces;
+using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Helpers.Interfaces;
-using Microsoft.EntityFrameworkCore.Migrations;
 using TMDbLib.Client;
 
 namespace Din.Domain.Helpers.Concrete
@@ -23,11 +23,10 @@ namespace Din.Domain.Helpers.Concrete
 
         }
 
-        public Task GetPosters<T>(ICollection<T> content, CancellationToken cancellationToken) where T : Content
+        public async Task GetPosters<T>(ICollection<T> content, CancellationToken cancellationToken) where T : Content
         {
             var exceptions = new ConcurrentQueue<Exception>();
-
-            Parallel.ForEach(content, async (item) =>
+            var tasks = content.Select(item => Task.Run(async () =>
             {
                 try
                 {
@@ -50,16 +49,19 @@ namespace Din.Domain.Helpers.Concrete
                 }
                 catch (Exception exception)
                 {
-                    exceptions.Enqueue(exception);
+                    if (!(exception is HttpClientException))
+                    {
+                        exceptions.Enqueue(exception);
+                    }
                 }
-            });
+            }, cancellationToken));
+
+            await Task.WhenAll(tasks);
 
             if (exceptions.Count > 0)
             {
                 throw new AggregateException(exceptions);
             }
-
-            return Task.CompletedTask;
         }
     }
 }
