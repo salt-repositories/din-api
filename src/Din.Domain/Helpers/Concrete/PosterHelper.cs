@@ -20,7 +20,6 @@ namespace Din.Domain.Helpers.Concrete
         public PosterHelper(ITmdbClientConfig config)
         {
             _client = new TMDbClient(config.Key);
-
         }
 
         public async Task GetPosters<T>(ICollection<T> content, CancellationToken cancellationToken) where T : Content
@@ -39,12 +38,16 @@ namespace Din.Domain.Helpers.Concrete
                     {
                         var result = await _client.SearchMovieAsync(item.Title, 0, false, Convert.ToInt32(item.Year),
                             cancellationToken);
-                        item.PosterPath = result.Results[0].PosterPath;
+                        item.PosterPath = result.Results.Count > 0
+                            ? result.Results[0].PosterPath
+                            : null;
                     }
                     else
                     {
                         var result = await _client.SearchTvShowAsync(item.Title, 0, cancellationToken);
-                        item.PosterPath = result.Results[0].PosterPath;
+                        item.PosterPath = result.Results.Count > 0
+                            ? result.Results[0].PosterPath
+                            : null;
                     }
                 }
                 catch (Exception exception)
