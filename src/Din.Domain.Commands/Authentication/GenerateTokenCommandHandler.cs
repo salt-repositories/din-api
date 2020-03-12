@@ -34,6 +34,11 @@ namespace Din.Domain.Commands.Authentication
                 return new TokenDto {ErrorMessage = "Invalid credentials"};
             }
 
+            if (!account.Active)
+            {
+                return new TokenDto {ErrorMessage = "Account is inactive, please reset your password"};
+            }
+
             _store.Invoke(account.Id);
 
             return new TokenDto
