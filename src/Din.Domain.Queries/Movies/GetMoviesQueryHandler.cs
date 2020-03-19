@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMoviesQueryHandler : ContentRetrievalQueryHandler<RadarrMovie>,
+    public class GetMoviesQueryHandler : ContentQueryHandler<RadarrMovie>,
         IRequestHandler<GetMoviesQuery, QueryResult<RadarrMovie>>
     {
         public GetMoviesQueryHandler(IPlexHelper plexHelper, IPosterHelper posterHelper,

@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMovieByIdQueryHandler : ContentRetrievalQueryHandler<RadarrMovie>,
+    public class GetMovieByIdQueryHandler : ContentQueryHandler<RadarrMovie>,
         IRequestHandler<GetMovieByIdQuery, RadarrMovie>
     {
         public GetMovieByIdQueryHandler(IPlexHelper plexHelper, IPosterHelper posterHelper,

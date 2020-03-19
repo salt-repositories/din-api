@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Din.Domain.Queries.TvShows
 {
-    public class GetTvShowsQueryHandler : ContentRetrievalQueryHandler<SonarrTvShow>,
+    public class GetTvShowsQueryHandler : ContentQueryHandler<SonarrTvShow>,
         IRequestHandler<GetTvShowsQuery, QueryResult<SonarrTvShow>>
     {
         public GetTvShowsQueryHandler(IPlexHelper plexHelper, IPosterHelper posterHelper,

@@ -18,5 +18,6 @@ namespace Din.Domain.Clients.Abstractions
         [JsonProperty("added")] public DateTime Added { get; set; }
         public string PlexUrl { get; set; }
         public string PosterPath { get; set; }
+        [JsonProperty("ratings")] public ContentRating Ratings { get; set; }
     }
 }
