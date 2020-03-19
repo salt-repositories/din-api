@@ -2,11 +2,18 @@
 {
     public class PlexPosterDto
     {
-        public string Title { get; set; }
-        public string PlexUrl { get; set; }
-        public string PosterPath { get; set; }
+        public string Title { get; }
+        public string PlexUrl { get; }
+        public string PosterPath { get; }
 
-        public override bool Equals(object? obj)
+        public PlexPosterDto(string title, string plexUrl, string posterPath)
+        {
+            Title = title;
+            PlexUrl = plexUrl;
+            PosterPath = posterPath;
+        }
+
+        public override bool Equals(object obj)
         {
             return obj != null && Title.Equals(((PlexPosterDto) obj).Title);
         }

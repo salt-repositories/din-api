@@ -21,7 +21,7 @@ namespace Din.Domain.Queries.Abstractions
             _posterHelper = posterHelper;
         }
 
-        public async Task RetrieveAdditionalData(ICollection<T> collection, CancellationToken cancellationToken)
+        protected async Task RetrieveAdditionalData(ICollection<T> collection, CancellationToken cancellationToken)
         {
             foreach (var item in collection)
             {
@@ -42,11 +42,11 @@ namespace Din.Domain.Queries.Abstractions
             foreach (var item in collection)
             {
                 _store.AddOne(new PlexPosterDto
-                {
-                    Title = item.Title,
-                    PlexUrl = item.PlexUrl,
-                    PosterPath = item.PosterPath
-                });
+                (
+                    item.Title,
+                    item.PlexUrl,
+                    item.PosterPath
+                ));
             }
         }
     }

@@ -22,7 +22,7 @@ namespace Din.Domain.Helpers.Concrete
             _client = new TMDbClient(config.Key);
         }
 
-        public async Task GetPosters<T>(ICollection<T> content, CancellationToken cancellationToken) where T : Content
+        public async Task GetPosters<T>(IEnumerable<T> content, CancellationToken cancellationToken) where T : Content
         {
             var exceptions = new ConcurrentQueue<Exception>();
             var tasks = content.Select(item => Task.Run(async () =>

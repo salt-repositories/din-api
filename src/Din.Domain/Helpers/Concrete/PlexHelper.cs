@@ -24,7 +24,7 @@ namespace Din.Domain.Helpers.Concrete
             _config = config;
         }
 
-        public async Task CheckIsOnPlex<T>(ICollection<T> content, CancellationToken cancellationToken) where T : Content
+        public async Task CheckIsOnPlex<T>(IEnumerable<T> content, CancellationToken cancellationToken) where T : Content
         {
             var exceptions = new ConcurrentQueue<Exception>();
             var tasks = content.Select(item => Task.Run(async () =>
