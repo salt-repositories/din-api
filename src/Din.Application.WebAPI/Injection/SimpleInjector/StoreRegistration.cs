@@ -19,6 +19,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 }, Lifestyle.Singleton
             );
             container.Register<IRefreshTokenStore, RefreshTokenStore>(Lifestyle.Singleton);
+            container.Register<IPlexPosterStore, PlexPosterStore>(Lifestyle.Singleton);
         }
     }
 }

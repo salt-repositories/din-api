@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using AutoMapper.Configuration;
-using Din.Application.WebAPI.Content;
+﻿using AutoMapper.Configuration;
 using Din.Application.WebAPI.Content.Mapping;
 using Din.Application.WebAPI.Content.Responses;
 using Din.Application.WebAPI.Movies.Mapping.Converters;

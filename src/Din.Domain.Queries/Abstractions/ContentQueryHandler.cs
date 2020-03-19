@@ -7,13 +7,13 @@ using Din.Domain.Stores.Interfaces;
 
 namespace Din.Domain.Queries.Abstractions
 {
-    public abstract class ContentRetrievalQueryHandler<T> where T : Content
+    public abstract class ContentQueryHandler<T> where T : Content
     {
         private readonly IPlexHelper _plexHelper;
         private readonly IPosterHelper _posterHelper;
         protected readonly IContentStore<T> Store;
 
-        protected ContentRetrievalQueryHandler
+        protected ContentQueryHandler
         (
             IPlexHelper plexHelper,
             IPosterHelper posterHelper,
