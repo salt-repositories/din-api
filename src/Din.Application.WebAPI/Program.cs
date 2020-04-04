@@ -13,7 +13,7 @@ namespace Din.Application.WebAPI
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseSentry(Environment.GetEnvironmentVariable("SENTRY"))
+                .UseSentry(Environment.GetEnvironmentVariable("SENTRY_DSN"))
                 .UseStartup<Startup>();
     }
 }
