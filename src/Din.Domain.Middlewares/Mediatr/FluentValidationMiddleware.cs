@@ -33,7 +33,7 @@ namespace Din.Domain.Middlewares.Mediatr
 
             if (failures.Any())
             {
-                throw new ValidationException($"Validation failed: {string.Join(", ", failures)}");
+                throw new ValidationException("Validation failed", failures);
             }
         }
     }

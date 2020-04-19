@@ -71,8 +71,7 @@ namespace Din.Domain.Stores.Concrete
                 if (filter.Name.ToLower().Equals("title") && !string.IsNullOrEmpty(value))
                 {
                     content = content
-                        .Where(x => value.CalculateSimilarity(x.Title) > 0.4)
-                        .Concat(content.Where(x => x.Title.ToLower().Contains(value.ToLower())))
+                        .Where(x => value.CalculateSimilarity(x.Title) > 0.5 || x.Title.ToLower().Contains(value.ToLower()))
                         .ToList();
 
                     continue;
