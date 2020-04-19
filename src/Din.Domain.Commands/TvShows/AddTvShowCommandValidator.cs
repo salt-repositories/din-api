@@ -16,7 +16,7 @@ namespace Din.Domain.Commands.TvShows
                 .NotEmpty().WithMessage("TvShow title slug cannot be empty");
 
             RuleFor(cmd => cmd.TvShow.Seasons.Count)
-                .GreaterThan(1).WithMessage("TvShow must have at least 1 season");
+                .GreaterThanOrEqualTo(1).WithMessage("TvShow must have at least 1 season");
 
             RuleFor(cmd => cmd.TvShow.Monitored)
                 .Must(m => m.Equals(true)).WithMessage("TvShow monitored cannot be false");

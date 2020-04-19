@@ -39,7 +39,7 @@ namespace Din.Domain.Stores.Concrete
 
         public void AddOne(T content)
         {
-            Content?.ToList().Add(content);
+            Content?.Add(content);
         }
 
         public void UpdateMultiple(ICollection<T> collection)
