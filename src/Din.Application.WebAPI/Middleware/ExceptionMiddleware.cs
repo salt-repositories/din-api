@@ -8,7 +8,6 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Din.Application.WebAPI.Middleware
 {
@@ -39,30 +38,39 @@ namespace Din.Application.WebAPI.Middleware
             {
                 case HttpClientException clientException:
                     _logger.LogWarning(clientException, "A Client exception has been thrown");
-                    return CreateResponse(context, clientException.Message, (int) clientException.StatusCode, clientException.ClientResponse);
+                    return CreateResponse(context, (int) clientException.StatusCode, new
+                    {
+                        clientException.Message,
+                        Errors = clientException.ClientResponse
+                    });
                 case DinException dinException:
                     _logger.LogWarning(dinException, "A Din exception has been thrown");
-                    return CreateResponse(context, dinException.Message, (int) dinException.StatusCode, dinException.Details);
-                case ValidationException _:
-                    _logger.LogWarning(exception, "A validation exception has been thrown");
-                    return CreateResponse(context, exception.Message, (int) HttpStatusCode.BadRequest, null);
+                    return CreateResponse(context, (int) dinException.StatusCode, new
+                    {
+                        dinException.Message,
+                        Errors = dinException.Details
+                    });
+                case ValidationException validationException:
+                    return CreateResponse(context, (int) HttpStatusCode.BadRequest, new
+                    {
+                        validationException.Message,
+                        validationException.Errors,
+                    });
             }
 
             _logger.LogError(exception, "A unidentified exception has been thrown");
 
-            return CreateResponse(context, exception.Message, (int) HttpStatusCode.InternalServerError, null);
+            return CreateResponse(context, (int) HttpStatusCode.InternalServerError, new { Message = "Something went wrong" });
         }
 
-        private Task CreateResponse(HttpContext context, string message, int statusCode, object details)
+        private Task CreateResponse(HttpContext context, int statusCode, object response)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
 
-            return context.Response.WriteAsync(JsonConvert.SerializeObject(new ErrorResponse 
-                { 
-                    Message = message,
-                    Details = details 
-                },
+            return context.Response.WriteAsync(JsonConvert.SerializeObject
+            (
+                response,
                 SerializationSettings.GetSerializerSettings()
             ));
         }
