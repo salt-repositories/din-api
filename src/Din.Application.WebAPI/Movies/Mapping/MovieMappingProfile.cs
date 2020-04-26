@@ -38,8 +38,7 @@ namespace Din.Application.WebAPI.Movies.Mapping
                 .ForMember(dest => dest.Genres,
                     opt => opt.MapFrom<MovieSearchGenreResolver>());
 
-            CreateMap<RadarrQueue, QueueResponse>()
-                .ConvertUsing<ToQueueResponseConverter<RadarrQueue, RadarrMovie>>();
+            CreateMap<RadarrQueue, QueueResponse>();
         }
     }
 }

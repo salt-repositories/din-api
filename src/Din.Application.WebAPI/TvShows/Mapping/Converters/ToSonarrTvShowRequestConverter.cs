@@ -17,11 +17,12 @@ namespace Din.Application.WebAPI.TvShows.Mapping.Converters
             {
                 TvdbId = source.TvdbId,
                 Title =  source.Title,
-                TitleSlug = GenerateTitleSlug(source.Title, source.Year),
+                TitleSlug = GenerateTitleSlug(source.Title),
                 Seasons = seasons,
                 QualityProfileId = 0,
                 ProfileId = "6",
                 Monitored =  true,
+                SeasonFolder = true,
                 Images = new List<ContentImage>
                 {
                     new ContentImage
@@ -29,13 +30,19 @@ namespace Din.Application.WebAPI.TvShows.Mapping.Converters
                         CoverType = "poster",
                         Url = source.PosterPath
                     }
+                },
+                AddOptions = new SonarrRequestAddOptions
+                {
+                    IgnoreEpisodesWithFiles = true,
+                    IgnoreEpisodesWithoutFiles = false,
+                    SearchForMissingEpisodes = true
                 }
             };
 
         }
-        private string GenerateTitleSlug(string title, int year)
+        private string GenerateTitleSlug(string title)
         {
-            return $"{title.ToLower().Replace(" ", "-")}-{year}";
+            return $"{title.ToLower().Replace(" ", "-").Replace(":", "")}";
         }     
     }
 }

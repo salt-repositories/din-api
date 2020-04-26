@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using AutoMapper.Configuration;
-using Din.Application.WebAPI.Content;
+﻿using AutoMapper.Configuration;
 using Din.Application.WebAPI.Content.Mapping;
 using Din.Application.WebAPI.Content.Responses;
 using Din.Application.WebAPI.Querying;
@@ -8,7 +6,6 @@ using Din.Application.WebAPI.TvShows.Mapping.Converters;
 using Din.Application.WebAPI.TvShows.Mapping.Resolvers;
 using Din.Application.WebAPI.TvShows.Requests;
 using Din.Application.WebAPI.TvShows.Responses;
-using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Clients.Sonarr.Requests;
 using Din.Domain.Clients.Sonarr.Responses;
 using Din.Domain.Models.Querying;
@@ -47,9 +44,8 @@ namespace Din.Application.WebAPI.TvShows.Mapping
             CreateMap<SearchTvSeason, TvShowSearchSeason>();
 
             CreateMap<SonarrCalendar, TvShowCalendarResponse>();
-           
-            CreateMap<SonarrQueue, QueueResponse>()
-                .ConvertUsing<ToQueueResponseConverter<SonarrQueue, SonarrTvShow>>();
+
+            CreateMap<SonarrQueue, QueueResponse>();
         }
     }
 }
