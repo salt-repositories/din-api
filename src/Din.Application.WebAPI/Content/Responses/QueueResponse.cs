@@ -1,4 +1,6 @@
 ﻿using System;
+using Din.Application.WebAPI.Movies.Responses;
+using Din.Application.WebAPI.TvShows.Responses;
 
 namespace Din.Application.WebAPI.Content.Responses
 {
@@ -13,6 +15,7 @@ namespace Din.Application.WebAPI.Content.Responses
         public string Status { get; set; }
         public string DownloadId { get; set; }
         public string Protocol { get; set; }
-        public ContentResponse Content { get; set; }
+        public MovieResponse Movie { get; set; }
+        public TvShowResponse TvShow { get; set; }
     }
 }

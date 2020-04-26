@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Din.Application.WebAPI.Content;
 using Din.Application.WebAPI.Content.Responses;
 using Din.Application.WebAPI.Movies.Responses;
 using TMDbLib.Objects.Search;
