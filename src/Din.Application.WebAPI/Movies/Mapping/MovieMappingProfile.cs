@@ -6,6 +6,7 @@ using Din.Application.WebAPI.Movies.Mapping.Resolvers;
 using Din.Application.WebAPI.Movies.Requests;
 using Din.Application.WebAPI.Movies.Responses;
 using Din.Application.WebAPI.Querying;
+using Din.Domain.Clients.Abstractions;
 using Din.Domain.Clients.Radarr.Requests;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Models.Querying;
@@ -39,6 +40,10 @@ namespace Din.Application.WebAPI.Movies.Mapping
                     opt => opt.MapFrom<MovieSearchGenreResolver>());
 
             CreateMap<RadarrQueue, QueueResponse>();
+
+            CreateMap<RadarrHistoryRecord, MovieHistoryResponse>()
+                .ForMember(dest => dest.Quality,
+                    opt => opt.MapFrom<MovieHistoryQualityResolver>());
         }
     }
 }
