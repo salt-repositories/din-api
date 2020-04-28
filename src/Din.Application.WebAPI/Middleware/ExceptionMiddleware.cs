@@ -6,6 +6,7 @@ using Din.Domain.Exceptions.Abstractions;
 using Din.Domain.Exceptions.Concrete;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -14,10 +15,12 @@ namespace Din.Application.WebAPI.Middleware
     public class ExceptionMiddleware : IMiddleware
     {
         private readonly ILogger _logger;
+        private readonly IHostEnvironment _environment;
 
-        public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvironment environment)
         {
             _logger = logger;
+            _environment = environment;
         }
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
@@ -60,7 +63,12 @@ namespace Din.Application.WebAPI.Middleware
 
             _logger.LogError(exception, "A unidentified exception has been thrown");
 
-            return CreateResponse(context, (int) HttpStatusCode.InternalServerError, new { Message = "Something went wrong" });
+            return CreateResponse(context, (int) HttpStatusCode.InternalServerError, new
+            {
+                Message = _environment.IsDevelopment()
+                    ? exception.Message
+                    : "Something went wrong"
+            });
         }
 
         private Task CreateResponse(HttpContext context, int statusCode, object response)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Din.Application.WebAPI.Movies.Requests;
@@ -87,6 +88,21 @@ namespace Din.Application.WebAPI.Movies
             return Ok(_mapper.Map<MovieResponse>(result));
         }
 
+        /// <summary>
+        /// Get movie history by ID
+        /// </summary>
+        /// <param name="id">system ID</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Collection of history</returns>
+        [HttpGet("{id}/history")]
+        [ProducesResponseType(typeof(IEnumerable<MovieHistoryResponse>), 200)]
+        public async Task<IActionResult> GetMovieHistory([FromRoute] int id, CancellationToken cancellationToken)
+        {
+            var query = new GetMovieHistoryQuery(id);
+            var result = await _bus.Send(query, cancellationToken);
+
+            return Ok(_mapper.Map<IEnumerable<MovieHistoryResponse>>(result.Records));
+        }
 
         /// <summary>
         /// Search the movie database by query

@@ -22,16 +22,22 @@ namespace Din.Domain.Clients.Radarr.Concrete
 
         public Task<IEnumerable<RadarrMovie>> GetMoviesAsync(CancellationToken cancellationToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, 
-                new Uri($"{_config.Url}api/movie?apikey={_config.Key}"));
+            var request = new HttpRequestMessage
+            (
+                HttpMethod.Get, 
+                new Uri($"{_config.Url}api/movie?apikey={_config.Key}")
+            );
 
             return SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
         }
 
         public Task<RadarrMovie> GetMovieByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, 
-                new Uri($"{_config.Url}api/movie/{id}?apikey={_config.Key}"));
+            var request = new HttpRequestMessage
+            (
+                HttpMethod.Get, 
+                new Uri($"{_config.Url}api/movie/{id}?apikey={_config.Key}")
+            );
 
             return SendRequest<RadarrMovie>(request, cancellationToken);
         }
@@ -40,8 +46,11 @@ namespace Din.Domain.Clients.Radarr.Concrete
         {
             movie.RootFolderPath = _config.SaveLocation;
 
-            var request = new HttpRequestMessage(HttpMethod.Post,
-                new Uri($"{_config.Url}api/movie?apikey={_config.Key}"))
+            var request = new HttpRequestMessage
+            (
+                HttpMethod.Post,
+                new Uri($"{_config.Url}api/movie?apikey={_config.Key}")
+            )
             {
                 Content = new StringContent(JsonConvert.SerializeObject(movie))
             };
@@ -52,8 +61,11 @@ namespace Din.Domain.Clients.Radarr.Concrete
         public Task<IEnumerable<RadarrMovie>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken)
         {
             var (dateTime, till) = dateRange;
-            var request = new HttpRequestMessage(HttpMethod.Get, 
-                new Uri($"{_config.Url}api/calendar?apikey={_config.Key}&start={dateTime:yyyy-MM-dd}&end={till:yyyy-MM-dd}"));
+            var request = new HttpRequestMessage
+            (
+                HttpMethod.Get, 
+                new Uri($"{_config.Url}api/calendar?apikey={_config.Key}&start={dateTime:yyyy-MM-dd}&end={till:yyyy-MM-dd}")
+            );
 
             return SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
         }
@@ -64,6 +76,17 @@ namespace Din.Domain.Clients.Radarr.Concrete
                 new Uri($"{_config.Url}api/queue?apikey={_config.Key}"));
 
             return SendRequest<IEnumerable<RadarrQueue>>(request, cancellationToken);
+        }
+
+        public Task<HistoryResult<RadarrHistoryRecord>> GetMovieHistoryAsync(int id, CancellationToken cancellationToken)
+        {
+            var request = new HttpRequestMessage
+            (
+                HttpMethod.Get,
+                new Uri($"{_config.Url}api/history?page=1&pageSize=15&sortKey=date&sortDir=desc&movieId={id}&apikey={_config.Key}")
+            );
+
+            return SendRequest<HistoryResult<RadarrHistoryRecord>>(request, cancellationToken);
         }
     }
 }
