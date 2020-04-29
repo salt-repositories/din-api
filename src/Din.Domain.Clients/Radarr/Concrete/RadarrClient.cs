@@ -83,7 +83,7 @@ namespace Din.Domain.Clients.Radarr.Concrete
             var request = new HttpRequestMessage
             (
                 HttpMethod.Get,
-                new Uri($"{_config.Url}api/history?page=1&pageSize=15&sortKey=date&sortDir=desc&movieId={id}&apikey={_config.Key}")
+                new Uri($"{_config.Url}api/history?page=1&pageSize=15&sortKey=date&sortDir=asc&movieId={id}&apikey={_config.Key}")
             );
 
             return SendRequest<HistoryResult<RadarrHistoryRecord>>(request, cancellationToken);
