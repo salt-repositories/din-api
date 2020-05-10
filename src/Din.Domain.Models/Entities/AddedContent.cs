@@ -15,11 +15,6 @@ namespace Din.Domain.Models.Entities
         public ContentStatus Status { get; set; }
         public Account Account { get; set; }
         public Guid AccountId { get; set; }
-
-        public Task CheckStatus()
-        {
-            return Task.CompletedTask;
-        }
     }
 
     public enum ContentType
