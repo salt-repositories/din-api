@@ -5,9 +5,8 @@ using System.Security.Claims;
 using System.Text;
 using Din.Domain.Configurations.Interfaces;
 using Din.Domain.Helpers.Interfaces;
-using Din.Domain.Models.Dtos;
 using Din.Domain.Models.Entities;
-using Din.Domain.Stores.Interfaces;
+using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Din.Domain.Helpers.Concrete
@@ -15,12 +14,12 @@ namespace Din.Domain.Helpers.Concrete
     public class TokenHelper : ITokenHelper
 
     {
-        private readonly IRefreshTokenStore _store;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IJwtConfig _config;
 
-        public TokenHelper(IRefreshTokenStore store, IJwtConfig config)
+        public TokenHelper(IRefreshTokenRepository refreshTokenRepository, IJwtConfig config)
         {
-            _store = store;
+            _refreshTokenRepository = refreshTokenRepository;
             _config = config;
         }
 
@@ -48,7 +47,7 @@ namespace Din.Domain.Helpers.Concrete
         {
             var token = RandomCodeGenerator.GenerateRandomCode(256);
 
-            _store.Insert(new RefreshTokenDto
+            _refreshTokenRepository.Insert(new RefreshToken
             {
                 Token = token,
                 AccountIdentity = id,

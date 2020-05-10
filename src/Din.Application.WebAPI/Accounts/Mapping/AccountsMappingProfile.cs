@@ -20,6 +20,7 @@ namespace Din.Application.WebAPI.Accounts.Mapping
                 .ConvertUsing<ToQueryParametersConverter<AddedContent>>();
 
             CreateMap<QueryResult<Account>, QueryResponse<AccountResponse>>();
+            CreateMap<AddedContent, AddedContentResponse>();
             CreateMap<QueryResult<AddedContent>, QueryResponse<AddedContentResponse>>();
 
             CreateMap<AccountRequest, Account>();

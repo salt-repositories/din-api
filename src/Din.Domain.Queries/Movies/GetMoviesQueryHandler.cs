@@ -21,7 +21,7 @@ namespace Din.Domain.Queries.Movies
         {
             var (movies, count) = Store.GetAll(request.QueryParameters, request.Filters);
 
-            await RetrieveOptionalData(movies, request.Plex, request.Poster, cancellationToken);
+            await RetrieveOptionalData(movies, request.ContentQueryParameters, cancellationToken);
 
             return new QueryResult<RadarrMovie>(movies, count);
         }

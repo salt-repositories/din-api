@@ -42,6 +42,7 @@ namespace Din.Application.WebAPI.Accounts
         #endregion constructors
 
         #region endpoints
+
         /// <summary>
         /// Get accounts
         /// </summary>
@@ -79,7 +80,7 @@ namespace Din.Application.WebAPI.Accounts
         /// <param name="code"></param>
         /// <returns>Single account</returns>
         [HttpGet("{id}/activate")]
-        [ProducesResponseType( 204)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> ActivateAccountByCode([FromRoute] Guid id, [FromQuery] string code)
         {
@@ -92,15 +93,21 @@ namespace Din.Application.WebAPI.Accounts
         /// <summary>
         /// Get added content from account by ID
         /// </summary>
-        /// <param name="queryParameters">Optional query parameters</param>
         /// <param name="id">Account ID</param>
+        /// <param name="queryParameters"></param>
+        /// <param name="filters"></param>
         /// <returns></returns>
         [HttpGet("{id}/added_content")]
         [ProducesResponseType(typeof(QueryResponse<AddedContentResponse>), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetAccountAddedContent([FromQuery] QueryParametersRequest queryParameters, [FromRoute] Guid id)
+        public async Task<IActionResult> GetAccountAddedContent
+        (
+            [FromRoute] Guid id,
+            [FromQuery] QueryParametersRequest queryParameters,
+            [FromQuery] AddedContentFilters filters
+        )
         {
-            var query = new GetAddedContentQuery(_mapper.Map<QueryParameters<AddedContent>>(queryParameters), id);
+            var query = new GetAddedContentQuery(_mapper.Map<QueryParameters<AddedContent>>(queryParameters), id, filters);
             var result = await _bus.Send(query);
 
             return Ok(_mapper.Map<QueryResponse<AddedContentResponse>>(result));
@@ -130,7 +137,8 @@ namespace Din.Application.WebAPI.Accounts
         [HttpPatch("{id}")]
         [ProducesResponseType(typeof(AccountResponse), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateAccount([FromRoute] Guid id, [FromBody] JsonPatchDocument<AccountRequest> update)
+        public async Task<IActionResult> UpdateAccount([FromRoute] Guid id,
+            [FromBody] JsonPatchDocument<AccountRequest> update)
         {
             var command = new UpdateAccountCommand(id, _mapper.Map<JsonPatchDocument<Account>>(update));
             var result = await _bus.Send(command);

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Helpers.Interfaces;
 using Din.Domain.Models.Dtos;
-using Din.Domain.Stores.Interfaces;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
 
@@ -11,30 +10,30 @@ namespace Din.Domain.Commands.Authentication
 {
     public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, TokenDto>
     {
-        private readonly IRefreshTokenStore _store;
-        private readonly IAccountRepository _repository;
+        private readonly IRefreshTokenRepository _tokenRepository;
+        private readonly IAccountRepository _accountRepository;
         private readonly ITokenHelper _tokenHelper;
 
-        public RefreshTokenCommandHandler(IRefreshTokenStore store, IAccountRepository repository,
+        public RefreshTokenCommandHandler(IRefreshTokenRepository tokenRepository, IAccountRepository accountRepository,
             ITokenHelper tokenHelper)
         {
-            _store = store;
-            _repository = repository;
+            _tokenRepository = tokenRepository;
+            _accountRepository = accountRepository;
             _tokenHelper = tokenHelper;
         }
 
         public async Task<TokenDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            var refreshToken = _store.Get(request.RefreshToken) ?? throw new AuthenticationException("Invalid Refresh token");
+            var refreshToken = await _tokenRepository.Get(request.RefreshToken, cancellationToken) ?? throw new AuthenticationException("Invalid Refresh token");
 
-            _store.Invoke(refreshToken);
+            await _tokenRepository.Invoke(refreshToken, cancellationToken);
 
             if (refreshToken.CreationDate.AddDays(30) < request.RequestDate)
             {
                 throw new AuthenticationException("Refresh token expired");
             }
 
-            var account = await _repository.GetAccountById(refreshToken.AccountIdentity, cancellationToken);
+            var account = await _accountRepository.GetAccountById(refreshToken.AccountIdentity, cancellationToken);
 
             return new TokenDto
             {

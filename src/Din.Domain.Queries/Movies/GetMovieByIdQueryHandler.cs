@@ -20,7 +20,7 @@ namespace Din.Domain.Queries.Movies
         {
             var item = Store.GetOneById(request.Id);
 
-            await RetrieveOptionalData(new[] {item}, request.Plex, request.Poster, cancellationToken);
+            await RetrieveOptionalData(new[] {item}, request.ContentQueryParameters, cancellationToken);
 
             return item;
         }

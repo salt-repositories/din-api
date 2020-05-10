@@ -19,6 +19,7 @@ namespace Din.Infrastructure.DataAccess
 
         public DbSet<LoginAttempt> LoginAttempt { get; set; }
         public DbSet<LoginLocation> LoginLocation { get; set; }
+        public DbSet<RefreshToken> RefreshToken { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +29,7 @@ namespace Din.Infrastructure.DataAccess
             modelBuilder.ApplyConfiguration(new AccountAuthorizationCodeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new LoginAttemptEntityConfiguration());
             modelBuilder.ApplyConfiguration(new LoginLocationEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new RefreshTokenEntityConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

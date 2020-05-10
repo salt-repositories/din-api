@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Helpers.Interfaces;
 using Din.Domain.Models.Dtos;
-using Din.Domain.Stores.Interfaces;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
 using BC = BCrypt.Net.BCrypt;
@@ -12,22 +11,22 @@ namespace Din.Domain.Commands.Authentication
 {
     public class GenerateTokenCommandHandler : IRequestHandler<GenerateTokenCommand, TokenDto>
     {
-        private readonly IAccountRepository _repository;
-        private readonly IRefreshTokenStore _store;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IRefreshTokenRepository _tokenRepository;
         private readonly ITokenHelper _tokenManager;
 
-        public GenerateTokenCommandHandler(IAccountRepository repository, IRefreshTokenStore store, ITokenHelper tokenManager)
+        public GenerateTokenCommandHandler(IAccountRepository accountRepository, IRefreshTokenRepository tokenRepository, ITokenHelper tokenManager)
         {
-            _repository = repository;
-            _store = store;
+            _accountRepository = accountRepository;
+            _tokenRepository = tokenRepository;
             _tokenManager = tokenManager;
         }
 
         public async Task<TokenDto> Handle(GenerateTokenCommand request, CancellationToken cancellationToken)
         {
             var account = string.IsNullOrEmpty(request.Credentials.Email)
-                ? await _repository.GetAccountByUsername(request.Credentials.Username, cancellationToken)
-                : await _repository.GetAccountByEmail(request.Credentials.Email, cancellationToken);
+                ? await _accountRepository.GetAccountByUsername(request.Credentials.Username, cancellationToken)
+                : await _accountRepository.GetAccountByEmail(request.Credentials.Email, cancellationToken);
 
             if (account == null || !BC.Verify(request.Credentials.Password, account.Hash))
             {
@@ -39,7 +38,7 @@ namespace Din.Domain.Commands.Authentication
                 return new TokenDto {ErrorMessage = "Account is inactive, please reset your password"};
             }
 
-            _store.Invoke(account.Id);
+            await _tokenRepository.Invoke(account.Id, cancellationToken);
 
             return new TokenDto
             {

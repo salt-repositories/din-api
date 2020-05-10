@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Abstractions;
 using Din.Domain.Helpers.Interfaces;
+using Din.Domain.Models.Querying;
 using Din.Domain.Stores.Interfaces;
 
 namespace Din.Domain.Queries.Abstractions
@@ -25,15 +26,19 @@ namespace Din.Domain.Queries.Abstractions
             Store = store;
         }
 
-        protected async Task RetrieveOptionalData(ICollection<T> collection, bool plex, bool poster,
-            CancellationToken cancellationToken)
+        protected async Task RetrieveOptionalData(ICollection<T> collection, ContentQueryParameters contentQueryParameters, CancellationToken cancellationToken)
         {
-            if (plex)
+            if (contentQueryParameters == null)
+            {
+                return;
+            }
+
+            if (contentQueryParameters.Plex== true)
             {
                 await _plexHelper.CheckIsOnPlex(collection, cancellationToken);
             }
 
-            if (poster)
+            if (contentQueryParameters.Poster == true)
             {
                 await _posterHelper.GetPosters(collection, cancellationToken);
             }

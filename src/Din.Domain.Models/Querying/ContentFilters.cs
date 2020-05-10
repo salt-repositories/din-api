@@ -1,6 +1,6 @@
-﻿namespace Din.Application.WebAPI.Querying
+﻿namespace Din.Domain.Models.Querying
 {
-    public class FiltersRequest
+    public class ContentFilters
     {
         public string Title { get; set; }
         public string Status { get; set; }

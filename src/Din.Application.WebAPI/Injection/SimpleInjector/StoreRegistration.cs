@@ -18,7 +18,6 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                     typeof(ContentStore<RadarrMovie>)
                 }, Lifestyle.Singleton
             );
-            container.Register<IRefreshTokenStore, RefreshTokenStore>(Lifestyle.Singleton);
             container.Register<IPlexPosterStore, PlexPosterStore>(Lifestyle.Singleton);
         }
     }

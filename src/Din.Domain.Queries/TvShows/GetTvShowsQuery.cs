@@ -9,16 +9,13 @@ namespace Din.Domain.Queries.TvShows
 {
     public class GetTvShowsQuery : RequestWithQueryParameters<SonarrTvShow>, IContentRetrievalRequest, IActivatedRequest, IRequest<QueryResult<SonarrTvShow>>
     {
-        public Filters Filters { get; }
-        public bool Plex { get; }
-        public bool Poster { get; }
+        public ContentFilters Filters { get; }
+        public ContentQueryParameters ContentQueryParameters { get; }
 
-
-        public GetTvShowsQuery(QueryParameters<SonarrTvShow> queryParameters, Filters filters, bool plex, bool poster) : base(queryParameters)
+        public GetTvShowsQuery(QueryParameters<SonarrTvShow> queryParameters, ContentFilters filters, ContentQueryParameters contentQueryParameters) : base(queryParameters)
         {
             Filters = filters;
-            Plex = plex;
-            Poster = poster;
+            ContentQueryParameters = contentQueryParameters;
         }
     }
 }

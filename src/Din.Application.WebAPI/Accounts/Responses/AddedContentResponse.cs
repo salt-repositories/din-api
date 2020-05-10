@@ -12,7 +12,5 @@ namespace Din.Application.WebAPI.Accounts.Responses
         public ContentType Type { get; set; }
         public DateTime DateAdded { get; set; }
         public ContentStatus Status { get; set; }
-        public int Eta { get; set; }
-        public double Percentage { get; set; }
     }
 }

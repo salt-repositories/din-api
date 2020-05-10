@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using Din.Domain.Models.Querying;
+using MediatR;
 
 namespace Din.Domain.Mediatr.Interfaces
 {
     public interface IContentRetrievalRequest : IBaseRequest
     {
-        public bool Plex { get; }
-        public bool Poster { get; }
+        public ContentFilters Filters { get; }
+        public ContentQueryParameters ContentQueryParameters { get; }
     }
 }
