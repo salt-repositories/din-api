@@ -22,7 +22,7 @@ namespace Din.Domain.Queries.TvShows
         {
             var (tvShows, count) = Store.GetAll(request.QueryParameters, request.Filters);
 
-            await RetrieveOptionalData(tvShows, request.Plex, request.Poster, cancellationToken);
+            await RetrieveOptionalData(tvShows, request.ContentQueryParameters, cancellationToken);
             
             return new QueryResult<SonarrTvShow>(tvShows, count);
         }

@@ -9,6 +9,9 @@ namespace Din.Infrastructure.DataAccess.Repositories.Interfaces
 {
     public interface IAddedContentRepository : IBaseRepository
     {
-        Task<IList<AddedContent>> GetAddedContentByAccountId(QueryParameters<AddedContent> queryParameters, Guid id, CancellationToken cancellationToken);
+        Task<IList<AddedContent>> GetAddedContentByAccountId(Guid id, QueryParameters<AddedContent> queryParameters,
+            AddedContentFilters filters,
+            CancellationToken cancellationToken);
+        Task<int> Count(Guid id, AddedContentFilters filters, CancellationToken cancellationToken);
     }
 }

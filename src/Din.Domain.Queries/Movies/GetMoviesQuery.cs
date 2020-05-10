@@ -10,16 +10,13 @@ namespace Din.Domain.Queries.Movies
     public class GetMoviesQuery : RequestWithQueryParameters<RadarrMovie>, IContentRetrievalRequest, IActivatedRequest,
         IRequest<QueryResult<RadarrMovie>>
     {
-        public Filters Filters { get; }
-        public bool Plex { get; }
-        public bool Poster { get; }
+        public ContentFilters Filters { get; }
+        public ContentQueryParameters ContentQueryParameters { get; }
 
-        public GetMoviesQuery(QueryParameters<RadarrMovie> queryParameters, Filters filters, bool plex, bool poster) :
-            base(queryParameters)
+        public GetMoviesQuery(QueryParameters<RadarrMovie> queryParameters, ContentFilters filters, ContentQueryParameters contentQueryParameters) : base(queryParameters)
         {
             Filters = filters;
-            Plex = plex;
-            Poster = poster;
+            ContentQueryParameters = contentQueryParameters;
         }
     }
 }

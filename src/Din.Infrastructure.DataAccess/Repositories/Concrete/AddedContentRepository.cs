@@ -18,13 +18,22 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
         }
 
-        public async Task<IList<AddedContent>> GetAddedContentByAccountId(QueryParameters<AddedContent> queryParameters, Guid id,
+        public async Task<IList<AddedContent>> GetAddedContentByAccountId(Guid id, QueryParameters<AddedContent> queryParameters, AddedContentFilters filters,
             CancellationToken cancellationToken)
         {
             IQueryable<AddedContent> query = Context.Set<AddedContent>().Where(ac => ac.AccountId.Equals(id));
+            query = query.ApplyFilters(filters);
             query = query.ApplyQueryParameters(queryParameters);
 
             return await query.ToListAsync(cancellationToken);
+        }
+
+        public Task<int> Count(Guid id, AddedContentFilters filters, CancellationToken cancellationToken)
+        {
+            IQueryable<AddedContent> query = Context.Set<AddedContent>().Where(ac => ac.AccountId.Equals(id));
+            query = query.ApplyFilters(filters);
+
+            return query.CountAsync(cancellationToken);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Din.Domain.Stores.Concrete
             return Content == null || _storeDate.AddHours(1) <= DateTime.Now;
         }
 
-        public (ICollection<T> collection, int count) GetAll(QueryParameters<T> queryParameters, Filters filters)
+        public (ICollection<T> collection, int count) GetAll(QueryParameters<T> queryParameters, ContentFilters filters)
         {
             var (collection, count) = ApplyFilters(filters);
             collection = collection.ApplyQueryParameters(queryParameters).ToList();
@@ -51,7 +51,7 @@ namespace Din.Domain.Stores.Concrete
             }
         }
 
-        private (IEnumerable<T> collection, int count) ApplyFilters(Filters filters)
+        private (IEnumerable<T> collection, int count) ApplyFilters(ContentFilters filters)
         {
             var content = Content;
 

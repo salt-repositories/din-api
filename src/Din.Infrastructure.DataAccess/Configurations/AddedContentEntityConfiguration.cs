@@ -40,12 +40,6 @@ namespace Din.Infrastructure.DataAccess.Configurations
                 .IsRequired()
                 .HasConversion(new EnumToStringConverter<ContentStatus>());
 
-            builder.Property(ac => ac.Eta)
-                .HasColumnName("eta");
-
-            builder.Property(ac => ac.Percentage)
-                .HasColumnName("percentage");
-
             builder.Property(ac => ac.AccountId)
                 .HasColumnName("account_id")
                 .IsRequired();

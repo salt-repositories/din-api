@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Din.Domain.Models.Entities
 {
@@ -12,10 +13,13 @@ namespace Din.Domain.Models.Entities
         public ContentType Type { get; set; }
         public DateTime DateAdded { get; set; }
         public ContentStatus Status { get; set; }
-        public int Eta { get; set; }
-        public double Percentage { get; set; }
         public Account Account { get; set; }
         public Guid AccountId { get; set; }
+
+        public Task CheckStatus()
+        {
+            return Task.CompletedTask;
+        }
     }
 
     public enum ContentType

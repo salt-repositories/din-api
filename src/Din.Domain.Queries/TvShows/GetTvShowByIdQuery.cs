@@ -1,6 +1,7 @@
 ﻿using Din.Domain.Authorization.Requests;
 using Din.Domain.Clients.Sonarr.Responses;
 using Din.Domain.Mediatr.Interfaces;
+using Din.Domain.Models.Querying;
 using MediatR;
 
 namespace Din.Domain.Queries.TvShows
@@ -8,14 +9,14 @@ namespace Din.Domain.Queries.TvShows
     public class GetTvShowByIdQuery : IContentRetrievalRequest, IActivatedRequest, IRequest<SonarrTvShow>
     {
         public int Id { get; }
-        public bool Plex { get; }
-        public bool Poster { get; }
+        public ContentFilters Filters { get; }
+        public ContentQueryParameters ContentQueryParameters { get; }
 
-        public GetTvShowByIdQuery(int id, bool plex, bool poster)
+        public GetTvShowByIdQuery(int id, ContentFilters filters, ContentQueryParameters contentQueryParameters)
         {
             Id = id;
-            Plex = plex;
-            Poster = poster;
+            Filters = filters;
+            ContentQueryParameters = contentQueryParameters;
         }
     }
 }

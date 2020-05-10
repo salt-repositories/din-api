@@ -53,16 +53,14 @@ namespace Din.Application.WebAPI.TvShows
         public async Task<IActionResult> GetTvShows
         (
             [FromQuery] QueryParametersRequest queryParameters,
-            [FromQuery] FiltersRequest filters,
-            [FromQuery] bool plex,
-            [FromQuery] bool poster
+            [FromQuery] ContentFilters filters,
+            [FromQuery] ContentQueryParameters contentQueryParameters
         )
         {
             var query = new GetTvShowsQuery(
                 _mapper.Map<QueryParameters<SonarrTvShow>>(queryParameters),
-                _mapper.Map<Filters>(filters),
-                plex,
-                poster
+                filters,
+                contentQueryParameters
             );
             var result = await _bus.Send(query);
 
@@ -73,15 +71,20 @@ namespace Din.Application.WebAPI.TvShows
         /// Get tv show by ID
         /// </summary>
         /// <param name="id">System ID</param>
-        /// <param name="plex">check is on plex</param>
-        /// <param name="poster">get poster</param>
+        /// <param name="filters"></param>
+        /// <param name="contentQueryParameters"></param>
         /// <returns>Single TvShow</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(TvShowResponse), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetTvShowById([FromRoute] int id, [FromQuery] bool plex, [FromQuery] bool poster)
+        public async Task<IActionResult> GetTvShowById
+            (
+            [FromRoute] int id,
+            [FromQuery] ContentFilters filters,
+            [FromQuery] ContentQueryParameters contentQueryParameters 
+        )
         {
-            var query = new GetTvShowByIdQuery(id, plex, poster);
+            var query = new GetTvShowByIdQuery(id, filters, contentQueryParameters);
             var result = await _bus.Send(query);
 
             return Ok(result);

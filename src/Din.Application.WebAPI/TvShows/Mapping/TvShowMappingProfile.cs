@@ -22,8 +22,6 @@ namespace Din.Application.WebAPI.TvShows.Mapping
             CreateMap<QueryParametersRequest, QueryParameters<SonarrTvShow>>()
                 .ConvertUsing<ToQueryParametersConverter<SonarrTvShow>>();
 
-            CreateMap<FiltersRequest, Filters>();
-
             CreateMap<QueryResult<SonarrTvShow>, QueryResponse<TvShowResponse>>();
             
             CreateMap<TvShowRequest, SonarrTvShowRequest>()

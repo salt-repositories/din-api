@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Din.Domain.Clients.Abstractions;
 using Newtonsoft.Json;
 
@@ -12,6 +13,7 @@ namespace Din.Domain.Clients.Sonarr.Responses
         [JsonProperty("episodeCount")] public int EpisodeCount { get; set; }
         [JsonProperty("network")] public string Network { get; set; }
         [JsonProperty("airTime")] public string AirTime { get; set; }
+        [JsonProperty("firstAired")] public DateTime FirstAired { get; set; }
         [JsonProperty("seasons")] public ICollection<Season> Seasons { get; set; }
     }
     public class Season
