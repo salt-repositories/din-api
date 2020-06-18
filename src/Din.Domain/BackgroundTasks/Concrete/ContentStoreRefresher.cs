@@ -6,6 +6,7 @@ using Din.Domain.Clients.Radarr.Interfaces;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Clients.Sonarr.Interfaces;
 using Din.Domain.Clients.Sonarr.Responses;
+using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Stores.Interfaces;
 using Microsoft.Extensions.Logging;
 
@@ -30,16 +31,23 @@ namespace Din.Domain.BackgroundTasks.Concrete
 
         public async Task Execute(CancellationToken cancellationToken)
         {
-            if (_movieStore.ShouldUpdate())
+            try
             {
-                _logger.LogInformation("Refreshing movie store");
-                _movieStore.Set((await _radarrClient.GetMoviesAsync(cancellationToken)).ToList());
-            }
+                if (_movieStore.ShouldUpdate())
+                {
+                    _logger.LogInformation("Refreshing movie store");
+                    _movieStore.Set((await _radarrClient.GetMoviesAsync(cancellationToken)).ToList());
+                }
 
-            if (_tvShowStore.ShouldUpdate())
+                if (_tvShowStore.ShouldUpdate())
+                {
+                    _logger.LogInformation("Refreshing tv show store");
+                    _tvShowStore.Set((await _sonarrClient.GetTvShowsAsync(cancellationToken)).ToList());
+                }
+            }
+            catch (HttpClientException exception)
             {
-                _logger.LogInformation("Refreshing tv show store");
-                _tvShowStore.Set((await _sonarrClient.GetTvShowsAsync(cancellationToken)).ToList());
+                _logger.LogError($"Error refreshing content store: ({exception.Message})");
             }
         }
     }
