@@ -22,9 +22,14 @@ namespace Din.Application.WebAPI.TvShows.Mapping.Resolvers
         public ICollection<TvShowGenre> Resolve(SonarrTvShow source, TvShow destination, ICollection<TvShowGenre> destMember,
             ResolutionContext context)
         {
-            List<TvShowGenre> genres;
+            List<TvShowGenre> genres = new List<TvShowGenre>();
 
-            if (source.Genres == null || source.Genres.Count() == destination.Genres.Count())
+            if (source.Genres == null)
+            {
+                return genres;
+            }
+
+            if (destination.Genres != null && destination.Genres.Count == source.Genres.Count())
             {
                 return destination.Genres;
             }
