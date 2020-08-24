@@ -1,29 +1,27 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.Clients.Radarr.Responses;
-using Din.Domain.Helpers.Interfaces;
-using Din.Domain.Queries.Abstractions;
+using Din.Domain.Models.Entities;
 using Din.Domain.Queries.Querying;
-using Din.Domain.Stores.Interfaces;
+using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMoviesQueryHandler : ContentQueryHandler<RadarrMovie>,
-        IRequestHandler<GetMoviesQuery, QueryResult<RadarrMovie>>
+    public class GetMoviesQueryHandler : IRequestHandler<GetMoviesQuery, QueryResult<Movie>>
     {
-        public GetMoviesQueryHandler(IPlexHelper plexHelper, IPosterHelper posterHelper,
-            IContentStore<RadarrMovie> store) : base(plexHelper, posterHelper, store)
+        private readonly IMovieRepository _repository;
+
+        public GetMoviesQueryHandler(IMovieRepository repository)
         {
+            _repository = repository;
         }
 
-        public async Task<QueryResult<RadarrMovie>> Handle(GetMoviesQuery request, CancellationToken cancellationToken)
+        public async Task<QueryResult<Movie>> Handle(GetMoviesQuery request, CancellationToken cancellationToken)
         {
-            var (movies, count) = Store.GetAll(request.QueryParameters, request.Filters);
+            var movies = await _repository.GetMovies(request.QueryParameters, request.Filters, cancellationToken);
+            var count = _repository.Count(request.Filters);
 
-            await RetrieveOptionalData(movies, request.ContentQueryParameters, cancellationToken);
-
-            return new QueryResult<RadarrMovie>(movies, count);
+            return new QueryResult<Movie>(movies, count);
         }
     }
 }

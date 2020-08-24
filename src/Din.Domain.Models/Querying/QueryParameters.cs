@@ -1,6 +1,6 @@
 ﻿namespace Din.Domain.Models.Querying
 {
-    public class QueryParameters<T>
+    public class QueryParameters
     {
         public const int DefaultPageSize = 20;
         public const int MaxPageSize = 50;
@@ -11,7 +11,7 @@
         public SortDirection? SortDirection { get; set; }
 
 
-        public QueryParameters<T> WithPaging(int? skip, int? take)
+        public QueryParameters WithPaging(int? skip, int? take)
         {
             if (skip.HasValue)
             {
@@ -26,7 +26,7 @@
             return this;
         }
 
-        public QueryParameters<T> WithSorting(string sortBy, SortDirection? sortDirection)
+        public QueryParameters WithSorting(string sortBy, SortDirection? sortDirection)
         {
             SortBy = sortBy;
             SortDirection = sortDirection ?? Querying.SortDirection.Asc;

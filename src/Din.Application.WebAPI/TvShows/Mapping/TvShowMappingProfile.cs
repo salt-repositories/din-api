@@ -1,5 +1,4 @@
 ﻿using AutoMapper.Configuration;
-using Din.Application.WebAPI.Content.Mapping;
 using Din.Application.WebAPI.Content.Responses;
 using Din.Application.WebAPI.Querying;
 using Din.Application.WebAPI.TvShows.Mapping.Converters;
@@ -8,10 +7,11 @@ using Din.Application.WebAPI.TvShows.Requests;
 using Din.Application.WebAPI.TvShows.Responses;
 using Din.Domain.Clients.Sonarr.Requests;
 using Din.Domain.Clients.Sonarr.Responses;
-using Din.Domain.Models.Querying;
+using Din.Domain.Models.Entities;
 using Din.Domain.Queries.Querying;
 using TMDbLib.Objects.Search;
-using TMDbLib.Objects.TvShows;
+using Season = Din.Domain.Clients.Sonarr.Responses.Season;
+using TvShow = TMDbLib.Objects.TvShows.TvShow;
 
 namespace Din.Application.WebAPI.TvShows.Mapping
 {
@@ -19,20 +19,17 @@ namespace Din.Application.WebAPI.TvShows.Mapping
     {
         public TvShowMappingProfile()
         {
-            CreateMap<QueryParametersRequest, QueryParameters<SonarrTvShow>>()
-                .ConvertUsing<ToQueryParametersConverter<SonarrTvShow>>();
-
-            CreateMap<QueryResult<SonarrTvShow>, QueryResponse<TvShowResponse>>();
+            CreateMap<QueryResult<Domain.Models.Entities.TvShow>, QueryResponse<TvShowResponse>>();
             
             CreateMap<TvShowRequest, SonarrTvShowRequest>()
                 .ConvertUsing<ToSonarrTvShowRequestConverter>();
 
-            CreateMap<Season, SeasonResponse>();
-            CreateMap<SeasonStatistics, SeasonStatisticsResponse>();
+            CreateMap<Domain.Models.Entities.Season, SeasonResponse>();
 
-            CreateMap<SonarrTvShow, TvShowResponse>()
-                .ForMember(dest => dest.Id,
-                    opt => opt.MapFrom<ContentIdResolver<SonarrTvShow, TvShowResponse>>());
+            CreateMap<TvShow, TvShowResponse>();
+            CreateMap<SonarrTvShow, TvShowResponse>();
+            CreateMap<Domain.Models.Entities.TvShow, TvShowResponse>()
+                .ForMember(dest => dest.Genres, opt => opt.MapFrom<TvShowResponseGenreResolver>());
 
             CreateMap<TvShow, TvShowSearchResponse>()
                 .ForMember(dest => dest.TmdbId, opt => opt.MapFrom<TvShowSearchIdResolver>())
@@ -44,6 +41,16 @@ namespace Din.Application.WebAPI.TvShows.Mapping
             CreateMap<SonarrCalendar, TvShowCalendarResponse>();
 
             CreateMap<SonarrQueue, QueueResponse>();
+
+            CreateMap<SonarrTvShow, Domain.Models.Entities.TvShow>()
+                .ForMember(dest => dest.Genres, opt => opt.MapFrom<TvShowEntityGenreResolver>());
+            CreateMap<Season, Domain.Models.Entities.Season>()
+                .ConvertUsing<ToSeasonEntityConverter>();
+            CreateMap<Season, SeasonResponse>();
+            CreateMap<SonarrEpisode, Episode>()
+                .ForMember(dest => dest.TvShow, opt => opt.MapFrom<EpisodeEntityTvShowResolver>());
+
+            CreateMap<Episode, TvShowEpisodeResponse>();
         }
     }
 }

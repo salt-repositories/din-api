@@ -2,11 +2,11 @@
 
 namespace Din.Domain.Queries.Querying
 {
-    public abstract class RequestWithQueryParameters<T>
+    public abstract class RequestWithQueryParameters
     {
-        public QueryParameters<T> QueryParameters { get; }
+        public QueryParameters QueryParameters { get; }
 
-        protected RequestWithQueryParameters(QueryParameters<T> queryParameters)
+        protected RequestWithQueryParameters(QueryParameters queryParameters)
         {
             QueryParameters = queryParameters;
         }

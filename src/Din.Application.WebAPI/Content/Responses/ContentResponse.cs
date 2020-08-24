@@ -5,7 +5,8 @@ namespace Din.Application.WebAPI.Content.Responses
 {
     public class ContentResponse
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+        public int SystemId { get; set; }
         public string ImdbId { get; set; }
         public string Title { get; set; }
         public string Overview { get; set; }

@@ -6,7 +6,6 @@ using Din.Application.WebAPI.Authentication.Responses;
 using Din.Application.WebAPI.Middleware;
 using Din.Application.WebAPI.Versioning;
 using Din.Domain.Commands.Authentication;
-using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Models.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -53,11 +52,6 @@ namespace Din.Application.WebAPI.Authentication
         {
             var command = new GenerateTokenCommand(_mapper.Map<CredentialsDto>(credentials));
             var result = await _bus.Send(command);
-
-            if (!string.IsNullOrEmpty(result.ErrorMessage))
-            {
-                throw new AuthenticationException(result.ErrorMessage);
-            }
 
             return Ok(_mapper.Map<TokenResponse>(result));
         }

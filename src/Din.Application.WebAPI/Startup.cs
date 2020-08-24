@@ -4,7 +4,8 @@ using Din.Application.WebAPI.Content;
 using Din.Application.WebAPI.Injection.DotNet;
 using Din.Application.WebAPI.Injection.SimpleInjector;
 using Din.Application.WebAPI.Middleware;
-using Din.Domain.BackgroundTasks.Concrete;
+using Din.Domain.BackgroundProcessing;
+using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
 using Din.Domain.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -49,6 +50,7 @@ namespace Din.Application.WebAPI
             services.AddSignalR();
             services.RegisterSignalRCorePipeline(_container);
             services.AddSingleton<IHostedService>(new BackgroundTaskProcessor(_container));
+            services.AddSingleton<IHostedService>(new BackgroundContentQueueProcessor(_container));
 
             IntegrateSimpleInjector(services);
         }
@@ -101,7 +103,7 @@ namespace Din.Application.WebAPI
             _container.RegisterDbContext(Configuration, env);
             _container.RegisterContexts();
             _container.RegisterRepositories();
-            _container.RegisterAutoMapper();
+            _container.RegisterAutoMapper(assemblies);
             _container.RegisterConfigurations(Configuration);
             _container.RegisterClients();
             _container.RegisterStores();
@@ -109,6 +111,7 @@ namespace Din.Application.WebAPI
             _container.RegisterBackgroundTasks(assemblies);
             _container.RegisterHubTasks();
 
+            
             _container.Verify();
         }
     }

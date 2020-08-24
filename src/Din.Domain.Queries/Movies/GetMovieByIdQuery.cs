@@ -1,22 +1,17 @@
-﻿using Din.Domain.Authorization.Requests;
-using Din.Domain.Clients.Radarr.Responses;
-using Din.Domain.Mediatr.Interfaces;
-using Din.Domain.Models.Querying;
+﻿using System;
+using Din.Domain.Authorization.Requests;
+using Din.Domain.Models.Entities;
 using MediatR;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMovieByIdQuery : IContentRetrievalRequest, IActivatedRequest, IRequest<RadarrMovie>
+    public class GetMovieByIdQuery : IActivatedRequest, IRequest<Movie>
     {
-        public int Id { get; }
-        public ContentFilters Filters { get; }
-        public ContentQueryParameters ContentQueryParameters { get; }
+        public Guid Id { get; }
 
-        public GetMovieByIdQuery(int id, ContentFilters filters, ContentQueryParameters contentQueryParameters)
+        public GetMovieByIdQuery(Guid id)
         {
             Id = id;
-            Filters = filters;
-            ContentQueryParameters = contentQueryParameters;
         }
     }
 }

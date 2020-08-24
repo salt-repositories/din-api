@@ -9,6 +9,7 @@ using Din.Application.WebAPI.Versioning;
 using Din.Domain.Clients.Sonarr.Requests;
 using Din.Domain.Clients.Sonarr.Responses;
 using Din.Domain.Commands.TvShows;
+using Din.Domain.Models.Entities;
 using Din.Domain.Models.Querying;
 using Din.Domain.Queries.TvShows;
 using MediatR;
@@ -53,14 +54,12 @@ namespace Din.Application.WebAPI.TvShows
         public async Task<IActionResult> GetTvShows
         (
             [FromQuery] QueryParametersRequest queryParameters,
-            [FromQuery] ContentFilters filters,
-            [FromQuery] ContentQueryParameters contentQueryParameters
+            [FromQuery] TvShowFilters filters
         )
         {
             var query = new GetTvShowsQuery(
-                _mapper.Map<QueryParameters<SonarrTvShow>>(queryParameters),
-                filters,
-                contentQueryParameters
+                _mapper.Map<QueryParameters>(queryParameters),
+                filters
             );
             var result = await _bus.Send(query);
 
@@ -71,20 +70,19 @@ namespace Din.Application.WebAPI.TvShows
         /// Get tv show by ID
         /// </summary>
         /// <param name="id">System ID</param>
-        /// <param name="filters"></param>
-        /// <param name="contentQueryParameters"></param>
         /// <returns>Single TvShow</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(TvShowResponse), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetTvShowById
-            (
-            [FromRoute] int id,
-            [FromQuery] ContentFilters filters,
-            [FromQuery] ContentQueryParameters contentQueryParameters 
+        (
+            [FromRoute] string id
         )
         {
-            var query = new GetTvShowByIdQuery(id, filters, contentQueryParameters);
+            var query = Guid.TryParse(id, out var guid)
+                ? (IRequest<TvShow>) new GetTvShowByIdQuery(guid)
+                : new GetTvShowBySystemIdQuery(Convert.ToInt32(id));
+
             var result = await _bus.Send(query);
 
             return Ok(result);
@@ -145,7 +143,7 @@ namespace Din.Application.WebAPI.TvShows
             var query = new GetTvShowCalendarQuery((DateTime.Parse(from), DateTime.Parse(till)));
             var result = await _bus.Send(query);
 
-            return Ok(_mapper.Map<IEnumerable<TvShowCalendarResponse>>(result));
+            return Ok(_mapper.Map<IEnumerable<TvShowEpisodeResponse>>(result));
         }
 
         /// <summary>

@@ -125,8 +125,8 @@ namespace Din.Application.WebAPI.Content.HubTasks
                 var movieQueue = await _bus.Send(movieQuery);
                 var tvShowQueue = await _bus.Send(tvShowQuery);
 
-                var collection = _mapper.Map<IEnumerable<QueueResponse>>(movieQueue)
-                    .Concat(_mapper.Map<IEnumerable<QueueResponse>>(tvShowQueue));
+                var collection = _mapper.Map<List<QueueResponse>>(movieQueue)
+                    .Concat(_mapper.Map<List<QueueResponse>>(tvShowQueue));
 
                 var response = JsonConvert.SerializeObject(
                     collection,

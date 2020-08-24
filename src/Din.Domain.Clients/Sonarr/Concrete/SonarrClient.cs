@@ -68,5 +68,13 @@ namespace Din.Domain.Clients.Sonarr.Concrete
 
             return SendRequest<IEnumerable<SonarrQueue>>(request, cancellationToken);
         }
+
+        public Task<IEnumerable<SonarrEpisode>> GetTvShowEpisodes(int id, CancellationToken cancellationToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, 
+                new Uri($"{_config.Url}api/episode?seriesId={id}&apikey={_config.Key}"));
+
+            return SendRequest<IEnumerable<SonarrEpisode>>(request, cancellationToken);
+        }
     }
 }

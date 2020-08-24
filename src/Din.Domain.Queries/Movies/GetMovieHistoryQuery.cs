@@ -7,7 +7,7 @@ namespace Din.Domain.Queries.Movies
 {
     public class GetMovieHistoryQuery : IActivatedRequest, IRequest<HistoryResult<RadarrHistoryRecord>>
     {
-        public int Id { get; set; }
+        public int Id { get; }
 
         public GetMovieHistoryQuery(int id)
         {

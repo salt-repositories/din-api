@@ -1,15 +1,18 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Din.Domain.Models.Querying;
+using Microsoft.EntityFrameworkCore;
 
 namespace Din.Infrastructure.DataAccess.Querying
 {
     public static class QueryableExtensions
     {
-        public static IQueryable<T> ApplyQueryParameters<T>(this IQueryable<T> query, QueryParameters<T> queryParameters)
+        public static IQueryable<T> ApplyQueryParameters<T>(this IQueryable<T> query,
+            QueryParameters queryParameters)
         {
             if (queryParameters == null)
             {
@@ -19,58 +22,102 @@ namespace Din.Infrastructure.DataAccess.Querying
             if (!string.IsNullOrWhiteSpace(queryParameters.SortBy))
             {
                 var param = Expression.Parameter(typeof(T), "x");
-                Expression conversion = Expression.Convert(Expression.Property(param, queryParameters.SortBy), typeof(object));
+                Expression conversion =
+                    Expression.Convert(Expression.Property(param, queryParameters.SortBy), typeof(object));
                 var expression = Expression.Lambda<Func<T, object>>(conversion, param);
 
-                query = queryParameters.SortDirection == SortDirection.Asc ? query.OrderBy(expression) : query.OrderByDescending(expression);
+                query = queryParameters.SortDirection == SortDirection.Asc
+                    ? query.OrderBy(expression)
+                    : query.OrderByDescending(expression);
             }
 
-            query = query.Skip(queryParameters.Skip).Take(queryParameters.Take);
-
-            return query;
+            return query.Skip(queryParameters.Skip).Take(queryParameters.Take);
         }
 
-        public static IQueryable<T> ApplyFilters<T, K>(this IQueryable<T> query, K filters)
+        public static IQueryable<TEntity> ApplyFilters<TEntity, TFilters>(this IQueryable<TEntity> query,
+            TFilters filters)
         {
-            foreach (var propertyInfo in filters.GetType().GetProperties())
+            if (filters == null)
             {
-                var param = Expression.Parameter(typeof(T), "x");
-                var member = Expression.Property(param, propertyInfo.Name);
+                return query;
+            }
 
-                UnaryExpression valueExpression;
+            foreach (var property in typeof(TFilters).GetProperties())
+            {
+                var value = property.GetValue(filters);
 
-                try
-                {
-                    var value = propertyInfo.GetValue(filters) ?? throw new NullReferenceException();
-                    valueExpression = GetValueExpression(propertyInfo.Name, value, param);
-                }
-                catch (NullReferenceException)
+                if (value == null)
                 {
                     continue;
                 }
 
-                Expression body = Expression.Equal(member, valueExpression);
-                var expression = Expression.Lambda<Func<T, bool>>(body, param);
+                if (property.PropertyType == typeof(string))
+                {
+                    query = query.StringPropertyContains(property.Name, value.ToString());
+                    continue;
+                }
 
-                query = query.Where(expression);
+                if (property.PropertyType == typeof(bool) || property.PropertyType == typeof(bool?))
+                {
+                    query = query.BooleanPropertyEquals(property.Name, Convert.ToBoolean(value));
+                    continue;
+                }
             }
 
             return query;
         }
-        private static UnaryExpression GetValueExpression(string propertyName, object value, ParameterExpression param)
-        {
-            var member = Expression.Property(param, propertyName);
-            var propertyType = ((PropertyInfo)member.Member).PropertyType;
-            var converter = TypeDescriptor.GetConverter(propertyType);
 
-            if (!converter.CanConvertFrom(typeof(string)))
+        public static IQueryable<T> StringPropertyContains<T>(this IQueryable<T> query, string propertyName,
+            string value)
+        {
+            var parameter = Expression.Parameter(typeof(T), "entity");
+            var getter = Expression.Property(parameter, propertyName);
+
+            if (getter.Type != typeof(string))
             {
-                throw new NotSupportedException();
+                throw new ArgumentException("Property must be a string");
             }
 
-            var constant = Expression.Constant(value);
+            var indexOf = Expression.Call
+            (
+                getter,
+                "IndexOf",
+                null,
+                Expression.Constant(value, typeof(string)),
+                Expression.Constant(StringComparison.InvariantCultureIgnoreCase)
+            );
+            var like = Expression.GreaterThanOrEqual
+            (
+                indexOf,
+                Expression.Constant(0)
+            );
 
-            return Expression.Convert(constant, propertyType);
+            return query.Where(Expression.Lambda<Func<T, bool>>(like, parameter));
+        }
+
+        public static IQueryable<T> BooleanPropertyEquals<T>(this IQueryable<T> query, string propertyName, bool value)
+        {
+            var parameter = Expression.Parameter(typeof(T), "entity");
+            var expression = Expression.Lambda<Func<T, bool>>(
+                Expression.Equal(
+                    Expression.Property(parameter, propertyName),
+                    Expression.Constant(value)
+                ),
+                parameter
+            );
+            return query.Where(expression);
+        }
+
+        public static Task<List<T>> ToListAsync<T>(this IQueryable<T> query, QueryParameters queryParameters,
+            CancellationToken cancellationToken)
+        {
+            return query.ApplyQueryParameters(queryParameters).ToListAsync(cancellationToken);
+        }
+
+        public static Task<List<T>> ToListAsync<T, TFilters>(this IQueryable<T> query, QueryParameters queryParameters,
+            TFilters filters, CancellationToken cancellationToken)
+        {
+            return query.ApplyFilters(filters).ApplyQueryParameters(queryParameters).ToListAsync(cancellationToken);
         }
     }
 }

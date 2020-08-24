@@ -24,7 +24,7 @@ namespace Din.Domain.Clients.Sonarr.Responses
 
     public class SeasonStatistics
     {
-        [JsonProperty("episodeCount")] public string EpisodeCount { get; set; }
-        [JsonProperty("totalEpisodeCount")] public string TotalEpisodeCount { get; set; }
+        [JsonProperty("episodeCount")] public int EpisodeCount { get; set; }
+        [JsonProperty("totalEpisodeCount")] public int TotalEpisodeCount { get; set; }
     }
 }

@@ -1,28 +1,23 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.Clients.Sonarr.Responses;
-using Din.Domain.Helpers.Interfaces;
-using Din.Domain.Queries.Abstractions;
-using Din.Domain.Stores.Interfaces;
+using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
 
 namespace Din.Domain.Queries.TvShows
 {
-    public class GetTvShowByIdQueryHandler : ContentQueryHandler<SonarrTvShow>,
-        IRequestHandler<GetTvShowByIdQuery, SonarrTvShow>
+    public class GetTvShowByIdQueryHandler : IRequestHandler<GetTvShowByIdQuery, TvShow>
     {
-        public GetTvShowByIdQueryHandler(IPlexHelper plexHelper, IPosterHelper posterHelper,
-            IContentStore<SonarrTvShow> store) : base(plexHelper, posterHelper, store)
+        private readonly ITvShowRepository _repository;
+
+        public GetTvShowByIdQueryHandler(ITvShowRepository repository)
         {
+            _repository = repository;
         }
 
-        public async Task<SonarrTvShow> Handle(GetTvShowByIdQuery request, CancellationToken cancellationToken)
+        public Task<TvShow> Handle(GetTvShowByIdQuery request, CancellationToken cancellationToken)
         {
-            var item = Store.GetOneById(request.Id);
-
-            await RetrieveOptionalData(new[] {item}, request.ContentQueryParameters, cancellationToken);
-            
-            return item;
+            return _repository.GetTvShowById(request.Id, cancellationToken);
         }
     }
 }

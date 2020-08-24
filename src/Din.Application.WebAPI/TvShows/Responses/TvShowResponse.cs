@@ -17,12 +17,7 @@ namespace Din.Application.WebAPI.TvShows.Responses
     public class SeasonResponse
     {
         public int SeasonsNumber { get; set; }
-        public SeasonStatisticsResponse Statistics { get; set; }
-    }
-
-    public class SeasonStatisticsResponse
-    {
-        public string EpisodeCount { get; set; }
-        public string TotalEpisodeCount { get; set; }
+        public int EpisodeCount { get; set; }
+        public int TotalEpisodeCount { get; set; }
     }
 }

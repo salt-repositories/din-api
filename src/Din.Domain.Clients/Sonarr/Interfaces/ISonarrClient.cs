@@ -14,5 +14,6 @@ namespace Din.Domain.Clients.Sonarr.Interfaces
         Task<SonarrTvShow> AddTvShowAsync(SonarrTvShowRequest tvShow, CancellationToken cancellationToken);
         Task<IEnumerable<SonarrCalendar>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken);
         Task<IEnumerable<SonarrQueue>> GetQueueAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<SonarrEpisode>> GetTvShowEpisodes(int id, CancellationToken cancellationToken);
     }
 }

@@ -16,8 +16,6 @@ namespace Din.Domain.Clients.Abstractions
         [JsonProperty("hasFile")] public bool HasFile { get; set; }
         [JsonProperty("year")] public string Year { get; set; }
         [JsonProperty("added")] public DateTime Added { get; set; }
-        public string PlexUrl { get; set; }
-        public string PosterPath { get; set; }
         [JsonProperty("ratings")] public ContentRating Ratings { get; set; }
     }
 }

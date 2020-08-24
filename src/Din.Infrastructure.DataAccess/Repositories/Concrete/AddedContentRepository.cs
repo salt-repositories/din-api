@@ -18,22 +18,24 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
         }
 
-        public async Task<IList<AddedContent>> GetAddedContentByAccountId(Guid id, QueryParameters<AddedContent> queryParameters, AddedContentFilters filters,
+        public Task<List<AddedContent>> GetAddedContentByAccountId(Guid id, QueryParameters queryParameters, AddedContentFilters filters,
             CancellationToken cancellationToken)
         {
-            IQueryable<AddedContent> query = Context.Set<AddedContent>().Where(ac => ac.AccountId.Equals(id));
-            query = query.ApplyFilters(filters);
-            query = query.ApplyQueryParameters(queryParameters);
+            var query = Context.AddedContent.Where(ac => ac.AccountId.Equals(id));
 
-            return await query.ToListAsync(cancellationToken);
+            return filters.Type.HasValue
+                ? query.Where(ac => ac.Type.Equals(filters.Type))
+                    .ToListAsync(queryParameters, filters, cancellationToken)
+                : query.ToListAsync(queryParameters, filters, cancellationToken);
         }
 
         public Task<int> Count(Guid id, AddedContentFilters filters, CancellationToken cancellationToken)
         {
-            IQueryable<AddedContent> query = Context.Set<AddedContent>().Where(ac => ac.AccountId.Equals(id));
-            query = query.ApplyFilters(filters);
+            var query = Context.AddedContent.Where(ac => ac.AccountId.Equals(id));
 
-            return query.CountAsync(cancellationToken);
+            return filters.Type.HasValue
+                ? query.Where(ac => ac.Type.Equals(filters.Type)).ApplyFilters(filters).CountAsync(cancellationToken)
+                : query.ApplyFilters(filters).CountAsync(cancellationToken);
         }
     }
 }

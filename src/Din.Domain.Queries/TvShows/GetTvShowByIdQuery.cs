@@ -1,22 +1,17 @@
-﻿using Din.Domain.Authorization.Requests;
-using Din.Domain.Clients.Sonarr.Responses;
-using Din.Domain.Mediatr.Interfaces;
-using Din.Domain.Models.Querying;
+﻿using System;
+using Din.Domain.Authorization.Requests;
+using Din.Domain.Models.Entities;
 using MediatR;
 
 namespace Din.Domain.Queries.TvShows
 {
-    public class GetTvShowByIdQuery : IContentRetrievalRequest, IActivatedRequest, IRequest<SonarrTvShow>
+    public class GetTvShowByIdQuery : IActivatedRequest, IRequest<TvShow>
     {
-        public int Id { get; }
-        public ContentFilters Filters { get; }
-        public ContentQueryParameters ContentQueryParameters { get; }
+        public Guid Id { get; }
 
-        public GetTvShowByIdQuery(int id, ContentFilters filters, ContentQueryParameters contentQueryParameters)
+        public GetTvShowByIdQuery(Guid id)
         {
             Id = id;
-            Filters = filters;
-            ContentQueryParameters = contentQueryParameters;
         }
     }
 }
