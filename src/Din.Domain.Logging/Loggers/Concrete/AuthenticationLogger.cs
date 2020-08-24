@@ -6,7 +6,6 @@ using Din.Domain.Clients.IpStack.Interfaces;
 using Din.Domain.Context;
 using Din.Domain.Logging.Loggers.Interfaces;
 using Din.Domain.Logging.Requests;
-using Din.Domain.Models.Dtos;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using UAParser;
@@ -14,7 +13,7 @@ using UAParser;
 namespace Din.Domain.Logging.Loggers.Concrete
 {
     public class AuthenticationLogger<TRequest, TResponse> : IRequestLogger<TRequest, TResponse>
-        where TRequest : IAuthenticationRequest where TResponse : TokenDto
+        where TRequest : IAuthenticationRequest
     {
         private readonly ILoginAttemptRepository _repository;
         private readonly IRequestContext _context;
@@ -59,7 +58,7 @@ namespace Din.Domain.Logging.Loggers.Concrete
                 PublicIp = ipAddress,
                 DateAndTime = DateTime.Now,
                 Location = location,
-                Status = string.IsNullOrEmpty(response.ErrorMessage) ? LoginStatus.Success : LoginStatus.Failed
+                Status = response != null ? LoginStatus.Success : LoginStatus.Failed
             };
 
             _repository.Insert(loginAttempt);

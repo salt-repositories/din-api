@@ -18,7 +18,7 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
         }
 
-        public async Task<IList<Account>> GetAccounts(QueryParameters<Account> queryParameters,
+        public async Task<IList<Account>> GetAccounts(QueryParameters queryParameters,
             CancellationToken cancellationToken)
         {
             IQueryable<Account> query = Context.Set<Account>()

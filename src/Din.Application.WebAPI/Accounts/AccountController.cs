@@ -52,7 +52,7 @@ namespace Din.Application.WebAPI.Accounts
         [ProducesResponseType(typeof(QueryResponse<AccountResponse>), 200)]
         public async Task<IActionResult> GetAccounts([FromQuery] QueryParametersRequest queryParameters)
         {
-            var query = new GetAccountsQuery(_mapper.Map<QueryParameters<Account>>(queryParameters));
+            var query = new GetAccountsQuery(_mapper.Map<QueryParameters>(queryParameters));
             var result = await _bus.Send(query);
 
             return Ok(_mapper.Map<QueryResponse<AccountResponse>>(result));
@@ -107,7 +107,7 @@ namespace Din.Application.WebAPI.Accounts
             [FromQuery] AddedContentFilters filters
         )
         {
-            var query = new GetAddedContentQuery(_mapper.Map<QueryParameters<AddedContent>>(queryParameters), id, filters);
+            var query = new GetAddedContentQuery(_mapper.Map<QueryParameters>(queryParameters), id, filters);
             var result = await _bus.Send(query);
 
             return Ok(_mapper.Map<QueryResponse<AddedContentResponse>>(result));

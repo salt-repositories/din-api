@@ -21,6 +21,12 @@ namespace Din.Infrastructure.DataAccess
         public DbSet<LoginLocation> LoginLocation { get; set; }
         public DbSet<RefreshToken> RefreshToken { get; set; }
 
+        public DbSet<Movie> Movie { get; set; }
+        public DbSet<TvShow> TvShow { get; set; }
+        public DbSet<Episode> Episode { get; set; }
+        public DbSet<Genre> Genre { get; set; }
+        public DbSet<ContentPollStatus> ContentPollStatus { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new AccountEntityConfiguration());
@@ -30,6 +36,14 @@ namespace Din.Infrastructure.DataAccess
             modelBuilder.ApplyConfiguration(new LoginAttemptEntityConfiguration());
             modelBuilder.ApplyConfiguration(new LoginLocationEntityConfiguration());
             modelBuilder.ApplyConfiguration(new RefreshTokenEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new MovieEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new TvShowEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new SeasonEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ContentGenreRelationConfiguration());
+            modelBuilder.ApplyConfiguration(new GenreEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ContentRatingEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new EpisodeEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new ContentPollStatusEntityConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

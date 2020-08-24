@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
@@ -22,19 +23,29 @@ namespace Din.Infrastructure.DataAccess.Repositories.Abstractions
             return query.CountAsync(cancellationToken);
         }
 
-        public void Insert<T>(T entity) where T : class
+        public T Insert<T>(T entity) where T : class
         {
-            Context.Add(entity);
+            return Context.Add(entity).Entity;
         }
 
-        public void Update<T>(T entity) where T : class
+        public Task InsertMultipleAsync<T>(IEnumerable<T> entities, CancellationToken cancellationToken) where T : class
         {
-            Context.Update(entity);
+            return Context.Set<T>().AddRangeAsync(entities, cancellationToken);
+        }
+
+        public T Update<T>(T entity) where T : class
+        {
+            return Context.Update(entity).Entity;
         }
 
         public void Delete<T>(T entity) where T : class
         {
             Context.Remove(entity);
+        }
+
+        public Task SaveAsync(CancellationToken cancellationToken)
+        {
+            return Context.SaveChangesAsync(cancellationToken);
         }
     }
 }

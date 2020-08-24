@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Din.Domain.Exceptions.Concrete;
 using Din.Domain.Helpers.Interfaces;
 using Din.Domain.Models.Dtos;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
@@ -12,13 +13,11 @@ namespace Din.Domain.Commands.Authentication
     public class GenerateTokenCommandHandler : IRequestHandler<GenerateTokenCommand, TokenDto>
     {
         private readonly IAccountRepository _accountRepository;
-        private readonly IRefreshTokenRepository _tokenRepository;
         private readonly ITokenHelper _tokenManager;
 
-        public GenerateTokenCommandHandler(IAccountRepository accountRepository, IRefreshTokenRepository tokenRepository, ITokenHelper tokenManager)
+        public GenerateTokenCommandHandler(IAccountRepository accountRepository, ITokenHelper tokenManager)
         {
             _accountRepository = accountRepository;
-            _tokenRepository = tokenRepository;
             _tokenManager = tokenManager;
         }
 
@@ -30,15 +29,13 @@ namespace Din.Domain.Commands.Authentication
 
             if (account == null || !BC.Verify(request.Credentials.Password, account.Hash))
             {
-                return new TokenDto {ErrorMessage = "Invalid credentials"};
+                throw new AuthenticationException("Invalid credentials");
             }
 
             if (!account.Active)
             {
-                return new TokenDto {ErrorMessage = "Account is inactive, please reset your password"};
+                throw new AuthenticationException("Account is inactive, please reset your password");
             }
-
-            await _tokenRepository.Invoke(account.Id, cancellationToken);
 
             return new TokenDto
             {

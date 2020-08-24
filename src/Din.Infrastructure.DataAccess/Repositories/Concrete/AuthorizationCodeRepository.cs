@@ -18,10 +18,5 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         {
             return await Context.AuthorizationCode.ToListAsync(cancellationToken);
         }
-
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            await Context.SaveChangesAsync(cancellationToken);
-        }
     }
 }

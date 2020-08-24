@@ -23,31 +23,31 @@ namespace Din.Domain.Queries.Abstractions
 
         protected async Task RetrieveAdditionalData(ICollection<T> collection, CancellationToken cancellationToken)
         {
-            foreach (var item in collection)
-            {
-                var result = _store.GetByTitle(item.Title);
-
-                if (result == null)
-                {
-                    continue;
-                }
-
-                item.PlexUrl = result.PlexUrl;
-                item.PosterPath = result.PosterPath;
-            }
-
-            await _plexHelper.CheckIsOnPlex(collection, cancellationToken);
-            await _posterHelper.GetPosters(collection, cancellationToken);
-
-            foreach (var item in collection)
-            {
-                _store.AddOne(new PlexPosterDto
-                (
-                    item.Title,
-                    item.PlexUrl,
-                    item.PosterPath
-                ));
-            }
+            // foreach (var item in collection)
+            // {
+            //     var result = _store.GetByTitle(item.Title);
+            //
+            //     if (result == null)
+            //     {
+            //         continue;
+            //     }
+            //
+            //     item.PlexUrl = result.PlexUrl;
+            //     item.PosterPath = result.PosterPath;
+            // }
+            //
+            // await _plexHelper.CheckIsOnPlex(collection, cancellationToken);
+            // await _posterHelper.GetPosters(collection, cancellationToken);
+            //
+            // foreach (var item in collection)
+            // {
+            //     _store.AddOne(new PlexPosterDto
+            //     (
+            //         item.Title,
+            //         item.PlexUrl,
+            //         item.PosterPath
+            //     ));
+            // }
         }
     }
 }

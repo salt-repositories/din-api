@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
-using Din.Domain.BackgroundTasks.Interfaces;
+using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
+using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
 using SimpleInjector;
 
 namespace Din.Application.WebAPI.Injection.SimpleInjector
@@ -9,6 +10,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
         public static void RegisterBackgroundTasks(this Container container, Assembly[] assemblies)
         {
             container.Collection.Register<IBackgroundTask>(assemblies);
+            container.Register<ContentPollingQueue>(Lifestyle.Singleton);
         }
     }
 }

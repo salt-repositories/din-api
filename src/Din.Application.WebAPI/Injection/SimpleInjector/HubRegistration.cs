@@ -1,4 +1,5 @@
-﻿using Din.Application.WebAPI.Content.HubTasks;
+﻿using Din.Application.WebAPI.Content;
+using Din.Application.WebAPI.Content.HubTasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
@@ -15,6 +16,8 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
 
         public static void RegisterHubTasks(this Container container)
         {
+            container.Register<ContentHub>(Lifestyle.Scoped);
+
             container.Register<CurrentQueueTimedTask>(Lifestyle.Singleton);
         }
     }

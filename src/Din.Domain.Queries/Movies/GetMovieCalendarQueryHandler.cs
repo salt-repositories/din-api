@@ -1,33 +1,24 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.Clients.Radarr.Interfaces;
-using Din.Domain.Clients.Radarr.Responses;
-using Din.Domain.Helpers.Interfaces;
-using Din.Domain.Queries.Abstractions;
-using Din.Domain.Stores.Interfaces;
+using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using MediatR;
 
 namespace Din.Domain.Queries.Movies
 {
-    public class GetMovieCalendarQueryHandler : CalendarQueryHandler<RadarrMovie>, IRequestHandler<GetMovieCalendarQuery, IEnumerable<RadarrMovie>>
+    public class GetMovieCalendarQueryHandler : IRequestHandler<GetMovieCalendarQuery, List<Movie>>
     {
-        private readonly IRadarrClient _client;
+        private readonly IMovieRepository _repository;
 
-        public GetMovieCalendarQueryHandler(IPlexPosterStore store, IPlexHelper plexHelper, IPosterHelper posterHelper, IRadarrClient client) : base(store, plexHelper, posterHelper)
+        public GetMovieCalendarQueryHandler(IMovieRepository repository)
         {
-            _client = client;
+            _repository = repository;
         }
 
-        public async Task<IEnumerable<RadarrMovie>> Handle(GetMovieCalendarQuery request,
-            CancellationToken cancellationToken)
+        public Task<List<Movie>> Handle(GetMovieCalendarQuery request, CancellationToken cancellationToken)
         {
-            var collection = (await _client.GetCalendarAsync(request.DateRange, cancellationToken)).ToList();
-
-            await RetrieveAdditionalData(collection, cancellationToken);
-
-            return collection;
+            return _repository.GetMoviesByDateRange(request.DateRange, cancellationToken);
         }
     }
 }

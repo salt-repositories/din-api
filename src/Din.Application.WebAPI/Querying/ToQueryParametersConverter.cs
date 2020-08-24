@@ -3,16 +3,16 @@ using Din.Domain.Models.Querying;
 
 namespace Din.Application.WebAPI.Querying
 {
-    public class ToQueryParametersConverter<T> : ITypeConverter<QueryParametersRequest, QueryParameters<T>>
+    public class ToQueryParametersConverter : ITypeConverter<QueryParametersRequest, QueryParameters>
     {
-        public QueryParameters<T> Convert(QueryParametersRequest source, QueryParameters<T> destination, ResolutionContext context)
+        public QueryParameters Convert(QueryParametersRequest source, QueryParameters destination, ResolutionContext context)
         {
-            var queryParameters = new QueryParameters<T>();
+            var queryParameters = new QueryParameters();
 
-            var pageSize = (source.Take > QueryParameters<T>.MaxPageSize 
-                               ? QueryParameters<T>.MaxPageSize
+            var pageSize = (source.Take > QueryParameters.MaxPageSize 
+                               ? QueryParameters.MaxPageSize
                                : source.Take) 
-                           ?? QueryParameters<T>.DefaultPageSize;
+                           ?? QueryParameters.DefaultPageSize;
 
             queryParameters.WithPaging(source.Skip, pageSize);
             

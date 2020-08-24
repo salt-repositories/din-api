@@ -2,15 +2,11 @@
 using Din.Domain.Authorization.Authorizers.Interfaces;
 using Din.Domain.Authorization.Handlers.Concrete;
 using Din.Domain.Authorization.Handlers.Interfaces;
-using Din.Domain.Commands.Authentication;
 using Din.Domain.Extensions;
 using Din.Domain.Logging.Handlers.Concrete;
 using Din.Domain.Logging.Handlers.Interfaces;
 using Din.Domain.Logging.Loggers.Interfaces;
-using Din.Domain.Mediatr.Concrete;
 using Din.Domain.Middlewares.Mediatr;
-using Din.Domain.Queries.Accounts;
-using Din.Domain.Stores.Concrete;
 using Din.Infrastructure.DataAccess.Mediatr.Concrete;
 using FluentValidation;
 using MediatR;
@@ -32,6 +28,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                     typeof(RequestPreProcessorBehavior<,>),
                     typeof(TransactionProcessorBehaviour<,>),
                     typeof(RequestPostProcessorBehavior<,>),
+                    typeof(RequestExceptionProcessorBehavior<,>)
                 }
             );
 
@@ -40,7 +37,6 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 {
                     typeof(AuthorizationMiddleware<>),
                     typeof(FluentValidationMiddleware<>),
-                    typeof(ContentStorePreRequestUpdater<>),
                 }
             );
 
@@ -48,30 +44,20 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 new []
                 {
                     typeof(LoggingMiddleware<,>),
-                    typeof(ContentStorePostRequestUpdater<,>)
                 }
             );
 
             container.Register(typeof(IAuthorizationHandler<>), typeof(AuthorizationHandler<>));
             container.Register(typeof(ILoggingHandler<,>), typeof(LoggingHandler<,>));
 
-
             container.Collection.Register(typeof(IRequestAuthorizer<>), assemblies.GetGenericInterfaceImplementationTypes(typeof(IRequestAuthorizer<>)));
             container.Collection.Register(typeof(IValidator<>), assemblies);
             container.Collection.Register(typeof(IRequestLogger<,>), assemblies.GetGenericInterfaceImplementationTypes(typeof(IRequestLogger<,>)));
 
-            container.Register(typeof(IRequestHandler<>), new []
-            {
-                typeof(GetAccountQueryHandler).Assembly,
-                typeof(GetAddedContentQueryHandler).Assembly,
-                typeof(GenerateTokenCommandHandler).Assembly
-            }, Lifestyle.Scoped);
-            container.Register(typeof(IRequestHandler<,>), new []
-            {
-                typeof(GetAccountQueryHandler).Assembly,
-                typeof(GetAddedContentQueryHandler).Assembly,
-                typeof(GenerateTokenCommandHandler).Assembly
-            }, Lifestyle.Scoped);
+            container.Register(typeof(IRequestHandler<>), assemblies, Lifestyle.Scoped);
+            container.Register(typeof(IRequestHandler<,>), assemblies, Lifestyle.Scoped);
+            container.Collection.Register(typeof(IRequestExceptionHandler<,>), assemblies, Lifestyle.Scoped);
+            container.Collection.Register(typeof(IRequestExceptionHandler<,,>), assemblies, Lifestyle.Scoped);
         }
     }
 }

@@ -10,6 +10,7 @@ using Din.Application.WebAPI.Versioning;
 using Din.Domain.Clients.Radarr.Requests;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Commands.Movies;
+using Din.Domain.Models.Entities;
 using Din.Domain.Models.Querying;
 using Din.Domain.Queries.Movies;
 using MediatR;
@@ -54,14 +55,13 @@ namespace Din.Application.WebAPI.Movies
         public async Task<IActionResult> GetMovies
         (
             [FromQuery] QueryParametersRequest queryParameters,
-            [FromQuery] ContentFilters filters,
-            [FromQuery] ContentQueryParameters contentQueryParameters
-       )
+            [FromQuery] MovieFilters filters
+        )
         {
-            var query = new GetMoviesQuery(
-                _mapper.Map<QueryParameters<RadarrMovie>>(queryParameters),
-                filters,
-                contentQueryParameters
+            var query = new GetMoviesQuery
+            (
+                _mapper.Map<QueryParameters>(queryParameters),
+                filters
             );
             var result = await _bus.Send(query);
 
@@ -72,20 +72,19 @@ namespace Din.Application.WebAPI.Movies
         /// Get movie by ID
         /// </summary>
         /// <param name="id">system ID</param>
-        /// <param name="filters"></param>
-        /// <param name="contentQueryParameters"></param>
         /// <returns>Single movie</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(MovieResponse), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetMovieById
-            (
-            [FromRoute] int id,
-            [FromQuery] ContentFilters filters,
-            [FromQuery] ContentQueryParameters contentQueryParameters
+        (
+            [FromRoute] string id
         )
         {
-            var query = new GetMovieByIdQuery(id, filters, contentQueryParameters);
+            var query = Guid.TryParse(id, out var guid)
+                ? (IRequest<Movie>) new GetMovieByIdQuery(guid)
+                : new GetMovieBySystemIdQuery(Convert.ToInt32(id));
+
             var result = await _bus.Send(query);
 
             return Ok(_mapper.Map<MovieResponse>(result));
