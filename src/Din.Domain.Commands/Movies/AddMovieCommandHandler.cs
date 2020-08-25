@@ -44,6 +44,10 @@ namespace Din.Domain.Commands.Movies
         public async Task<Movie> Handle(AddMovieCommand request, CancellationToken cancellationToken)
         {
             var response = await _client.AddMovieAsync(request.Movie, cancellationToken);
+            
+            Thread.Sleep(500);
+            
+            response = await _client.GetMovieByIdAsync(response.SystemId, cancellationToken);
 
             var movie = _movieRepository.Insert(_mapper.Map<Movie>(response));
 
