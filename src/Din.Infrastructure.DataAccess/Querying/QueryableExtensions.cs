@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Models.Querying;
@@ -62,6 +64,8 @@ namespace Din.Infrastructure.DataAccess.Querying
                     query = query.BooleanPropertyEquals(property.Name, Convert.ToBoolean(value));
                     continue;
                 }
+
+                query = query.PropertyEquals(property.Name, value);
             }
 
             return query;
@@ -105,6 +109,31 @@ namespace Din.Infrastructure.DataAccess.Querying
                 ),
                 parameter
             );
+            return query.Where(expression);
+        }
+
+        public static IQueryable<T> PropertyEquals<T>(this IQueryable<T> query, string propertyName, object value)
+        {
+            var parameter = Expression.Parameter(typeof(T), "entity");
+            var member = Expression.Property(parameter, propertyName);
+
+            var converter = TypeDescriptor.GetConverter(((PropertyInfo) member.Member).PropertyType);
+
+            if (!converter.CanConvertFrom(typeof(string)))
+            {
+                return query;
+            }
+
+            var valueExpression = Expression.Convert(Expression.Constant(value), ((PropertyInfo) member.Member).PropertyType);
+            
+            var expression = Expression.Lambda<Func<T, bool>>(
+                Expression.Equal(
+                    Expression.Property(parameter, propertyName),
+                    valueExpression
+                ),
+                parameter
+            );
+
             return query.Where(expression);
         }
 

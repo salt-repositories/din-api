@@ -44,6 +44,11 @@ namespace Din.Domain.Commands.TvShows
         public async Task<TvShow> Handle(AddTvShowCommand request, CancellationToken cancellationToken)
         {
             var response = await _client.AddTvShowAsync(request.TvShow, cancellationToken);
+
+            Thread.Sleep(500);
+
+            response = await _client.GetTvShowByIdAsync(response.SystemId, cancellationToken);
+
             var tvShow = _tvShowRepository.Insert(_mapper.Map<TvShow>(response));
 
             _contentPollingQueue.Enqueue(tvShow);
