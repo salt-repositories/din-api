@@ -14,12 +14,10 @@ namespace Din.Domain.BackgroundProcessing
     public class BackgroundContentQueueProcessor : BackgroundService
     {
         private readonly Container _container;
-        private readonly ILogger<BackgroundContentQueueProcessor> _logger;
 
-        public BackgroundContentQueueProcessor(Container container, ILogger<BackgroundContentQueueProcessor> logger)
+        public BackgroundContentQueueProcessor(Container container)
         {
             _container = container;
-            _logger = logger;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -53,7 +51,7 @@ namespace Din.Domain.BackgroundProcessing
                     }
                     catch (Exception exception)
                     {
-                        _logger.LogError(exception, "Uncaught exception within background content queue processor");
+                        _container.GetInstance<ILogger<BackgroundContentQueueProcessor>>().LogError(exception, "Uncaught exception within background content queue processor");
                     }
                 }
             }, stoppingToken);

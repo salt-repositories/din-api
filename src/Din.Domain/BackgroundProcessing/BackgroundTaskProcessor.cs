@@ -13,14 +13,12 @@ namespace Din.Domain.BackgroundProcessing
     public class BackgroundTaskProcessor : IHostedService, IDisposable
     {
         private readonly Container _container;
-        private readonly ILogger<BackgroundTaskProcessor> _logger;
         private CancellationToken _cancellationToken;
         private Timer _timer;
 
-        public BackgroundTaskProcessor(Container container, ILogger<BackgroundTaskProcessor> logger)
+        public BackgroundTaskProcessor(Container container)
         {
             _container = container;
-            _logger = logger;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -44,7 +42,7 @@ namespace Din.Domain.BackgroundProcessing
                 }
                 catch (Exception exception)
                 {
-                    _logger.LogError(exception, "Uncaught exception within background task");
+                    _container.GetInstance<ILogger<BackgroundTaskProcessor>>().LogError(exception, "Uncaught exception within background task");
                 }
             }
         }
