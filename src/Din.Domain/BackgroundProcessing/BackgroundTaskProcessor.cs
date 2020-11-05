@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 
@@ -12,12 +13,14 @@ namespace Din.Domain.BackgroundProcessing
     public class BackgroundTaskProcessor : IHostedService, IDisposable
     {
         private readonly Container _container;
+        private readonly ILogger<BackgroundTaskProcessor> _logger;
         private CancellationToken _cancellationToken;
         private Timer _timer;
 
-        public BackgroundTaskProcessor(Container container)
+        public BackgroundTaskProcessor(Container container, ILogger<BackgroundTaskProcessor> logger)
         {
             _container = container;
+            _logger = logger;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -32,10 +35,17 @@ namespace Din.Domain.BackgroundProcessing
         {
             using (AsyncScopedLifestyle.BeginScope(_container))
             {
-                var tasks = _container.GetAllInstances<IBackgroundTask>()
-                    .Select(task => task.Execute(_cancellationToken)).ToList();
+                try
+                {
+                    var tasks = _container.GetAllInstances<IBackgroundTask>()
+                        .Select(task => task.Execute(_cancellationToken)).ToList();
 
-                await Task.WhenAll(tasks);
+                    await Task.WhenAll(tasks);
+                }
+                catch (Exception exception)
+                {
+                    _logger.LogError(exception, "Uncaught exception within background task");
+                }
             }
         }
 

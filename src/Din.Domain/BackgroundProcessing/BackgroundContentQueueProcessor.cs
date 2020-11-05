@@ -1,9 +1,11 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
 using Din.Domain.Helpers.Interfaces;
 using Din.Infrastructure.DataAccess;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 
@@ -12,10 +14,12 @@ namespace Din.Domain.BackgroundProcessing
     public class BackgroundContentQueueProcessor : BackgroundService
     {
         private readonly Container _container;
+        private readonly ILogger<BackgroundContentQueueProcessor> _logger;
 
-        public BackgroundContentQueueProcessor(Container container)
+        public BackgroundContentQueueProcessor(Container container, ILogger<BackgroundContentQueueProcessor> logger)
         {
             _container = container;
+            _logger = logger;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -24,26 +28,33 @@ namespace Din.Domain.BackgroundProcessing
             {
                 using (AsyncScopedLifestyle.BeginScope(_container))
                 {
-                    var contentQueue = _container.GetInstance<ContentPollingQueue>();
-                    var context = _container.GetInstance<DinContext>();
-
-                    do
+                    try
                     {
-                        if (!contentQueue.TryDequeue(out var content))
+                        var contentQueue = _container.GetInstance<ContentPollingQueue>();
+                        var context = _container.GetInstance<DinContext>();
+
+                        do
                         {
-                            Thread.Sleep(1000);
-                            continue;
-                        }
+                            if (!contentQueue.TryDequeue(out var content))
+                            {
+                                Thread.Sleep(1000);
+                                continue;
+                            }
 
-                        var plexHelper = _container.GetInstance<IPlexHelper>();
-                        var posterHelper = _container.GetInstance<IPosterHelper>();
+                            var plexHelper = _container.GetInstance<IPlexHelper>();
+                            var posterHelper = _container.GetInstance<IPosterHelper>();
 
-                        await plexHelper.CheckIsOnPlex(new[] {content}, stoppingToken);
-                        await posterHelper.GetPosters(new[] {content}, stoppingToken);
+                            await plexHelper.CheckIsOnPlex(new[] {content}, stoppingToken);
+                            await posterHelper.GetPosters(new[] {content}, stoppingToken);
 
-                        context.Update(content);
-                        await context.SaveChangesAsync(stoppingToken);
-                    } while (!stoppingToken.IsCancellationRequested);
+                            context.Update(content);
+                            await context.SaveChangesAsync(stoppingToken);
+                        } while (!stoppingToken.IsCancellationRequested);
+                    }
+                    catch (Exception exception)
+                    {
+                        _logger.LogError(exception, "Uncaught exception within background content queue processor");
+                    }
                 }
             }, stoppingToken);
         }
