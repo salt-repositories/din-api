@@ -45,7 +45,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                     var storedEpisodes = await repository.GetTvShowEpisodes(tvShow.Id, cancellationToken);
                     var externalEpisodes = await _client.GetTvShowEpisodes(tvShow.SystemId, cancellationToken);
 
-                    Parallel.ForEach(externalEpisodes, externalEpisode =>
+                    foreach (var externalEpisode in externalEpisodes)
                     {
                         var storedEpisode = storedEpisodes.SingleOrDefault(episode =>
                             episode.SeasonNumber == externalEpisode.SeasonNumber &&
@@ -54,14 +54,14 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                         if (storedEpisode == null)
                         {
                             episodesToAdd.Add(_mapper.Map<Episode>(externalEpisode));
-                            return;
+                            break;
                         }
 
                         if (!storedEpisode.HasFile)
                         {
                             storedEpisode.HasFile = externalEpisode.HasFile;
                         }
-                    });
+                    }
                 }
 
                 try
