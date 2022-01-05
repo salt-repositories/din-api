@@ -51,16 +51,12 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                             episode.SeasonNumber == externalEpisode.SeasonNumber &&
                             episode.EpisodeNumber == externalEpisode.EpisodeNumber);
                     
-                        if (storedEpisode == null)
-                        {
-                            episodesToAdd.Add(_mapper.Map<Episode>(externalEpisode));
-                            break;
-                        }
-
-                        if (!storedEpisode.HasFile)
+                        if (storedEpisode != null && !storedEpisode.HasFile)
                         {
                             storedEpisode.HasFile = externalEpisode.HasFile;
                         }
+
+                        episodesToAdd.Add(_mapper.Map<Episode>(externalEpisode));
                     }
                 }
 
