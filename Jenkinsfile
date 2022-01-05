@@ -10,7 +10,6 @@ String solution = 'Din'
 Map settings = [
   sonar_key: 'din-api',
   unit_test_projects: ["Din.Domain.Tests"],
-  migrations_project: 'Din.Infrastructure.Migrations'
 ]
 
 csDockerBuildAndPublish(organization, repo, project, solution, settings)
