@@ -16,38 +16,52 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 {
     public class TvShowEpisodePoller : IBackgroundTask
     {
-        private readonly Container _container;
-        private readonly IMapper _mapper;
         private readonly ILogger<TvShowEpisodePoller> _logger;
+        private readonly IMapper _mapper;
+        private readonly ISonarrClient _client;
+        private readonly Container _container;
 
-        public TvShowEpisodePoller(Container container, IMapper mapper, ILogger<TvShowEpisodePoller> logger)
+        public TvShowEpisodePoller(ILogger<TvShowEpisodePoller> logger, IMapper mapper, ISonarrClient client, Container container)
         {
-            _container = container;
-            _mapper = mapper;
             _logger = logger;
+            _mapper = mapper;
+            _client = client;
+            _container = container;
         }
 
-        public async Task Execute(CancellationToken cancellationToken)
+        public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Start polling tv show episodes");
-
-            using (AsyncScopedLifestyle.BeginScope(_container))
+            await using (AsyncScopedLifestyle.BeginScope(_container))
             {
+                _logger.LogInformation("Start polling tv show episodes");
+
                 var repository = _container.GetInstance<ITvShowRepository>();
-                var client = _container.GetInstance<ISonarrClient>();
 
                 var episodesToAdd = new List<Episode>();
-
-                foreach (var tvShow in (await repository.GetTvShows(null, null, cancellationToken)).Where(tvShow => tvShow.TotalEpisodeCount != repository.CountTvShowEpisodes(tvShow.Id)))
+                var currentTvShows = await repository.GetTvShows(null, null, cancellationToken);
+                
+                foreach (var tvShow in currentTvShows)
                 {
                     var storedEpisodes = await repository.GetTvShowEpisodes(tvShow.Id, cancellationToken);
-                    var externalEpisodes = await client.GetTvShowEpisodes(tvShow.SystemId, cancellationToken);
+                    var externalEpisodes = await _client.GetTvShowEpisodes(tvShow.SystemId, cancellationToken);
 
-                    episodesToAdd.AddRange(externalEpisodes
-                        .Where(episode => storedEpisodes.FirstOrDefault(e =>
-                                              e.SeasonNumber.Equals(episode.SeasonNumber) &&
-                                              e.EpisodeNumber.Equals(episode.EpisodeNumber)) == null)
-                        .Select(episode => _mapper.Map<Episode>(episode)));
+                    Parallel.ForEach(externalEpisodes, externalEpisode =>
+                    {
+                        var storedEpisode = storedEpisodes.SingleOrDefault(episode =>
+                            episode.SeasonNumber == externalEpisode.SeasonNumber &&
+                            episode.EpisodeNumber == externalEpisode.EpisodeNumber);
+                    
+                        if (storedEpisode == null)
+                        {
+                            episodesToAdd.Add(_mapper.Map<Episode>(externalEpisode));
+                            return;
+                        }
+
+                        if (!storedEpisode.HasFile)
+                        {
+                            storedEpisode.HasFile = externalEpisode.HasFile;
+                        }
+                    });
                 }
 
                 try
@@ -61,9 +75,9 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                 {
                     _logger.LogError(exception, "Polling tv shows episodes insert error");
                 }
-            }
 
-            _logger.LogInformation("Finished polling tv show episodes");
+                _logger.LogInformation("Finished polling tv show episodes");
+            }
         }
     }
 }

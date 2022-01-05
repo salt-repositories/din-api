@@ -2,9 +2,8 @@
 
 namespace Din.Domain.Models.Entities
 {
-    public interface IContent
+    public interface IContent : IEntity
     {
-        Guid Id { get; set; }
         int SystemId { get; set; }
         string ImdbId { get; set; }
         string Title { get; set; }

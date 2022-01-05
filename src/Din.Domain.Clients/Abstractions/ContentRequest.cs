@@ -7,7 +7,6 @@ namespace Din.Domain.Clients.Abstractions
     {
         [JsonProperty("title")] public string Title { get; set; }
         [JsonProperty("qualityProfileId")] public int QualityProfileId { get; set; }
-        [JsonProperty("profileId")] public string ProfileId { get; set; }
         [JsonProperty("titleSlug")] public string TitleSlug { get; set; }
         [JsonProperty("images")] public ICollection<ContentImage> Images { get; set; }
         [JsonProperty("rootFolderPath")] public string RootFolderPath { get; set; }

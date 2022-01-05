@@ -2,7 +2,7 @@
 
 namespace Din.Domain.Models.Entities
 {
-    public class Season
+    public class Season : IEntity
     {
         public Guid Id { get; set; }
         public Guid TvShowId { get; set; }

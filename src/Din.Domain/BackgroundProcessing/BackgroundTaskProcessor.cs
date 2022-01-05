@@ -31,12 +31,12 @@ namespace Din.Domain.BackgroundProcessing
 
         private async void ExecuteTasks(object state)
         {
-            using (AsyncScopedLifestyle.BeginScope(_container))
+            await using (AsyncScopedLifestyle.BeginScope(_container))
             {
                 try
                 {
                     var tasks = _container.GetAllInstances<IBackgroundTask>()
-                        .Select(task => task.Execute(_cancellationToken)).ToList();
+                        .Select(task => task.ExecuteAsync(_cancellationToken)).ToList();
 
                     await Task.WhenAll(tasks);
                 }

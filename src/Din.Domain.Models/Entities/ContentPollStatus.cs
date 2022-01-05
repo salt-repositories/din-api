@@ -2,7 +2,7 @@
 
 namespace Din.Domain.Models.Entities
 {
-    public class ContentPollStatus
+    public class ContentPollStatus : IEntity
     {
         public Guid Id { get; set; }
         public Guid ContentId { get; set; }

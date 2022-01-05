@@ -1,17 +1,15 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class SeasonEntityConfiguration : IEntityTypeConfiguration<Season>
+    public class SeasonEntityConfiguration : EntityConfiguration<Season>
     {
-        public void Configure(EntityTypeBuilder<Season> builder)
+        public override void Configure(EntityTypeBuilder<Season> builder)
         {
-            builder.ToTable("season");
-
-            builder.HasKey(s => s.Id)
-                .HasName("id");
+            base.Configure(builder);
 
             builder.Property(s => s.TvShowId)
                 .HasColumnName("tvshow_id")

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Din.Domain.Models.Entities
 {
-    public class LoginAttempt
+    public class LoginAttempt : IEntity
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
@@ -23,7 +23,7 @@ namespace Din.Domain.Models.Entities
         Success
     }
 
-    public class LoginLocation
+    public class LoginLocation : IEntity
     {
         public Guid Id { get; set; }
         public ICollection<LoginAttempt> LoginAttempts { get; set; }

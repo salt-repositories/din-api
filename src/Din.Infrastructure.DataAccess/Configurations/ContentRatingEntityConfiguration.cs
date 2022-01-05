@@ -1,21 +1,24 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class ContentRatingEntityConfiguration : IEntityTypeConfiguration<ContentRating>
+    public class ContentRatingEntityConfiguration : EntityConfiguration<ContentRating>
     {
-        public void Configure(EntityTypeBuilder<ContentRating> builder)
+        public override void Configure(EntityTypeBuilder<ContentRating> builder)
         {
-            builder.ToTable("content_rating");
-
-            builder.HasKey(c => c.Id)
-                .HasName("id");
-
-            builder.Property(c => c.ContentId)
-                .HasColumnName("content_id");
-
+            base.Configure(builder);
+            
+            builder.Property(c => c.MovieId)
+                .HasColumnName("movie_id")
+                .IsRequired(false);
+            
+            builder.Property(c => c.TvShowId)
+                .HasColumnName("tvshow_id")
+                .IsRequired(false);
+            
             builder.Property(c => c.Votes)
                 .HasColumnName("votes")
                 .IsRequired();

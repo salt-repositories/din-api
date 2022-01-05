@@ -1,17 +1,15 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class GenreEntityConfiguration : IEntityTypeConfiguration<Genre>
+    public class GenreEntityConfiguration : EntityConfiguration<Genre>
     {
-        public void Configure(EntityTypeBuilder<Genre> builder)
+        public override void Configure(EntityTypeBuilder<Genre> builder)
         {
-            builder.ToTable("genre");
-
-            builder.HasKey(g => g.Id)
-                .HasName("id");
+            base.Configure(builder);
 
             builder.Property(g => g.Name)
                 .HasColumnName("name")

@@ -20,7 +20,7 @@ namespace Din.Domain.Queries.Movies
         public async Task<IEnumerable<SearchMovie>> Handle(GetMovieFromTmdbQuery request,
             CancellationToken cancellationToken)
         {
-            return (await _client.SearchMovieAsync(request.Query, 0, false, 0, cancellationToken)).Results;
+            return (await _client.SearchMovieAsync(request.Query, 0, false, 0, null, 0, cancellationToken)).Results;
         }
     }
 }

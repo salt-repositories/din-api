@@ -1,45 +1,95 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
-using Din.Domain.Helpers.Interfaces;
+using Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions;
+using Din.Domain.Configurations.Interfaces;
+using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
+using TMDbLib.Client;
 
 namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 {
-    public class PosterUrlPoller : IBackgroundTask
+    public class PosterUrlPoller : BackgroundTask
     {
         private readonly Container _container;
-        private readonly ILogger<PosterUrlPoller> _logger;
+        private readonly TMDbClient _tmDbClient;
 
-        public PosterUrlPoller(Container container, ILogger<PosterUrlPoller> logger)
+        public PosterUrlPoller(ILogger<PosterUrlPoller> logger, ITmdbClientConfig config, Container container) : base(nameof(PosterUrlPoller), logger)
         {
             _container = container;
-            _logger = logger;
+            _tmDbClient = new TMDbClient(config.Key);
         }
 
-        public async Task Execute(CancellationToken cancellationToken)
+        public override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Polling for new posters");
-
-            using (AsyncScopedLifestyle.BeginScope(_container))
+            await using (AsyncScopedLifestyle.BeginScope(_container))
             {
+                Logger.LogInformation("Polling for new posters");
+
                 var tvShowRepository = _container.GetInstance<ITvShowRepository>();
                 var movieRepository = _container.GetInstance<IMovieRepository>();
-                var posterHelper = _container.GetInstance<IPosterHelper>();
+
+                var tvShowPosterTask = GetPosters(
+                    await tvShowRepository.GetTvShowsWithNoPoster(cancellationToken),
+                    tvShowRepository,
+                    cancellationToken
+                );
             
-                var tvShows = await tvShowRepository.GetTvShowsWithNoPoster(cancellationToken);
-                await posterHelper.GetPosters(tvShows, cancellationToken);
-                await tvShowRepository.SaveAsync(cancellationToken);
-            
-                var movies = await movieRepository.GetMoviesWithNoPoster(cancellationToken);
-                await posterHelper.GetPosters(movies, cancellationToken);
-                await movieRepository.SaveAsync(cancellationToken);
+                var moviePosterTask = GetPosters(
+                    await movieRepository.GetMoviesWithNoPoster(cancellationToken),
+                    movieRepository,
+                    cancellationToken
+                );
+
+                await Task.WhenAll(tvShowPosterTask, moviePosterTask);
+                Logger.LogInformation("Finished polling for new posters");
+            }
+        }
+
+        private async Task GetPosters<TEntity, TRepository>(IEnumerable<TEntity> content, TRepository repository, CancellationToken cancellationToken)
+            where TEntity : class, IContent
+            where TRepository : IBaseRepository 
+        {
+            foreach (var item in content)
+            {
+                if (!string.IsNullOrEmpty(item.PosterPath))
+                {
+                    // set progress
+                    break;
+                }
+
+                // check for days not polled
+
+                if (item.GetType() == typeof(Movie))
+                {
+                    var response = await _tmDbClient.SearchMovieAsync(item.Title, 0, false,
+                        Convert.ToInt32(item.Year),
+                        null,
+                        0,
+                        cancellationToken);
+
+                    if (response.Results.Any())
+                    {
+                        item.PosterPath = response.Results.First().PosterPath;
+                    }
+                }
+                else
+                {
+                    var response = await _tmDbClient.SearchTvShowAsync(item.Title, 0, false, 0, cancellationToken);
+
+                    if (response.Results.Any())
+                    {
+                        item.PosterPath = response.Results.First().PosterPath;
+                    }
+                }
             }
 
-            _logger.LogInformation("Finished polling for new posters");
+            await repository.SaveAsync(cancellationToken);
         }
     }
 }

@@ -20,33 +20,34 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 {
     public class TvShowPoller : IBackgroundTask
     {
-        private readonly Container _container;
-        private readonly ContentPollingQueue _contentPollingQueue;
-        private readonly IMapper _mapper;
         private readonly ILogger<TvShowPoller> _logger;
+        private readonly ISonarrClient _client;
+        private readonly ContentPollingQueue _contentPollingQueue;
+        private readonly Container _container;
+        private readonly IMapper _mapper;
 
-        public TvShowPoller(Container container, ContentPollingQueue contentPollingQueue, IMapper mapper, ILogger<TvShowPoller> logger)
+        public TvShowPoller(Container container, ContentPollingQueue contentPollingQueue, IMapper mapper, ILogger<TvShowPoller> logger, ISonarrClient client)
         {
             _container = container;
             _contentPollingQueue = contentPollingQueue;
             _mapper = mapper;
             _logger = logger;
+            _client = client;
         }
 
-        public async Task Execute(CancellationToken cancellationToken)
+        public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Start polling tv shows");
-
-            using (AsyncScopedLifestyle.BeginScope(_container))
+            await using (AsyncScopedLifestyle.BeginScope(_container))
             {
+                _logger.LogInformation("Start polling tv shows");
+
                 var repository = _container.GetInstance<ITvShowRepository>();
-                var client = _container.GetInstance<ISonarrClient>();
 
                 IList<SonarrTvShow> externalTvShows = new List<SonarrTvShow>();
 
                 try
                 {
-                    externalTvShows = (await client.GetTvShowsAsync(cancellationToken)).ToList();
+                    externalTvShows = (await _client.GetTvShowsAsync(cancellationToken)).ToList();
                 }
                 catch (HttpClientException exception)
                 {

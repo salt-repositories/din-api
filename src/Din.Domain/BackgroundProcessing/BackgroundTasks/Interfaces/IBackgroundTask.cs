@@ -5,6 +5,6 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces
 {
     public interface IBackgroundTask
     {
-        Task Execute(CancellationToken cancellationToken);
+        Task ExecuteAsync(CancellationToken cancellationToken);
     }
 }

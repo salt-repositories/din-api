@@ -1,18 +1,16 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class EpisodeEntityConfiguration : IEntityTypeConfiguration<Episode>
+    public class EpisodeEntityConfiguration : EntityConfiguration<Episode>
     {
-        public void Configure(EntityTypeBuilder<Episode> builder)
+        public override void Configure(EntityTypeBuilder<Episode> builder)
         {
-            builder.ToTable("episode");
-
-            builder.HasKey(e => e.Id)
-                .HasName("id");
-
+            base.Configure(builder);
+            
             builder.HasOne(e => e.TvShow)
                 .WithMany(t => t.Episodes)
                 .HasForeignKey(e => e.TvShowId);

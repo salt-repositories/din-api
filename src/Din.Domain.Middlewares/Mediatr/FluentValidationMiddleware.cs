@@ -6,6 +6,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using MediatR.Pipeline;
+using ValidationException = FluentValidation.ValidationException;
 
 namespace Din.Domain.Middlewares.Mediatr
 {
@@ -25,7 +26,7 @@ namespace Din.Domain.Middlewares.Mediatr
                 return;
             }
 
-            var context = new ValidationContext(request);
+            var context = new ValidationContext<TRequest>(request);
             var failures = (await Task.WhenAll(_validators
                 .Select(validator => validator.ValidateAsync(context, cancellationToken))).ConfigureAwait(false))
                 .SelectMany(result => result.Errors as IEnumerable<ValidationFailure>)

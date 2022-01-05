@@ -20,9 +20,9 @@ namespace Din.Domain.Helpers.Concrete
 
             var data = new byte[length];
             
-            using (var cryptoProvider = new RNGCryptoServiceProvider())
+            using (var generator = RandomNumberGenerator.Create())
             {
-                cryptoProvider.GetBytes(data);
+                generator.GetBytes(data);
             }
 
             var stringBuilder = new StringBuilder(length);

@@ -16,15 +16,13 @@ namespace Din.Infrastructure.DataAccess.Mediatr.Concrete
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                var response = await next();
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+            var response = await next();
                 
-                await _context.SaveChangesAsync(cancellationToken);
-                transaction.Commit();
+            await _context.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
                 
-                return response;
-            }
+            return response;
         }
     }
 }

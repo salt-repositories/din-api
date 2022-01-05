@@ -41,7 +41,6 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         public Task<Account> GetAccountByUsername(string username, CancellationToken cancellationToken)
         {
             return Context.Account
-                .Include(a => a.Image)
                 .Include(a => a.Codes)
                 .FirstOrDefaultAsync(a => a.Username.Equals(username), cancellationToken);
         }
@@ -49,7 +48,6 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         public Task<Account> GetAccountByEmail(string email, CancellationToken cancellationToken)
         {
             return Context.Account
-                .Include(a => a.Image)
                 .Include(a => a.Codes)
                 .FirstOrDefaultAsync(a => a.Email.Equals(email), cancellationToken);
         }

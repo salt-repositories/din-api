@@ -1,21 +1,19 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class AccountImageEntityConfiguration : IEntityTypeConfiguration<AccountImage>
+    public class AccountImageEntityConfiguration : ScopedEntityConfiguration<AccountImage>
     {
-        public void Configure(EntityTypeBuilder<AccountImage> builder)
+        public AccountImageEntityConfiguration(DinContext context) : base(context)
         {
-            builder.ToTable("account_image");
-
-            builder.HasKey(ai => ai.Id)
-                .HasName("id");
-
-            builder.Property(ai => ai.AccountId)
-                .HasColumnName("account_id")
-                .IsRequired();
+        }
+        
+        public override void Configure(EntityTypeBuilder<AccountImage> builder)
+        {
+            base.Configure(builder);
 
             builder.Property(ai => ai.Name)
                 .HasColumnName("name")

@@ -1,17 +1,15 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class LoginLocationEntityConfiguration : IEntityTypeConfiguration<LoginLocation>
+    public class LoginLocationEntityConfiguration : EntityConfiguration<LoginLocation>
     {
-        public void Configure(EntityTypeBuilder<LoginLocation> builder)
+        public override void Configure(EntityTypeBuilder<LoginLocation> builder)
         {
-            builder.ToTable("login_location");
-
-            builder.HasKey(ll => ll.Id)
-                .HasName("id");
+            base.Configure(builder);
 
             builder.Property(ll => ll.ContinentCode)
                 .HasColumnName("continent_code");
