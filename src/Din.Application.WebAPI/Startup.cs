@@ -7,8 +7,10 @@ using Din.Application.WebAPI.Middleware;
 using Din.Domain.BackgroundProcessing;
 using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
 using Din.Domain.Extensions;
+using Din.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -59,6 +61,11 @@ namespace Din.Application.WebAPI
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             InitializeContainer(app, env);
+            
+            using (AsyncScopedLifestyle.BeginScope(_container))
+            {
+                _container.GetService<DinContext>()?.Database.Migrate();
+            }
 
             app = env.IsDevelopment()
                 ? app.UseDeveloperExceptionPage()

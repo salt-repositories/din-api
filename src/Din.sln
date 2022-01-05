@@ -48,6 +48,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Domain.Commands", "Din.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Din.Domain.Logging", "Din.Domain.Logging\Din.Domain.Logging.csproj", "{6ECDFDEE-FBEC-4BEA-86C2-2CFC1408B38D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Din.Domain.Context", "Din.Domain.Context\Din.Domain.Context.csproj", "{42C3F4CF-6912-4C57-ADDC-476A64968538}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,10 @@ Global
 		{6ECDFDEE-FBEC-4BEA-86C2-2CFC1408B38D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ECDFDEE-FBEC-4BEA-86C2-2CFC1408B38D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ECDFDEE-FBEC-4BEA-86C2-2CFC1408B38D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42C3F4CF-6912-4C57-ADDC-476A64968538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42C3F4CF-6912-4C57-ADDC-476A64968538}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42C3F4CF-6912-4C57-ADDC-476A64968538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42C3F4CF-6912-4C57-ADDC-476A64968538}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,6 +130,7 @@ Global
 		{1A593B52-1A01-4484-9E7B-7A649E705AF4} = {0053C958-0EA0-459C-84BC-A02116E03450}
 		{6F5044BA-24E6-4AD7-B941-447E7F2817C9} = {0053C958-0EA0-459C-84BC-A02116E03450}
 		{6ECDFDEE-FBEC-4BEA-86C2-2CFC1408B38D} = {0053C958-0EA0-459C-84BC-A02116E03450}
+		{42C3F4CF-6912-4C57-ADDC-476A64968538} = {0053C958-0EA0-459C-84BC-A02116E03450}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E28A58A2-45A7-49F1-8029-205D3F48AC33}

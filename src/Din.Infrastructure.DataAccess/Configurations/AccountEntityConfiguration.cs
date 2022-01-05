@@ -1,19 +1,17 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class AccountEntityConfiguration : IEntityTypeConfiguration<Account>
+    public class AccountEntityConfiguration : EntityConfiguration<Account>
     {
-        public void Configure(EntityTypeBuilder<Account> builder)
+        public override void Configure(EntityTypeBuilder<Account> builder)
         {
-            builder.ToTable("account");
-
-            builder.HasKey(a => a.Id)
-                .HasName("id");
-
+            base.Configure(builder);
+            
             builder.Property(a => a.Username)
                 .HasColumnName("username")
                 .IsRequired()
@@ -48,7 +46,7 @@ namespace Din.Infrastructure.DataAccess.Configurations
             builder.HasMany(a => a.AddedContent)
                 .WithOne(ac => ac.Account)
                 .HasForeignKey(ac => ac.AccountId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(a => a.Codes)
                 .WithOne(c => c.Account)

@@ -1,18 +1,16 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class TvShowEntityConfiguration : IEntityTypeConfiguration<TvShow>
+    public class TvShowEntityConfiguration : EntityConfiguration<TvShow>
     {
-        public void Configure(EntityTypeBuilder<TvShow> builder)
+        public override void Configure(EntityTypeBuilder<TvShow> builder)
         {
-            builder.ToTable("tvshow");
+            base.Configure(builder);
 
-            builder.HasKey(t => t.Id)
-                .HasName("id");
-           
             builder.Property(c => c.SystemId)
                 .HasColumnName("system_id")
                 .IsRequired();
@@ -53,7 +51,7 @@ namespace Din.Infrastructure.DataAccess.Configurations
 
             builder.HasOne(c => c.Ratings)
                 .WithOne()
-                .HasForeignKey<ContentRating>(cr => cr.ContentId)
+                .HasForeignKey<ContentRating>(cr => cr.TvShowId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(t => t.TvdbId)

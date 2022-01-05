@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
-using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
+using Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions;
 using Din.Domain.Clients.Radarr.Interfaces;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Exceptions.Concrete;
@@ -18,39 +18,38 @@ using SimpleInjector.Lifestyles;
 
 namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 {
-    public class MoviePoller : IBackgroundTask
+    public class MoviePoller : BackgroundTask
     {
-        private readonly Container _container;
         private readonly ContentPollingQueue _contentPollingQueue;
         private readonly IMapper _mapper;
-        private readonly ILogger<MoviePoller> _logger;
+        private readonly IRadarrClient _radarrClient;
+        private readonly Container _container;
 
-        public MoviePoller(Container container, ContentPollingQueue contentPollingQueue, IMapper mapper, ILogger<MoviePoller> logger)
+        public MoviePoller(ILogger<MoviePoller> logger, ContentPollingQueue contentPollingQueue, IMapper mapper,
+            IRadarrClient radarrClient, Container container) : base(nameof(MoviePoller), logger)
         {
-            _container = container;
             _contentPollingQueue = contentPollingQueue;
             _mapper = mapper;
-            _logger = logger;
+            _radarrClient = radarrClient;
+            _container = container;
         }
 
-        public async Task Execute(CancellationToken cancellationToken)
+        public override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Start polling movies");
-
-            using (AsyncScopedLifestyle.BeginScope(_container))
+            await using (AsyncScopedLifestyle.BeginScope(_container))
             {
-                var repository = _container.GetInstance<IMovieRepository>();
-                var client = _container.GetInstance<IRadarrClient>();
+                Logger.LogInformation("Start polling movies");
 
+                var repository = _container.GetInstance<IMovieRepository>();
                 IList<RadarrMovie> externalMovies = new List<RadarrMovie>();
 
                 try
                 {
-                    externalMovies = (await client.GetMoviesAsync(cancellationToken)).ToList();
+                    externalMovies = (await _radarrClient.GetMoviesAsync(cancellationToken)).ToList();
                 }
                 catch (HttpClientException exception)
                 {
-                    _logger.LogError(exception, exception.Message);
+                    Logger.LogError(exception, exception.Message);
                 }
 
                 var storedMovies = await repository.GetMovies(null, null, cancellationToken);
@@ -77,14 +76,15 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 
                 try
                 {
-                    await repository.InsertMultipleAsync(moviesToAdd, cancellationToken);
+                    await repository.InsertMultipleAsync(
+                        moviesToAdd.GroupBy(m => m.SystemId).Select(group => group.First()).ToList(), cancellationToken);
                     await repository.SaveAsync(cancellationToken);
 
-                    _logger.LogInformation($"Polled {moviesToAdd.Count} new movies");
+                    Logger.LogInformation($"Polled {moviesToAdd.Count} new movies");
                 }
                 catch (Exception exception)
                 {
-                    _logger.LogError(exception, "Polling movies insert error");
+                    Logger.LogError(exception, "Polling movies insert error");
                 }
             }
         }

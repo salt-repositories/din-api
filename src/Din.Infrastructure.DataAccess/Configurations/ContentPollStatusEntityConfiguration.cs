@@ -1,17 +1,15 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class ContentPollStatusEntityConfiguration : IEntityTypeConfiguration<ContentPollStatus>
+    public class ContentPollStatusEntityConfiguration : EntityConfiguration<ContentPollStatus>
     {
-        public void Configure(EntityTypeBuilder<ContentPollStatus> builder)
+        public override void Configure(EntityTypeBuilder<ContentPollStatus> builder)
         {
-            builder.ToTable("content_poll_status");
-
-            builder.HasKey(c => c.Id)
-                .HasName("id");
+            base.Configure(builder);
 
             builder.Property(c => c.ContentId)
                 .HasColumnName("content_id")

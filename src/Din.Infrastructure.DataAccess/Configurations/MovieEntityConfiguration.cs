@@ -1,17 +1,15 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class MovieEntityConfiguration : IEntityTypeConfiguration<Movie>
+    public class MovieEntityConfiguration : EntityConfiguration<Movie>
     {
-        public void Configure(EntityTypeBuilder<Movie> builder)
+        public override void Configure(EntityTypeBuilder<Movie> builder)
         {
-            builder.ToTable("movie");
-
-            builder.HasKey(m => m.Id)
-                .HasName("id");
+            base.Configure(builder);
 
             builder.Property(c => c.SystemId)
                 .HasColumnName("system_id")
@@ -53,7 +51,7 @@ namespace Din.Infrastructure.DataAccess.Configurations
 
             builder.HasOne(c => c.Ratings)
                 .WithOne()
-                .HasForeignKey<ContentRating>(cr => cr.ContentId)
+                .HasForeignKey<ContentRating>(cr => cr.MovieId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(m => m.TmdbId)

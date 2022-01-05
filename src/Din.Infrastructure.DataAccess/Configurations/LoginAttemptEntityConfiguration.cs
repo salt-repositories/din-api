@@ -1,19 +1,16 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class LoginAttemptEntityConfiguration : IEntityTypeConfiguration<LoginAttempt>
+    public class LoginAttemptEntityConfiguration : EntityConfiguration<LoginAttempt>
     {
-        public void Configure(EntityTypeBuilder<LoginAttempt> builder)
+        public override void Configure(EntityTypeBuilder<LoginAttempt> builder)
         {
-
-            builder.ToTable("login_attempt");
-
-            builder.HasKey(la => la.Id)
-                .HasName("id");
+            base.Configure(builder);
 
             builder.Property(la => la.Username)
                 .HasColumnName("username")

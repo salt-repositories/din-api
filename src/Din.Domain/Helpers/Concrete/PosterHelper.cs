@@ -57,6 +57,8 @@ namespace Din.Domain.Helpers.Concrete
                             {
                                 var result = await _client.SearchMovieAsync(item.Title, 0, false,
                                     Convert.ToInt32(item.Year),
+                                    null,
+                                    0,
                                     cancellationToken);
                                 item.PosterPath = result.Results.Count > 0
                                     ? result.Results[0].PosterPath
@@ -64,7 +66,7 @@ namespace Din.Domain.Helpers.Concrete
                             }
                             else
                             {
-                                var result = await _client.SearchTvShowAsync(item.Title, 0, cancellationToken);
+                                var result = await _client.SearchTvShowAsync(item.Title, 0, false, 0, cancellationToken);
                                 item.PosterPath = result.Results.Count > 0
                                     ? result.Results[0].PosterPath
                                     : null;

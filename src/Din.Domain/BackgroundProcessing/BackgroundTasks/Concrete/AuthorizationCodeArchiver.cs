@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
+using Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
@@ -10,43 +10,45 @@ using SimpleInjector.Lifestyles;
 
 namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 {
-    public class AuthorizationCodeArchiver : IBackgroundTask
+    public class AuthorizationCodeArchiver : BackgroundTask
     {
         private readonly Container _container;
-        private readonly ILogger<AuthorizationCodeArchiver> _logger;
+        private const int MaximumLifetimeInDays = 3;
 
-        public AuthorizationCodeArchiver(Container container, ILogger<AuthorizationCodeArchiver> logger)
+        public AuthorizationCodeArchiver(ILogger<AuthorizationCodeArchiver> logger, Container container) : base(nameof(AuthorizationCodeArchiver), logger)
         {
             _container = container;
-            _logger = logger;
         }
 
-        public async Task Execute(CancellationToken cancellationToken)
+        public override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Begin authorization code archive run");
-
-            using (AsyncScopedLifestyle.BeginScope(_container))
+            await using (AsyncScopedLifestyle.BeginScope(_container))
             {
-                var repository = _container.GetInstance<IAuthorizationCodeRepository>();
+                Logger.LogInformation("Begin authorization code archive run");
 
+                var repository = _container.GetInstance<IAuthorizationCodeRepository>();
                 var codes = (await repository.GetAll(cancellationToken)).ToList();
 
-                if (codes.Count.Equals(0))
+                if (!codes.Any())
                 {
-                    _logger.LogInformation("Nothing to archive");
-
-                    return;
+                    Progress = 100;
+                    Logger.LogInformation("Nothing to archive");
                 }
 
-                foreach (var code in codes.Where(code => DateTime.Now > code.Generated.AddDays(3)))
+                var codesToArchive = codes.Where(code => DateTime.Now > code.Generated.AddDays(MaximumLifetimeInDays))
+                    .ToList();
+
+                foreach (var code in codesToArchive)
                 {
                     code.Active = false;
+                    Progress = Progress / codesToArchive.Count * 100;
                 }
 
                 await repository.SaveAsync(cancellationToken);
-            }
 
-            _logger.LogInformation("Finished authorization code archive run");
+
+                Logger.LogInformation("Finished authorization code archive run");
+            }
         }
     }
 }

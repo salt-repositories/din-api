@@ -11,35 +11,36 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 {
     public class PlexUrlPoller : IBackgroundTask
     {
-        private readonly Container _container;
         private readonly ILogger<PlexUrlPoller> _logger;
+        private readonly IPlexHelper _plexHelper;
+        private readonly Container _container;
 
-        public PlexUrlPoller(Container container, ILogger<PlexUrlPoller> logger)
+        public PlexUrlPoller(ILogger<PlexUrlPoller> logger, IPlexHelper plexHelper, Container container)
         {
-            _container = container;
             _logger = logger;
+            _plexHelper = plexHelper;
+            _container = container;
         }
 
-        public async Task Execute(CancellationToken cancellationToken)
+        public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Polling for plex urls");
-
-            using (AsyncScopedLifestyle.BeginScope(_container))
+            await using (AsyncScopedLifestyle.BeginScope(_container))
             {
+                _logger.LogInformation("Polling for plex urls");
+
                 var movieRepository = _container.GetInstance<IMovieRepository>();
                 var tvShowRepository = _container.GetInstance<ITvShowRepository>();
-                var plexHelper = _container.GetInstance<IPlexHelper>();
-            
-                var movies = await movieRepository.GetMoviesWithNoPlexUrl(cancellationToken);
-                await plexHelper.CheckIsOnPlex(movies, cancellationToken);
-                await movieRepository.SaveAsync(cancellationToken);
-            
-                var tvShows = await tvShowRepository.GetTvShowsWithNoPlexUrl(cancellationToken);
-                await plexHelper.CheckIsOnPlex(tvShows, cancellationToken);
-                await tvShowRepository.SaveAsync(cancellationToken);
-            }
 
-            _logger.LogInformation("Finished polling for plex url");
+                var movies = await movieRepository.GetMoviesWithNoPlexUrl(cancellationToken);
+                await _plexHelper.CheckIsOnPlex(movies, cancellationToken);
+                await movieRepository.SaveAsync(cancellationToken);
+        
+                var tvShows = await tvShowRepository.GetTvShowsWithNoPlexUrl(cancellationToken);
+                await _plexHelper.CheckIsOnPlex(tvShows, cancellationToken);
+                await tvShowRepository.SaveAsync(cancellationToken);
+
+                _logger.LogInformation("Finished polling for plex url");
+            }
         }
     }
 }

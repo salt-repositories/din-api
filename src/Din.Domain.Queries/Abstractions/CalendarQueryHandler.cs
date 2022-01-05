@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Abstractions;
 using Din.Domain.Helpers.Interfaces;
-using Din.Domain.Models.Dtos;
 using Din.Domain.Stores.Interfaces;
 
 namespace Din.Domain.Queries.Abstractions
@@ -21,8 +20,9 @@ namespace Din.Domain.Queries.Abstractions
             _posterHelper = posterHelper;
         }
 
-        protected async Task RetrieveAdditionalData(ICollection<T> collection, CancellationToken cancellationToken)
+        protected Task RetrieveAdditionalData(ICollection<T> collection, CancellationToken cancellationToken)
         {
+            return Task.CompletedTask;
             // foreach (var item in collection)
             // {
             //     var result = _store.GetByTitle(item.Title);

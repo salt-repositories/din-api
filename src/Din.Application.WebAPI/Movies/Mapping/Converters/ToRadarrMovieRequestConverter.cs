@@ -16,8 +16,7 @@ namespace Din.Application.WebAPI.Movies.Mapping.Converters
                 Title = source.Title,
                 Year = source.Year,
                 TitleSlug = GenerateTitleSlug(source.Title, source.Year),
-                QualityProfileId = 0,
-                ProfileId = "6",
+                QualityProfileId = 6,
                 Monitored = true,
                 Images = new List<ContentImage>
                 {

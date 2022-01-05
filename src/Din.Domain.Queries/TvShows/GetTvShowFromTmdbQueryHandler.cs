@@ -20,11 +20,11 @@ namespace Din.Domain.Queries.TvShows
         public async Task<IEnumerable<TvShow>> Handle(GetTvShowFromTmdbQuery request, CancellationToken cancellationToken)
         {
             ICollection<TvShow> tvShows = new List<TvShow>();
-            var results = (await _client.SearchTvShowAsync(request.Query, 0, cancellationToken)).Results;
+            var results = (await _client.SearchTvShowAsync(request.Query, 0, false, 0, cancellationToken)).Results;
 
             foreach (var result in results)
             {
-                tvShows.Add(await _client.GetTvShowAsync(result.Id, TvShowMethods.ExternalIds, null, cancellationToken));
+                tvShows.Add(await _client.GetTvShowAsync(result.Id, TvShowMethods.ExternalIds, null, null, cancellationToken));
             }
 
             return tvShows;

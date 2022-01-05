@@ -1,16 +1,15 @@
 ﻿using Din.Domain.Models.Entities;
+using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class ContentGenreRelationConfiguration : IEntityTypeConfiguration<TvShowGenre>
+    public class ContentGenreRelationConfiguration : EntityConfiguration<TvShowGenre>
     {
-        public void Configure(EntityTypeBuilder<TvShowGenre> builder)
+        public override void Configure(EntityTypeBuilder<TvShowGenre> builder)
         {
-            builder.ToTable("tvshow_genre");
-
-            builder.HasKey(c => new { c.TvshowId, c.GenreId });
+            base.Configure(builder);
 
             builder.Property(c => c.TvshowId)
                 .HasColumnName("tvshow_id")

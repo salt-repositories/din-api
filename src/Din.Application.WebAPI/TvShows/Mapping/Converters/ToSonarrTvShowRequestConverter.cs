@@ -19,8 +19,7 @@ namespace Din.Application.WebAPI.TvShows.Mapping.Converters
                 Title =  source.Title,
                 TitleSlug = GenerateTitleSlug(source.Title),
                 Seasons = seasons,
-                QualityProfileId = 0,
-                ProfileId = "6",
+                QualityProfileId = 6,
                 Monitored =  true,
                 SeasonFolder = true,
                 Images = new List<ContentImage>

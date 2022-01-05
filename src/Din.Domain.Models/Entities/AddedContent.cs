@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Din.Domain.Models.Entities
 {
 
-    public class AddedContent
+    public class AddedContent : IScopedEntity
     {
         public Guid Id { get; set; }
         public int SystemId { get; set; }

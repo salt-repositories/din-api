@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Din.Domain.Models.Entities
 {
-    public class Account
+    public class Account : IEntity
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
@@ -16,10 +16,11 @@ namespace Din.Domain.Models.Entities
         public ICollection<AccountAuthorizationCode> Codes { get; set; }
     }
 
-    public class AccountImage
+    public class AccountImage : IScopedEntity
     {
         public Guid Id { get; set; }
         public Guid AccountId { get; set; }
+        public Account Account { get; set; }
         public string Name { get; set; }
         public byte[] Data { get; set; }
     }
@@ -31,7 +32,7 @@ namespace Din.Domain.Models.Entities
         Admin
     }
 
-    public class AccountAuthorizationCode
+    public class AccountAuthorizationCode : IScopedEntity
     {
         public Guid Id { get; set; }
         public Account Account { get; set; }

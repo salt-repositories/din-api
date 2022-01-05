@@ -25,7 +25,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
                 _ => configuration.GetConnectionString("DinDevContext")
             };
 
-            container.Register(() => new DinContext(connectionString), Lifestyle.Scoped);
+            container.Register(() => new DinContext(connectionString, container.GetInstance<IRequestContext>()), Lifestyle.Scoped);
             container.Register<IHealthCheckConnection>(() => new HealthCheckConnection(connectionString), Lifestyle.Scoped);
         }
     }
