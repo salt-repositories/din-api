@@ -5,12 +5,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Din.Infrastructure.DataAccess.Configurations
 {
-    public class AccountImageEntityConfiguration : ScopedEntityConfiguration<AccountImage>
+    public class AccountImageEntityConfiguration : EntityConfiguration<AccountImage>
     {
-        public AccountImageEntityConfiguration(DinContext context) : base(context)
-        {
-        }
-        
         public override void Configure(EntityTypeBuilder<AccountImage> builder)
         {
             base.Configure(builder);

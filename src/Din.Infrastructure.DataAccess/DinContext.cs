@@ -49,7 +49,7 @@ namespace Din.Infrastructure.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new AccountEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new AccountImageEntityConfiguration(this));
+            modelBuilder.ApplyConfiguration(new AccountImageEntityConfiguration());
             modelBuilder.ApplyConfiguration(new AddedContentEntityConfiguration(this));
             modelBuilder.ApplyConfiguration(new AccountAuthorizationCodeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new LoginAttemptEntityConfiguration());
