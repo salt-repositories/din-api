@@ -11,6 +11,10 @@ namespace Din.Infrastructure.DataAccess.Configurations
         {
             base.Configure(builder);
 
+            builder.Property(a => a.AccountId)
+                .HasColumnName("account_id")
+                .IsRequired();
+
             builder.Property(ai => ai.Name)
                 .HasColumnName("name")
                 .IsRequired();
