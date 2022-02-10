@@ -87,8 +87,7 @@ namespace Din.Infrastructure.DataAccess.Querying
                 getter,
                 "IndexOf",
                 null,
-                Expression.Constant(value, typeof(string)),
-                Expression.Constant(StringComparison.InvariantCultureIgnoreCase)
+                Expression.Constant(value, typeof(string))
             );
             var like = Expression.GreaterThanOrEqual
             (
