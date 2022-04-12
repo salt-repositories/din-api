@@ -47,10 +47,23 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 
                     foreach (var externalEpisode in externalEpisodes)
                     {
-                        var storedEpisode = storedEpisodes.SingleOrDefault(episode =>
-                            episode.SeasonNumber == externalEpisode.SeasonNumber &&
-                            episode.EpisodeNumber == externalEpisode.EpisodeNumber);
-                    
+                        Episode storedEpisode;
+                        
+                        try
+                        { 
+                            storedEpisode = storedEpisodes.SingleOrDefault(episode =>
+                                episode.SeasonNumber == externalEpisode.SeasonNumber &&
+                                episode.EpisodeNumber == externalEpisode.EpisodeNumber);
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            _logger.LogWarning("Found multiple hits for episode: {name} of tvshow: {tvshow}", externalEpisode.Title, tvShow.Title);
+
+                            storedEpisode = storedEpisodes.FirstOrDefault(episode =>
+                                episode.SeasonNumber == externalEpisode.SeasonNumber &&
+                                episode.EpisodeNumber == externalEpisode.EpisodeNumber);
+                        }
+                        
                         if (storedEpisode != null && !storedEpisode.HasFile)
                         {
                             storedEpisode.HasFile = externalEpisode.HasFile;
