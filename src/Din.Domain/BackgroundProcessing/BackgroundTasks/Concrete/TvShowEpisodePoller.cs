@@ -21,7 +21,8 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
         private readonly ISonarrClient _client;
         private readonly Container _container;
 
-        public TvShowEpisodePoller(ILogger<TvShowEpisodePoller> logger, IMapper mapper, ISonarrClient client, Container container)
+        public TvShowEpisodePoller(ILogger<TvShowEpisodePoller> logger, IMapper mapper, ISonarrClient client,
+            Container container)
         {
             _logger = logger;
             _mapper = mapper;
@@ -39,7 +40,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 
                 var episodesToAdd = new List<Episode>();
                 var currentTvShows = await repository.GetTvShows(null, null, cancellationToken);
-                
+
                 foreach (var tvShow in currentTvShows)
                 {
                     var storedEpisodes = await repository.GetTvShowEpisodes(tvShow.Id, cancellationToken);
@@ -48,22 +49,25 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                     foreach (var externalEpisode in externalEpisodes)
                     {
                         Episode storedEpisode;
-                        
+
                         try
-                        { 
+                        {
                             storedEpisode = storedEpisodes.SingleOrDefault(episode =>
                                 episode.SeasonNumber == externalEpisode.SeasonNumber &&
                                 episode.EpisodeNumber == externalEpisode.EpisodeNumber);
                         }
                         catch (InvalidOperationException)
                         {
-                            _logger.LogWarning("Found multiple hits for episode: {name} of tvshow: {tvshow}", externalEpisode.Title, tvShow.Title);
+                            _logger.LogInformation(
+                                "Found multiple hits for episode: S{seasonNumber}E{episodeNumber} {name} of tvshow: {tvshow}",
+                                externalEpisode.SeasonNumber, externalEpisode.EpisodeNumber, externalEpisode.Title,
+                                tvShow.Title);
 
                             storedEpisode = storedEpisodes.FirstOrDefault(episode =>
                                 episode.SeasonNumber == externalEpisode.SeasonNumber &&
                                 episode.EpisodeNumber == externalEpisode.EpisodeNumber);
                         }
-                        
+
                         if (storedEpisode != null && !storedEpisode.HasFile)
                         {
                             storedEpisode.HasFile = externalEpisode.HasFile;
