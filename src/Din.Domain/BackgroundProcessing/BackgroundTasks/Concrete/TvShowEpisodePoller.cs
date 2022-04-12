@@ -53,6 +53,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                         try
                         {
                             storedEpisode = storedEpisodes.SingleOrDefault(episode =>
+                                episode.Title == externalEpisode.Title &&
                                 episode.SeasonNumber == externalEpisode.SeasonNumber &&
                                 episode.EpisodeNumber == externalEpisode.EpisodeNumber);
                         }
