@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
 using Din.Domain.Clients.Sonarr.Interfaces;
+using Din.Domain.Clients.Sonarr.Responses;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -48,37 +49,8 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 
                     foreach (var externalEpisode in externalEpisodes)
                     {
-                        Episode storedEpisode;
-
-                        try
-                        {
-                            storedEpisode = storedEpisodes.SingleOrDefault(episode =>
-                                episode.Title == externalEpisode.Title &&
-                                episode.SeasonNumber == externalEpisode.SeasonNumber &&
-                                episode.EpisodeNumber == externalEpisode.EpisodeNumber);
-                        }
-                        catch (InvalidOperationException)
-                        {
-                            _logger.LogInformation(
-                                "Found multiple hits for episode: S{seasonNumber}E{episodeNumber} {name} of tvshow: {tvshow}",
-                                externalEpisode.SeasonNumber, externalEpisode.EpisodeNumber, externalEpisode.Title,
-                                tvShow.Title);
-
-                            storedEpisode = storedEpisodes.FirstOrDefault(episode =>
-                                episode.SeasonNumber == externalEpisode.SeasonNumber &&
-                                episode.EpisodeNumber == externalEpisode.EpisodeNumber);
-                        }
-
-                        if (storedEpisode == null)
-                        {
-                            episodesToAdd.Add(_mapper.Map<Episode>(externalEpisode));
-                            continue;
-                        }
-
-                        if (!storedEpisode.HasFile)
-                        {
-                            storedEpisode.HasFile = externalEpisode.HasFile;
-                        }
+                        var storedEpisode = GetStoredEpisode(storedEpisodes, externalEpisode, tvShow);
+                        VerifyAndAddEpisode(storedEpisode, externalEpisode, episodesToAdd);
                     }
                 }
 
@@ -86,7 +58,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                 {
                     await repository.AddMultipleEpisodes(episodesToAdd, cancellationToken);
                     await repository.SaveAsync(cancellationToken);
-
+                    
                     _logger.LogInformation($"Polled {episodesToAdd.Count} new tv show episodes");
                 }
                 catch (Exception exception)
@@ -95,6 +67,51 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                 }
 
                 _logger.LogInformation("Finished polling tv show episodes");
+            }
+        }
+
+        private Episode? GetStoredEpisode(IReadOnlyCollection<Episode> storedEpisodes, SonarrEpisode externalEpisode, TvShow tvShow)
+        {
+            Episode storedEpisode;
+
+            try
+            {
+                storedEpisode = storedEpisodes.SingleOrDefault(episode =>
+                    episode.Title == externalEpisode.Title &&
+                    episode.SeasonNumber == externalEpisode.SeasonNumber &&
+                    episode.EpisodeNumber == externalEpisode.EpisodeNumber);
+            }
+            catch (InvalidOperationException)
+            {
+                _logger.LogInformation(
+                    "Found multiple hits for episode: S{SeasonNumber}E{EpisodeNumber} {Name} of tvshow: {Tvshow}",
+                    externalEpisode.SeasonNumber, externalEpisode.EpisodeNumber, externalEpisode.Title,
+                    tvShow.Title);
+
+                storedEpisode = storedEpisodes.FirstOrDefault(episode =>
+                    episode.SeasonNumber == externalEpisode.SeasonNumber &&
+                    episode.EpisodeNumber == externalEpisode.EpisodeNumber);
+            }
+
+            return storedEpisode;
+        }
+
+        private void VerifyAndAddEpisode(Episode? storedEpisode, SonarrEpisode externalEpisode, ICollection<Episode> episodesToAdd)
+        {
+            if (storedEpisode == null)
+            {
+                episodesToAdd.Add(_mapper.Map<Episode>(externalEpisode));
+                return;
+            }
+
+            if (!storedEpisode.HasFile)
+            {
+                storedEpisode.HasFile = externalEpisode.HasFile;
+            }
+
+            if (storedEpisode.Title.Contains("TBA"))
+            {
+                storedEpisode.Title = externalEpisode.Title;
             }
         }
     }
