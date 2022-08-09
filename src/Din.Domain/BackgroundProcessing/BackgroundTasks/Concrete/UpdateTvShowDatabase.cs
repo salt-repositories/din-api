@@ -22,6 +22,11 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
         private readonly ContentPollingQueue _contentPollingQueue;
         private readonly IMapper _mapper;
 
+        protected override IEnumerable<string> Triggers => new[]
+        {
+            nameof(UpdateTvShowEpisodeDatabase)
+        };
+
         public UpdateTvShowDatabase(
             Container container,
             ILogger<UpdateTvShowDatabase> logger,
@@ -81,6 +86,12 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 
             try
             {
+                var genres = tvShowsToAdd.SelectMany(x => x.Genres.Select(x => x.Genre));
+
+                genres = genres.DistinctBy(x => x.Name);
+
+                await repository.InsertMultipleAsync(genres, cancellationToken);
+                
                 await repository.InsertMultipleAsync(tvShowsToAdd, cancellationToken);
                 await repository.SaveAsync(cancellationToken);
                 

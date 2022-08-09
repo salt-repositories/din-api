@@ -14,23 +14,28 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions
     public abstract class BackgroundTask : IBackgroundTask
     {
         private readonly Stopwatch _stopwatch;
-
-        protected readonly Container Container;
+        private readonly Container _container;
+        
         protected readonly ILogger<BackgroundTask> Logger;
 
+        public event Action<string> BackgroundTaskTriggered;
+        public event Action<IBackgroundTask> ExecutionCompleted;
+        
         public string Name { get; }
-
+        
         private double _progress;
         public double Progress => Math.Round(_progress / AmountOfWork * 100, 0);
+        
         public TimeSpan ExecutionTime => _stopwatch.Elapsed;
         
+        protected virtual IEnumerable<string> Triggers => Array.Empty<string>();
         protected double AmountOfWork { get; set; }
 
         protected BackgroundTask(Container container, ILogger<BackgroundTask> logger, string name)
         {
             _stopwatch = new Stopwatch();
-
-            Container = container;
+            _container = container;
+           
             Logger = logger;
 
             Name = name;
@@ -44,12 +49,17 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions
         {
             _stopwatch.Start();
             
-            await using var scope = AsyncScopedLifestyle.BeginScope(Container);
+            await using var scope = AsyncScopedLifestyle.BeginScope(_container);
 
             try
             {
                 await OnExecuteAsync(scope, cancellationToken);
                 Logger.LogInformation($"{Name}: ExecutionTime = {ExecutionTime.Seconds}s");
+
+                foreach (var trigger in Triggers)
+                {
+                    BackgroundTaskTriggered?.Invoke(trigger);
+                }
             }
             catch (Exception exception)
             {
@@ -57,6 +67,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions
             }
 
             _stopwatch.Stop();
+            ExecutionCompleted?.Invoke(this);
         }, cancellationToken);
 
         protected void IncreaseProgress(double increment)

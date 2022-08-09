@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
-using Din.Domain.Stores.Interfaces;
 using Microsoft.Extensions.Hosting;
 using SimpleInjector;
 
@@ -12,6 +12,8 @@ namespace Din.Domain.BackgroundProcessing
     {
         private readonly Container _container;
         private CancellationToken _cancellationToken;
+
+        private IBackgroundTaskFactory _backgroundTaskFactory;
         private Timer _timer;
 
         public BackgroundTaskProcessor(Container container)
@@ -22,20 +24,11 @@ namespace Din.Domain.BackgroundProcessing
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _cancellationToken = cancellationToken;
-            _timer = new Timer(ExecuteTasks, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+            _backgroundTaskFactory = _container.GetInstance<IBackgroundTaskFactory>();
+
+            _timer = new Timer(ExecuteRecurringTasks, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
 
             return Task.CompletedTask;
-        }
-
-        private void ExecuteTasks(object state)
-        {
-            var taskStore = _container.GetInstance<ITaskStore>();
-            
-            foreach (var task in _container.GetAllInstances<IBackgroundTask>())
-            {
-                taskStore.AddBackgroundTask(task);
-                task.ExecuteAsync(_cancellationToken);
-            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -48,6 +41,39 @@ namespace Din.Domain.BackgroundProcessing
         public void Dispose()
         {
             _timer?.Dispose();
+        }
+        
+        private void ExecuteRecurringTasks(object state)
+        {
+            var tasks = new[]
+            {
+                _backgroundTaskFactory.Create(nameof(ArchiveAuthorizationCodes)),
+                _backgroundTaskFactory.Create(nameof(UpdateMovieDatabase)),
+                _backgroundTaskFactory.Create(nameof(UpdateTvShowDatabase))
+            };
+            
+            foreach (var task in tasks)
+            {
+                ExecuteTask(task);
+            }
+        }
+
+        private void ExecuteTask(IBackgroundTask task)
+        {
+            task.BackgroundTaskTriggered += OnBackgroundTaskTriggered;
+            task.ExecutionCompleted += OnExecutionCompleted;
+            task.ExecuteAsync(_cancellationToken);
+        }
+        
+        private void OnBackgroundTaskTriggered(string taskName)
+        {
+            ExecuteTask(_backgroundTaskFactory.Create(taskName));
+        }
+
+        private void OnExecutionCompleted(IBackgroundTask task)
+        {
+            task.BackgroundTaskTriggered -= OnBackgroundTaskTriggered;
+            task.ExecutionCompleted -= OnExecutionCompleted;
         }
     }
 }
