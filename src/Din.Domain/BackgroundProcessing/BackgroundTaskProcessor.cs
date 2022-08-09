@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
+using Din.Domain.Stores.Interfaces;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using SimpleInjector;
-using SimpleInjector.Lifestyles;
 
 namespace Din.Domain.BackgroundProcessing
 {
@@ -29,21 +27,14 @@ namespace Din.Domain.BackgroundProcessing
             return Task.CompletedTask;
         }
 
-        private async void ExecuteTasks(object state)
+        private void ExecuteTasks(object state)
         {
-            await using (AsyncScopedLifestyle.BeginScope(_container))
+            var taskStore = _container.GetInstance<ITaskStore>();
+            
+            foreach (var task in _container.GetAllInstances<IBackgroundTask>())
             {
-                try
-                {
-                    var tasks = _container.GetAllInstances<IBackgroundTask>()
-                        .Select(task => task.ExecuteAsync(_cancellationToken)).ToList();
-
-                    await Task.WhenAll(tasks);
-                }
-                catch (Exception exception)
-                {
-                    _container.GetInstance<ILogger<BackgroundTaskProcessor>>().LogError(exception, "Uncaught exception within background task");
-                }
+                taskStore.AddBackgroundTask(task);
+                task.ExecuteAsync(_cancellationToken);
             }
         }
 

@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Din.Application.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:Din.Application.WebAPI.Accounts.AccountController.GetAccounts(Din.Application.WebAPI.Querying.QueryParametersRequest)">
+            <summary>
+            Get accounts
+            </summary>
+            <param name="queryParameters">Optional query parameters</param>
+            <returns>Collection containing all accounts</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Accounts.AccountController.GetAccountById(System.Guid)">
+            <summary>
+            Get account by ID
+            </summary>
+            <param name="id">Account ID</param>
+            <returns>Single account</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Accounts.AccountController.ActivateAccountByCode(System.Guid,System.String)">
+            <summary>
+            Activate account by code
+            </summary>
+            <param name="id">Account ID</param>
+            <param name="code"></param>
+            <returns>Single account</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Accounts.AccountController.GetAccountAddedContent(System.Guid,Din.Application.WebAPI.Querying.QueryParametersRequest,Din.Domain.Models.Querying.AddedContentFilters)">
+            <summary>
+            Get added content from account by ID
+            </summary>
+            <param name="id">Account ID</param>
+            <param name="queryParameters"></param>
+            <param name="filters"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Accounts.AccountController.CreateAccount(Din.Application.WebAPI.Accounts.Requests.AccountRequest)">
+            <summary>
+            Create account
+            </summary>
+            <param name="account">Account request model</param>
+            <returns>Created account</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Accounts.AccountController.UpdateAccount(System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{Din.Application.WebAPI.Accounts.Requests.AccountRequest})">
+            <summary>
+            Update existing account by ID
+            </summary>
+            <param name="id">Account ID</param>
+            <param name="update">JSON patch document</param>
+            <returns>Updated Account</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Accounts.AccountController.DeleteAccount(System.Guid)">
+            <summary>
+            Delete account by ID
+            </summary>
+            <param name="id">Account ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Authentication.AuthenticationController.LoginAsync(Din.Application.WebAPI.Authentication.Requests.CredentialRequest)">
+            <summary>
+            Request JWT Token
+            </summary>
+            <param name="credentials">Credentials</param>
+            <returns>JWT token and Refresh token</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Authentication.AuthenticationController.RefreshAsync(System.String)">
+            <summary>
+            Request JWT Token through a Refresh token
+            </summary>
+            <param name="refreshToken">Refresh token</param>
+            <returns>Jwt Token and Refresh token</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Authentication.AuthenticationController.RequestAuthorizationCode(System.String)">
+            <summary>
+            Request authorization code
+            </summary>
+            <param name="email"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Authentication.AuthenticationController.ChangeAccountPassword(Din.Application.WebAPI.Authentication.Requests.ChangeAccountPasswordRequest)">
+            <summary>
+            Change the password of an account with a valid authorization code
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Movies.MovieController.GetMovies(Din.Application.WebAPI.Querying.QueryParametersRequest,Din.Domain.Models.Querying.MovieFilters)">
+            <summary>
+            Get all movies
+            </summary>
+            <returns>Collection of movies</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Movies.MovieController.GetMovieById(System.String)">
+            <summary>
+            Get movie by ID
+            </summary>
+            <param name="id">system ID</param>
+            <returns>Single movie</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Movies.MovieController.GetMovieHistory(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Get movie history by ID
+            </summary>
+            <param name="id">system ID</param>
+            <param name="cancellationToken"></param>
+            <returns>Collection of history</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Movies.MovieController.SearchMovieByQuery(System.String)">
+            <summary>
+            Search the movie database by query
+            </summary>
+            <param name="query">(part) title</param>
+            <returns>Collection of movies from the movie database</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Movies.MovieController.AddMovie(Din.Application.WebAPI.Movies.Requests.MovieRequest)">
+            <summary>
+            Add movie to system
+            </summary>
+            <param name="movie">Movie to add</param>
+            <returns>Added movie</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.Movies.MovieController.GetCalendar(System.String,System.String)">
+            <summary>
+            Get the movies for a specific timespan
+            </summary>
+            <param name="from">From date</param>
+            <param name="till">Till date</param>
+            <returns>movie release calendar</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.TvShows.TvShowController.GetTvShows(Din.Application.WebAPI.Querying.QueryParametersRequest,Din.Domain.Models.Querying.TvShowFilters)">
+            <summary>
+            Get all tvShows
+            </summary>
+            <returns>Collection of tvShows</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.TvShows.TvShowController.GetTvShowById(System.String)">
+            <summary>
+            Get tv show by ID
+            </summary>
+            <param name="id">System ID</param>
+            <returns>Single TvShow</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.TvShows.TvShowController.SearchTvShowAsync(System.String)">
+            <summary>
+            Search the tv show database by query
+            </summary>
+            <param name="query">(part) title</param>
+            <returns>Collection of tv shows fro the tv show database</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.TvShows.TvShowController.AddTvShowAsync(Din.Application.WebAPI.TvShows.Requests.TvShowRequest)">
+            <summary>
+            Add tv show to system
+            </summary>
+            <param name="tvShow">Tv show to add</param>
+            <returns>Added tv show</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.TvShows.TvShowController.GetCalendar(System.String,System.String)">
+            <summary>
+            Get the tv show release calendar for a specific timespan
+            </summary>
+            <param name="from">From date</param>
+            <param name="till">Till date</param>
+            <returns>Tv Show release calendar</returns>
+        </member>
+        <member name="M:Din.Application.WebAPI.TvShows.TvShowController.GetQueue">
+            <summary>
+            Get the current tv show queue
+            </summary>
+            <returns>Tv show queue</returns>
+        </member>
+    </members>
+</doc>

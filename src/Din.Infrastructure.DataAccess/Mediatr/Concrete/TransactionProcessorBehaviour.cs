@@ -5,7 +5,8 @@ using MediatR;
 
 namespace Din.Infrastructure.DataAccess.Mediatr.Concrete
 {
-    public class TransactionProcessorBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : ITransactionRequest
+    public class TransactionProcessorBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> 
+        where TRequest : ITransactionRequest<TResponse>
     {
         private readonly DinContext _context;
 

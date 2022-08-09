@@ -5,11 +5,9 @@ using Din.Application.WebAPI.Injection.DotNet;
 using Din.Application.WebAPI.Injection.SimpleInjector;
 using Din.Application.WebAPI.Middleware;
 using Din.Domain.BackgroundProcessing;
-using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
 using Din.Domain.Extensions;
 using Din.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -118,7 +116,6 @@ namespace Din.Application.WebAPI
             _container.RegisterBackgroundTasks(assemblies);
             _container.RegisterHubTasks();
 
-            
             _container.Verify();
         }
     }

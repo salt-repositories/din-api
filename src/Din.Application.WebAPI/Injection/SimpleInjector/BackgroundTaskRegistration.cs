@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
+using Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
 using SimpleInjector;
 

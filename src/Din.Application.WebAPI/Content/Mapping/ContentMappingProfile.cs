@@ -1,4 +1,4 @@
-﻿using AutoMapper.Configuration;
+﻿using AutoMapper;
 using Din.Application.WebAPI.Content.Responses;
 using Din.Application.WebAPI.Querying;
 using Din.Domain.Clients.Abstractions;

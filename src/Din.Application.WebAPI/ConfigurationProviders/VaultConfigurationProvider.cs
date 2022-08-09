@@ -31,15 +31,11 @@ namespace Din.Application.WebAPI.ConfigurationProviders
 
         public override void Load()
         {
-            using (var loader = new VaultSecretLoader())
-            {
-                Data = loader.GetVaultSecrets().ConfigureAwait(false).GetAwaiter().GetResult();
-            }
+            Data = new VaultSecretLoader().GetVaultSecrets().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
-        private sealed class VaultSecretLoader : IDisposable
+        private sealed class VaultSecretLoader
         {
-            private bool _disposed;
             private readonly IVaultClient _client;
 
             private Secret<ListInfo> _vaultKeyList;
@@ -82,29 +78,6 @@ namespace Din.Application.WebAPI.ConfigurationProviders
                 }
 
                 return _configuration;
-            }
-
-            public void Dispose()
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-
-            private void Dispose(bool disposing)
-            {
-                if (_disposed)
-                {
-                    return;
-                }
-
-                if (disposing)
-                {
-                    _vaultKeyList.Data.Keys.GetEnumerator().Dispose();
-                    _secretDataDictionary.GetEnumerator().Dispose();
-                    _configuration.GetEnumerator().Dispose();
-                }
-
-                _disposed = true;
             }
         }
     }

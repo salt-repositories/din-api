@@ -1,6 +1,8 @@
-﻿namespace Din.Infrastructure.DataAccess.Mediatr.Interfaces
+﻿using MediatR;
+
+namespace Din.Infrastructure.DataAccess.Mediatr.Interfaces
 {
-    public interface ITransactionRequest
+    public interface ITransactionRequest<out TResponse> : IRequest<TResponse>
     {
     }
 }

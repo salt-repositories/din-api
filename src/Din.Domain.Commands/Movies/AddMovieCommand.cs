@@ -2,11 +2,10 @@
 using Din.Domain.Clients.Radarr.Requests;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Mediatr.Interfaces;
-using MediatR;
 
 namespace Din.Domain.Commands.Movies
 {
-    public class AddMovieCommand : IActivatedRequest, ITransactionRequest, IRequest<Movie>
+    public class AddMovieCommand : IActivatedRequest, ITransactionRequest<Movie>
     {
         public RadarrMovieRequest Movie { get; }
 

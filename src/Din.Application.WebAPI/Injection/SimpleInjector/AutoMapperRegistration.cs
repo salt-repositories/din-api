@@ -18,7 +18,6 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             var configuration = new MapperConfiguration(config =>
             {
                 config.ConstructServicesUsing(container.GetInstance);
-                config.Advanced.AllowAdditiveTypeMapCreation = true;
                 config.AllowNullCollections = true;
                 config.AddProfile(new AuthenticationMappingProfile());
                 config.AddProfile(new AccountsMappingProfile());

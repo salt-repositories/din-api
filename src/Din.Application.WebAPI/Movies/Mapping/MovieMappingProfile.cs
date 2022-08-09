@@ -1,4 +1,4 @@
-﻿using AutoMapper.Configuration;
+﻿using AutoMapper;
 using Din.Application.WebAPI.Content.Responses;
 using Din.Application.WebAPI.Movies.Mapping.Converters;
 using Din.Application.WebAPI.Movies.Mapping.Resolvers;

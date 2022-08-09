@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.JsonPatch;
 
 namespace Din.Domain.Commands.Accounts
 {
-    public class UpdateAccountCommand : IAuthorizedIdentityRequest, IActivatedRequest, IUpdateRequest<Account>, ITransactionRequest, IRequest<Account>
+    public class UpdateAccountCommand : IAuthorizedIdentityRequest, IActivatedRequest, IUpdateRequest<Account>, ITransactionRequest<Account>
     {
         public Guid Identity { get; }
         public JsonPatchDocument<Account> Update { get; }

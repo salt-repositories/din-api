@@ -1,4 +1,4 @@
-﻿using AutoMapper.Configuration;
+﻿using AutoMapper;
 using Din.Application.WebAPI.Accounts.Requests;
 using Din.Application.WebAPI.Accounts.Responses;
 using Din.Application.WebAPI.Querying;

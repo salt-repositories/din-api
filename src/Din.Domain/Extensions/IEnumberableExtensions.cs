@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Din.Domain.Extensions
 {
-    public static class IEnumberableExtensions
+    public static class EnumerableExtensions
     {
         public static IEnumerable<IList<T>> DivideByNumberOfThreads<T>(this IEnumerable<T> collection, int numberOfThreads)
         {

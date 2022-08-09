@@ -23,7 +23,7 @@ namespace Din.Domain.Clients.Sonarr.Concrete
         public Task<IEnumerable<SonarrTvShow>> GetTvShowsAsync(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"{_config.Url}api/series?apikey={_config.Key}"));
+                new Uri($"{_config.Url}api/v3/series?apikey={_config.Key}"));
 
             return SendRequest<IEnumerable<SonarrTvShow>>(request, cancellationToken);
         }
@@ -31,7 +31,7 @@ namespace Din.Domain.Clients.Sonarr.Concrete
         public Task<SonarrTvShow> GetTvShowByIdAsync(int id, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"{_config.Url}api/series/{id}?apikey={_config.Key}"));
+                new Uri($"{_config.Url}api/v3/series/{id}?apikey={_config.Key}"));
 
             return SendRequest<SonarrTvShow>(request, cancellationToken);
         }
@@ -41,7 +41,7 @@ namespace Din.Domain.Clients.Sonarr.Concrete
             tvShow.RootFolderPath = _config.SaveLocation;
 
             var request = new HttpRequestMessage(HttpMethod.Post,
-                new Uri($"{_config.Url}api/series?apikey={_config.Key}"))
+                new Uri($"{_config.Url}api/v3/series?apikey={_config.Key}"))
             {
                 Content = new StringContent(JsonConvert.SerializeObject(tvShow))
             };
@@ -56,7 +56,7 @@ namespace Din.Domain.Clients.Sonarr.Concrete
 
             var request = new HttpRequestMessage(HttpMethod.Get,
                 new Uri(
-                    $"{_config.Url}api/calendar?apikey={_config.Key}&start={from:yyyy-MM-dd}&end={till:yyyy-MM-dd}"));
+                    $"{_config.Url}api/v3/calendar?apikey={_config.Key}&start={from:yyyy-MM-dd}&end={till:yyyy-MM-dd}"));
 
             return SendRequest<IEnumerable<SonarrCalendar>>(request, cancellationToken);
         }
@@ -64,7 +64,7 @@ namespace Din.Domain.Clients.Sonarr.Concrete
         public Task<IEnumerable<SonarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"{_config.Url}api/queue?apikey={_config.Key}"));
+                new Uri($"{_config.Url}api/v3/queue?apikey={_config.Key}"));
 
             return SendRequest<IEnumerable<SonarrQueue>>(request, cancellationToken);
         }
@@ -72,7 +72,7 @@ namespace Din.Domain.Clients.Sonarr.Concrete
         public Task<IEnumerable<SonarrEpisode>> GetTvShowEpisodes(int id, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, 
-                new Uri($"{_config.Url}api/episode?seriesId={id}&apikey={_config.Key}"));
+                new Uri($"{_config.Url}api/v3/episode?seriesId={id}&apikey={_config.Key}"));
 
             return SendRequest<IEnumerable<SonarrEpisode>>(request, cancellationToken);
         }
