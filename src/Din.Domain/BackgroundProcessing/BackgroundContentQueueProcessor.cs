@@ -20,42 +20,37 @@ namespace Din.Domain.BackgroundProcessing
             _container = container;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken cancellationToken) => Task.Run(async () =>
         {
-            return Task.CompletedTask;
-            // return Task.Run(async () =>
-            // {
-            //     using (AsyncScopedLifestyle.BeginScope(_container))
-            //     {
-            //         try
-            //         {
-            //             var contentQueue = _container.GetInstance<ContentPollingQueue>();
-            //             var context = _container.GetInstance<DinContext>();
-            //
-            //             do
-            //             {
-            //                 if (!contentQueue.TryDequeue(out var content))
-            //                 {
-            //                     Thread.Sleep(1000);
-            //                     continue;
-            //                 }
-            //
-            //                 var plexHelper = _container.GetInstance<IPlexHelper>();
-            //                 var posterHelper = _container.GetInstance<IPosterHelper>();
-            //
-            //                 await plexHelper.CheckIsOnPlex(new[] {content}, stoppingToken);
-            //                 await posterHelper.GetPosters(new[] {content}, stoppingToken);
-            //
-            //                 context.Update(content);
-            //                 await context.SaveChangesAsync(stoppingToken);
-            //             } while (!stoppingToken.IsCancellationRequested);
-            //         }
-            //         catch (Exception exception)
-            //         {
-            //             _container.GetInstance<ILogger<BackgroundContentQueueProcessor>>().LogError(exception, "Uncaught exception within background content queue processor");
-            //         }
-            //     }
-            // }, stoppingToken);
-        }
+            var contentQueue = _container.GetInstance<ContentPollingQueue>();
+
+            await using (AsyncScopedLifestyle.BeginScope(_container))
+            {
+                try
+                {
+                    while (!cancellationToken.IsCancellationRequested)
+                    {
+                        if (!contentQueue.TryDequeue(out var content))
+                        {
+                            Thread.Sleep(1000);
+                            continue;
+                        }
+            
+                        var plexHelper = _container.GetInstance<IPlexHelper>();
+                        var posterHelper = _container.GetInstance<IPosterHelper>();
+            
+                        await plexHelper.CheckIsOnPlex(content, cancellationToken);
+                        await posterHelper.GetPoster(content, cancellationToken);
+
+                        // context.Update(content);
+                        // await context.SaveChangesAsync(cancellationToken);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    _container.GetInstance<ILogger<BackgroundContentQueueProcessor>>().LogError(exception, "Uncaught exception within background content queue processor");
+                }
+            }
+        }, cancellationToken);
     }
 }

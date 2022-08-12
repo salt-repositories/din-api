@@ -54,26 +54,8 @@ namespace Din.Domain.BackgroundProcessing
             
             foreach (var task in tasks)
             {
-                ExecuteTask(task);
+                task.ExecuteAsync(_cancellationToken);
             }
-        }
-
-        private void ExecuteTask(IBackgroundTask task)
-        {
-            task.BackgroundTaskTriggered += OnBackgroundTaskTriggered;
-            task.ExecutionCompleted += OnExecutionCompleted;
-            task.ExecuteAsync(_cancellationToken);
-        }
-        
-        private void OnBackgroundTaskTriggered(string taskName)
-        {
-            ExecuteTask(_backgroundTaskFactory.Create(taskName));
-        }
-
-        private void OnExecutionCompleted(IBackgroundTask task)
-        {
-            task.BackgroundTaskTriggered -= OnBackgroundTaskTriggered;
-            task.ExecutionCompleted -= OnExecutionCompleted;
         }
     }
 }

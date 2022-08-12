@@ -13,14 +13,12 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
             container.Register<ArchiveAuthorizationCodes>(Lifestyle.Transient);
             container.Register<UpdateMovieDatabase>(Lifestyle.Transient);
             container.Register<UpdateTvShowDatabase>(Lifestyle.Transient);
-            container.Register<UpdateTvShowEpisodeDatabase>(Lifestyle.Transient);
             
             container.RegisterInstance<IBackgroundTaskFactory>(new BackgroundTaskFactory(container)
             {
                 {nameof(ArchiveAuthorizationCodes), typeof(ArchiveAuthorizationCodes)},
                 {nameof(UpdateMovieDatabase), typeof(UpdateMovieDatabase)},
                 {nameof(UpdateTvShowDatabase), typeof(UpdateTvShowDatabase)},
-                {nameof(UpdateTvShowEpisodeDatabase), typeof(UpdateTvShowEpisodeDatabase)}
             });
             
             container.Register<ContentPollingQueue>(Lifestyle.Singleton);

@@ -47,8 +47,8 @@ namespace Din.Application.WebAPI.TvShows.Mapping
             CreateMap<Season, Domain.Models.Entities.Season>()
                 .ConvertUsing<ToSeasonEntityConverter>();
             CreateMap<Season, SeasonResponse>();
-            CreateMap<SonarrEpisode, Episode>()
-                .ForMember(dest => dest.TvShow, opt => opt.MapFrom<EpisodeEntityTvShowResolver>());
+            CreateMap<SonarrEpisode, Episode>();
+                // .ForMember(dest => dest.TvShow, opt => opt.MapFrom<EpisodeEntityTvShowResolver>());
 
             CreateMap<Episode, TvShowEpisodeResponse>();
         }

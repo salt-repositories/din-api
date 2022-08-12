@@ -3,6 +3,7 @@ using AutoMapper;
 using Din.Domain.Clients.Sonarr.Responses;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Din.Application.WebAPI.TvShows.Mapping.Resolvers
 {

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Models.Entities;
@@ -22,6 +23,11 @@ namespace Din.Infrastructure.DataAccess.Repositories.Concrete
         public Task<Genre> GetGenreByNameAsync(string name, CancellationToken cancellationToken)
         {
             return Context.Genre.FirstOrDefaultAsync(g => g.Name.Equals(name), cancellationToken);
+        }
+
+        public Task<List<Genre>> GetGenresAsync(CancellationToken cancellationToken)
+        {
+            return Context.Genre.ToListAsync(cancellationToken);
         }
     }
 }
