@@ -72,6 +72,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                 if (!storedMovie.Downloaded && movie.Downloaded)
                 {
                     storedMovie.Downloaded = true;
+                    _contentPollingQueue.Enqueue(storedMovie);
                 }
             });
 

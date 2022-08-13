@@ -24,7 +24,7 @@ namespace Din.Application.WebAPI.TvShows.Mapping.Converters
                 SeasonFolder = true,
                 Images = new List<ContentImage>
                 {
-                    new ContentImage
+                    new()
                     {
                         CoverType = "poster",
                         Url = source.PosterPath
@@ -35,7 +35,8 @@ namespace Din.Application.WebAPI.TvShows.Mapping.Converters
                     IgnoreEpisodesWithFiles = true,
                     IgnoreEpisodesWithoutFiles = false,
                     SearchForMissingEpisodes = true
-                }
+                },
+                LanguageProfileId = 1
             };
 
         }

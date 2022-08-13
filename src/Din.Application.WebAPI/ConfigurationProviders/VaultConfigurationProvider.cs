@@ -57,27 +57,37 @@ namespace Din.Application.WebAPI.ConfigurationProviders
 
             public async Task<Dictionary<string, string>> GetVaultSecrets()
             {
-                _vaultKeyList = await _client.V1.Secrets.KeyValue.V2.ReadSecretPathsAsync("din-api");
-
-                _secretDataDictionary = new Dictionary<string, Secret<SecretData>>();
-
-                foreach (var key in _vaultKeyList.Data.Keys)
+                try
                 {
-                    _secretDataDictionary.Add(key,
-                        await _client.V1.Secrets.KeyValue.V2.ReadSecretAsync($"din-api/{key}"));
-                }
+                    _vaultKeyList = await _client.V1.Secrets.KeyValue.V2.ReadSecretPathsAsync("din-api", "secret");
 
-                _configuration = new Dictionary<string, string>();
+                    _secretDataDictionary = new Dictionary<string, Secret<SecretData>>();
 
-                foreach (var data in _secretDataDictionary)
-                {
-                    foreach (var secret in data.Value.Data.Data)
+                    foreach (var key in _vaultKeyList.Data.Keys)
                     {
-                        _configuration.Add($"{data.Key}:{secret.Key}", $"{secret.Value}");
+                        _secretDataDictionary.Add(
+                            key,
+                            await _client.V1.Secrets.KeyValue.V2.ReadSecretAsync($"din-api/{key}", null, "secret")
+                        );
                     }
-                }
 
-                return _configuration;
+                    _configuration = new Dictionary<string, string>();
+
+                    foreach (var (key, value) in _secretDataDictionary)
+                    {
+                        foreach (var (secretName, secretValue) in value.Data.Data)
+                        {
+                            _configuration.Add($"{key}:{secretName}", $"{secretValue}");
+                        }
+                    }
+
+                    return _configuration;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
         }
     }

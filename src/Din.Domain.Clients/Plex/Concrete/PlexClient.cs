@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Clients.Abstractions;
@@ -21,7 +22,7 @@ namespace Din.Domain.Clients.Plex.Concrete
         {
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
-                new Uri($"{_config.Url}search?query={title}&X-Plex-Token={_config.Key}")    
+                new Uri($"{_config.Url}search?query={UrlEncoder.Default.Encode(title)}&X-Plex-Token={_config.Key}")    
             );
 
             return SendRequest<SearchResponse>(request, cancellationToken);
