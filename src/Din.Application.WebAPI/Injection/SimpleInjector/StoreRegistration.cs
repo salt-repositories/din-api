@@ -10,6 +10,7 @@ namespace Din.Application.WebAPI.Injection.SimpleInjector
         {
             container.Register<IMediaStore, MediaStore>(Lifestyle.Singleton);
             container.Register<IPlexPosterStore, PlexPosterStore>(Lifestyle.Singleton);
+            container.Register<ITaskStore, TaskStore>(Lifestyle.Singleton);
         }
     }
 }

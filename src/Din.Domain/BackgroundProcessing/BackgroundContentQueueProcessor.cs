@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
 using Din.Domain.Helpers.Interfaces;
+using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess;
+using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
@@ -20,41 +24,62 @@ namespace Din.Domain.BackgroundProcessing
             _container = container;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken cancellationToken) => Task.Run(async () =>
         {
-            return Task.Run(async () =>
+            var contentQueue = _container.GetInstance<ContentPollingQueue>();
+
+            await using (AsyncScopedLifestyle.BeginScope(_container))
             {
-                using (AsyncScopedLifestyle.BeginScope(_container))
+                var context = _container.GetInstance<DinContext>();
+                var repository = _container.GetInstance<IContentPollStatusRepository>();
+                
+                var plexHelper = _container.GetInstance<IPlexHelper>();
+                var posterHelper = _container.GetInstance<IPosterHelper>();
+
+                while (!cancellationToken.IsCancellationRequested)
                 {
+                    var content = contentQueue.DequeueMultiple(100).ToList();
+                    
+                    if (!content.Any())
+                    {
+                        Thread.Sleep(1000);
+                        continue;
+                    }
+                    
                     try
                     {
-                        var contentQueue = _container.GetInstance<ContentPollingQueue>();
-                        var context = _container.GetInstance<DinContext>();
+                        var checkPlexTask = plexHelper.CheckIsOnPlex(content, cancellationToken);
+                        var getPosterTask = posterHelper.GetPoster(content, cancellationToken);
 
-                        do
-                        {
-                            if (!contentQueue.TryDequeue(out var content))
-                            {
-                                Thread.Sleep(1000);
-                                continue;
-                            }
-
-                            var plexHelper = _container.GetInstance<IPlexHelper>();
-                            var posterHelper = _container.GetInstance<IPosterHelper>();
-
-                            await plexHelper.CheckIsOnPlex(new[] {content}, stoppingToken);
-                            await posterHelper.GetPosters(new[] {content}, stoppingToken);
-
-                            context.Update(content);
-                            await context.SaveChangesAsync(stoppingToken);
-                        } while (!stoppingToken.IsCancellationRequested);
+                        await Task.WhenAll(checkPlexTask, getPosterTask);
+                        await UpdateContent(context, repository, content, cancellationToken);
                     }
                     catch (Exception exception)
                     {
-                        _container.GetInstance<ILogger<BackgroundContentQueueProcessor>>().LogError(exception, "Uncaught exception within background content queue processor");
+                        _container.GetInstance<ILogger<BackgroundContentQueueProcessor>>().LogError(exception,
+                            "Uncaught exception within background content queue processor");
                     }
                 }
-            }, stoppingToken);
+            }
+        }, cancellationToken);
+
+        private async Task UpdateContent(
+            DinContext context,
+            IContentPollStatusRepository repository,
+            IEnumerable<IContent> content,
+            CancellationToken cancellationToken)
+        {
+            foreach (var item in content)
+            {
+                context.Update(item);
+                
+                var status = await repository.GetPollStatusByContentIdAsync(item.Id, cancellationToken);
+                var now = DateTime.Now;
+                status.PlexUrlPolled = now;
+                status.PosterUrlPolled = now;
+            }
+
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }

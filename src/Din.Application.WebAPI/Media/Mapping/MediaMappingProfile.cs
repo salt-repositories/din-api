@@ -1,4 +1,4 @@
-﻿using AutoMapper.Configuration;
+﻿using AutoMapper;
 using Din.Application.WebAPI.Media.Mapping.Converters;
 using Din.Application.WebAPI.Media.Responses;
 using Din.Domain.Clients.Giphy.Responses;

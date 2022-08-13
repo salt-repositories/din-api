@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using SimpleInjector;
-using SimpleInjector.Lifestyles;
 
 namespace Din.Domain.BackgroundProcessing
 {
@@ -14,6 +12,8 @@ namespace Din.Domain.BackgroundProcessing
     {
         private readonly Container _container;
         private CancellationToken _cancellationToken;
+
+        private IBackgroundTaskFactory _backgroundTaskFactory;
         private Timer _timer;
 
         public BackgroundTaskProcessor(Container container)
@@ -24,27 +24,11 @@ namespace Din.Domain.BackgroundProcessing
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _cancellationToken = cancellationToken;
-            _timer = new Timer(ExecuteTasks, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+            _backgroundTaskFactory = _container.GetInstance<IBackgroundTaskFactory>();
+
+            _timer = new Timer(ExecuteRecurringTasks, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
 
             return Task.CompletedTask;
-        }
-
-        private async void ExecuteTasks(object state)
-        {
-            await using (AsyncScopedLifestyle.BeginScope(_container))
-            {
-                try
-                {
-                    var tasks = _container.GetAllInstances<IBackgroundTask>()
-                        .Select(task => task.ExecuteAsync(_cancellationToken)).ToList();
-
-                    await Task.WhenAll(tasks);
-                }
-                catch (Exception exception)
-                {
-                    _container.GetInstance<ILogger<BackgroundTaskProcessor>>().LogError(exception, "Uncaught exception within background task");
-                }
-            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -57,6 +41,21 @@ namespace Din.Domain.BackgroundProcessing
         public void Dispose()
         {
             _timer?.Dispose();
+        }
+        
+        private void ExecuteRecurringTasks(object state)
+        {
+            var tasks = new[]
+            {
+                _backgroundTaskFactory.Create(nameof(ArchiveAuthorizationCodes)),
+                _backgroundTaskFactory.Create(nameof(UpdateMovieDatabase)),
+                _backgroundTaskFactory.Create(nameof(UpdateTvShowDatabase))
+            };
+            
+            foreach (var task in tasks)
+            {
+                task.ExecuteAsync(_cancellationToken);
+            }
         }
     }
 }

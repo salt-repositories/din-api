@@ -6,7 +6,7 @@ using MediatR.Pipeline;
 
 namespace Din.Domain.Middlewares.Mediatr
 {
-    public class LoggingMiddleware<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse> where TRequest : IBaseRequest
+    public class LoggingMiddleware<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
         private readonly ILoggingHandler<TRequest, TResponse> _loggingHandler;
 

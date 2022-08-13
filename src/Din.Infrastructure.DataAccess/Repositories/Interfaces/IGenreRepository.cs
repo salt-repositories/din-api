@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Models.Entities;
 
@@ -8,5 +9,6 @@ namespace Din.Infrastructure.DataAccess.Repositories.Interfaces
     {
         Genre GetGenreByName(string name);
         Task<Genre> GetGenreByNameAsync(string name, CancellationToken cancellationToken);
+        Task<List<Genre>> GetGenresAsync(CancellationToken cancellationToken);
     }
 }

@@ -7,6 +7,7 @@ namespace Din.Domain.Helpers.Interfaces
 {
     public interface IPosterHelper
     {
-        Task GetPosters<T>(IEnumerable<T> content, CancellationToken cancellationToken) where T : IContent;
+        Task GetPoster(IContent content, CancellationToken cancellationToken);
+        Task GetPoster(IEnumerable<IContent> content, CancellationToken cancellationToken);
     }
 }

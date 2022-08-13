@@ -1,4 +1,4 @@
-﻿using AutoMapper.Configuration;
+﻿using AutoMapper;
 using Din.Application.WebAPI.Authentication.Requests;
 using Din.Application.WebAPI.Authentication.Responses;
 using Din.Domain.Clients.IpStack.Responses;

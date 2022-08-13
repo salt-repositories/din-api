@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Din.Domain.Commands.Accounts
 {
-    public class DeleteAccountCommand : IAuthorizedIdentityRequest, IActivatedRequest, ITransactionRequest, IRequest
+    public class DeleteAccountCommand : IAuthorizedIdentityRequest, IActivatedRequest, ITransactionRequest<Unit>
     {
         public Guid Identity { get; }
 

@@ -25,7 +25,7 @@ namespace Din.Domain.Clients.Radarr.Concrete
             var request = new HttpRequestMessage
             (
                 HttpMethod.Get, 
-                new Uri($"{_config.Url}api/movie?apikey={_config.Key}")
+                new Uri($"{_config.Url}api/v3/movie?apikey={_config.Key}")
             );
 
             return SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
@@ -36,7 +36,7 @@ namespace Din.Domain.Clients.Radarr.Concrete
             var request = new HttpRequestMessage
             (
                 HttpMethod.Get, 
-                new Uri($"{_config.Url}api/movie/{id}?apikey={_config.Key}")
+                new Uri($"{_config.Url}api/v3/movie/{id}?apikey={_config.Key}")
             );
 
             return SendRequest<RadarrMovie>(request, cancellationToken);
@@ -49,7 +49,7 @@ namespace Din.Domain.Clients.Radarr.Concrete
             var request = new HttpRequestMessage
             (
                 HttpMethod.Post,
-                new Uri($"{_config.Url}api/movie?apikey={_config.Key}")
+                new Uri($"{_config.Url}api/v3/movie?apikey={_config.Key}")
             )
             {
                 Content = new StringContent(JsonConvert.SerializeObject(movie))
@@ -64,7 +64,7 @@ namespace Din.Domain.Clients.Radarr.Concrete
             var request = new HttpRequestMessage
             (
                 HttpMethod.Get, 
-                new Uri($"{_config.Url}api/calendar?apikey={_config.Key}&start={dateTime:yyyy-MM-dd}&end={till:yyyy-MM-dd}")
+                new Uri($"{_config.Url}api/v3/calendar?apikey={_config.Key}&start={dateTime:yyyy-MM-dd}&end={till:yyyy-MM-dd}")
             );
 
             return SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
@@ -73,7 +73,7 @@ namespace Din.Domain.Clients.Radarr.Concrete
         public Task<IEnumerable<RadarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                new Uri($"{_config.Url}api/queue?apikey={_config.Key}"));
+                new Uri($"{_config.Url}api/v3/queue?apikey={_config.Key}"));
 
             return SendRequest<IEnumerable<RadarrQueue>>(request, cancellationToken);
         }
@@ -83,7 +83,7 @@ namespace Din.Domain.Clients.Radarr.Concrete
             var request = new HttpRequestMessage
             (
                 HttpMethod.Get,
-                new Uri($"{_config.Url}api/history?page=1&pageSize=15&sortKey=date&sortDir=asc&movieId={id}&apikey={_config.Key}")
+                new Uri($"{_config.Url}api/v3/history?page=1&pageSize=15&sortKey=date&sortDir=asc&movieId={id}&apikey={_config.Key}")
             );
 
             return SendRequest<HistoryResult<RadarrHistoryRecord>>(request, cancellationToken);

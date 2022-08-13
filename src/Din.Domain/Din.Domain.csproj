@@ -3,21 +3,18 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="MediatR" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
-    <PackageReference Include="Sendgrid" Version="9.25.1" />
-    <PackageReference Include="SimpleInjector" Version="5.3.2" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
-    <PackageReference Include="TMDbLib" Version="1.8.1" />
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageReference Include="Sendgrid" Version="9.28.0" />
+    <PackageReference Include="SimpleInjector" Version="5.4.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.22.0" />
+    <PackageReference Include="TMDbLib" Version="1.9.2" />
     <PackageReference Include="UAParser" Version="3.1.47" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Din.Domain.Clients\Din.Domain.Clients.csproj" />
     <ProjectReference Include="..\Din.Domain.Models\Din.Domain.Models.csproj" />
     <ProjectReference Include="..\Din.Infrastructure.DataAccess\Din.Infrastructure.DataAccess.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Context" />
   </ItemGroup>
 </Project>

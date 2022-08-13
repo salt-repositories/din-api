@@ -7,6 +7,7 @@ namespace Din.Domain.Helpers.Interfaces
 {
     public interface IPlexHelper
     {
-        Task CheckIsOnPlex<T>(IEnumerable<T> content, CancellationToken cancellationToken) where T : IContent;
+        Task CheckIsOnPlex(IContent content, CancellationToken cancellationToken);
+        Task CheckIsOnPlex(IEnumerable<IContent> content, CancellationToken cancellationToken);
     }
 }

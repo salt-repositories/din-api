@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Din.Domain.Commands.Authentication
 {
-    public class ChangeAccountPasswordCommand : ITransactionRequest, IRequest
+    public class ChangeAccountPasswordCommand : ITransactionRequest<Unit>
     {
         public string Email { get; set; }
         public string Password { get; set; }

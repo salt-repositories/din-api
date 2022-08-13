@@ -10,6 +10,7 @@ namespace Din.Domain.Clients.Sonarr.Requests
         [JsonProperty("seasons")] public ICollection<SonarrRequestSeason> Seasons { get; set; }
         [JsonProperty("seasonFolder")] public bool SeasonFolder { get; set; }
         [JsonProperty("addOptions")] public SonarrRequestAddOptions AddOptions { get; set; }
+        [JsonProperty("languageProfileId")] public int LanguageProfileId { get; set; }
     }
 
     public class SonarrRequestSeason

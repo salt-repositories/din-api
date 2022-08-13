@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Din.Domain.Commands.Accounts
 {
-    public class ActivateAccountCommand : IAuthorizedIdentityRequest, ITransactionRequest, IRequest
+    public class ActivateAccountCommand : IAuthorizedIdentityRequest, ITransactionRequest<Unit>
     {
         public Guid Identity { get; }
         public string Code { get; }
