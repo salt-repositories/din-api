@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Din.Domain.Clients.Abstractions;
 using Din.Domain.Clients.Radarr.Requests;
 using Din.Domain.Clients.Radarr.Responses;
 
@@ -15,6 +14,6 @@ namespace Din.Domain.Clients.Radarr.Interfaces
         Task<RadarrMovie> AddMovieAsync(RadarrMovieRequest movie, CancellationToken cancellationToken);
         Task<IEnumerable<RadarrMovie>> GetCalendarAsync((DateTime from, DateTime till) dateRange, CancellationToken cancellationToken);
         Task<IEnumerable<RadarrQueue>> GetQueueAsync(CancellationToken cancellationToken);
-        Task<HistoryResult<RadarrHistoryRecord>> GetMovieHistoryAsync(int id, CancellationToken cancellationToken);
+        Task<IEnumerable<RadarrHistoryRecord>> GetMovieHistoryAsync(int id, CancellationToken cancellationToken);
     }
 }

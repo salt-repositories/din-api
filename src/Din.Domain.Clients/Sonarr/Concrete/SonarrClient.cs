@@ -7,7 +7,6 @@ using Din.Domain.Clients.Abstractions;
 using Din.Domain.Clients.Sonarr.Interfaces;
 using Din.Domain.Clients.Sonarr.Requests;
 using Din.Domain.Clients.Sonarr.Responses;
-using Newtonsoft.Json;
 
 namespace Din.Domain.Clients.Sonarr.Concrete
 {
@@ -43,7 +42,7 @@ namespace Din.Domain.Clients.Sonarr.Concrete
             var request = new HttpRequestMessage(HttpMethod.Post,
                 new Uri($"{_config.Url}api/v3/series?apikey={_config.Key}"))
             {
-                Content = new StringContent(JsonConvert.SerializeObject(tvShow))
+                Content = JsonContent(tvShow)
             };
 
             return SendRequest<SonarrTvShow>(request, cancellationToken);

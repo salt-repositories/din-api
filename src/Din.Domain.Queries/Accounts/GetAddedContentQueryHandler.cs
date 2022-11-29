@@ -92,17 +92,18 @@ namespace Din.Domain.Queries.Accounts
                 {
                     return ContentStatus.Downloading;
                 }
+                
+                var history = 
+                    (await _radarrClient.GetMovieHistoryAsync(addedContent.SystemId, cancellationToken))
+                    .ToList();
 
-
-                var history = await _radarrClient.GetMovieHistoryAsync(addedContent.SystemId, cancellationToken);
-
-                if (history.Records.Count <= 0)
+                if (history.Count <= 0)
                 {
                     return ContentStatus.NotAvailable;
                 }
-
-                var lastHistoryRecord = history.Records.LastOrDefault(r => DateTimeOffset.Now.AddDays(-5) > r.Date);
-
+                
+                var lastHistoryRecord = history.LastOrDefault(r => DateTimeOffset.Now.AddDays(-5) > r.Date);
+                
                 if (lastHistoryRecord != null)
                 {
                     return ContentStatus.Stuck;

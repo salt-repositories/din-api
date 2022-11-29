@@ -103,7 +103,7 @@ namespace Din.Application.WebAPI.Movies
             var query = new GetMovieHistoryQuery(id);
             var result = await _bus.Send(query, cancellationToken);
 
-            return Ok(_mapper.Map<IEnumerable<MovieHistoryResponse>>(result.Records));
+            return Ok(_mapper.Map<IEnumerable<MovieHistoryResponse>>(result));
         }
 
         /// <summary>

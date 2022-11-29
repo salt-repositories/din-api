@@ -7,7 +7,6 @@ using Din.Domain.Clients.Abstractions;
 using Din.Domain.Clients.Radarr.Interfaces;
 using Din.Domain.Clients.Radarr.Requests;
 using Din.Domain.Clients.Radarr.Responses;
-using Newtonsoft.Json;
 
 namespace Din.Domain.Clients.Radarr.Concrete
 {
@@ -52,7 +51,7 @@ namespace Din.Domain.Clients.Radarr.Concrete
                 new Uri($"{_config.Url}api/v3/movie?apikey={_config.Key}")
             )
             {
-                Content = new StringContent(JsonConvert.SerializeObject(movie))
+                Content = JsonContent(movie)
             };
 
             return SendRequest<RadarrMovie>(request, cancellationToken);
@@ -78,15 +77,15 @@ namespace Din.Domain.Clients.Radarr.Concrete
             return SendRequest<IEnumerable<RadarrQueue>>(request, cancellationToken);
         }
 
-        public Task<HistoryResult<RadarrHistoryRecord>> GetMovieHistoryAsync(int id, CancellationToken cancellationToken)
+        public Task<IEnumerable<RadarrHistoryRecord>> GetMovieHistoryAsync(int id, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage
             (
                 HttpMethod.Get,
-                new Uri($"{_config.Url}api/v3/history?page=1&pageSize=15&sortKey=date&sortDir=asc&movieId={id}&apikey={_config.Key}")
+                new Uri($"{_config.Url}api/v3/history/movie?movieId={id}&apikey={_config.Key}")
             );
 
-            return SendRequest<HistoryResult<RadarrHistoryRecord>>(request, cancellationToken);
+            return SendRequest<IEnumerable<RadarrHistoryRecord>>(request, cancellationToken);
         }
     }
 }

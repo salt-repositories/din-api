@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.Exceptions.Concrete;
@@ -16,6 +17,9 @@ namespace Din.Domain.Clients.Abstractions
         {
             _clientFactory = clientFactory;
         }
+
+        protected static HttpContent JsonContent<T>(T content) =>
+            new StringContent(JsonConvert.SerializeObject(content), Encoding.Default, "application/json");
 
         protected async Task SendRequest(HttpRequestMessage request, CancellationToken cancellationToken)
         {
