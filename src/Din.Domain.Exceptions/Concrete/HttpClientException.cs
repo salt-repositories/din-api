@@ -6,11 +6,9 @@ namespace Din.Domain.Exceptions.Concrete
     public class HttpClientException : DinException
     {
         public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
-        public object ClientResponse { get; }
 
-        public HttpClientException(string message, object clientResponse) : base(message, null)
+        public HttpClientException(string message, object clientResponse) : base(message, clientResponse)
         {
-            ClientResponse = clientResponse;
         }
     }
 }

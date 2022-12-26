@@ -3,7 +3,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Din.Application.WebAPI.Serilization;
 using Din.Domain.Exceptions.Abstractions;
-using Din.Domain.Exceptions.Concrete;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
@@ -39,13 +38,6 @@ namespace Din.Application.WebAPI.Middleware
         {
             switch (exception)
             {
-                case HttpClientException clientException:
-                    _logger.LogWarning(clientException, "A Client exception has been thrown");
-                    return CreateResponse(context, (int) clientException.StatusCode, new
-                    {
-                        clientException.Message,
-                        Errors = clientException.ClientResponse
-                    });
                 case DinException dinException:
                     _logger.LogWarning(dinException, "A Din exception has been thrown");
                     return CreateResponse(context, (int) dinException.StatusCode, new
@@ -59,19 +51,16 @@ namespace Din.Application.WebAPI.Middleware
                         validationException.Message,
                         validationException.Errors,
                     });
+                default:
+                    _logger.LogCritical(exception, "An unexpected exception has been thrown");
+                    return CreateResponse(context, (int) HttpStatusCode.InternalServerError, new
+                    {
+                        Message = _environment.IsDevelopment() ? exception.Message : "Internal error"
+                    });
             }
-
-            _logger.LogError(exception, "A unidentified exception has been thrown");
-
-            return CreateResponse(context, (int) HttpStatusCode.InternalServerError, new
-            {
-                Message = _environment.IsDevelopment()
-                    ? exception.Message
-                    : "Something went wrong"
-            });
         }
 
-        private Task CreateResponse(HttpContext context, int statusCode, object response)
+        private static Task CreateResponse(HttpContext context, int statusCode, object response)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;

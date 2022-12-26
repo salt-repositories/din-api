@@ -49,8 +49,8 @@ namespace Din.Application.WebAPI
             services.AddHttpClient();
             services.AddSignalR();
             services.RegisterSignalRCorePipeline(_container);
-            services.AddSingleton<IHostedService>(new BackgroundTaskProcessor(_container));
-            services.AddSingleton<IHostedService>(new BackgroundContentQueueProcessor(_container));
+            services.AddHostedService<BackgroundTaskProcessor>();
+            services.AddHostedService<BackgroundContentQueueProcessor>();
 
             IntegrateSimpleInjector(services);
         }
@@ -113,7 +113,7 @@ namespace Din.Application.WebAPI
             _container.RegisterClients();
             _container.RegisterStores();
             _container.RegisterHelpers();
-            _container.RegisterBackgroundTasks(assemblies);
+            _container.RegisterBackgroundTasks();
             _container.RegisterHubTasks();
 
             _container.Verify();

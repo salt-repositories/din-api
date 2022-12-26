@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
+using Din.Domain.Extensions;
 using Din.Domain.Helpers.Interfaces;
 using Din.Domain.Models.Entities;
-using Din.Infrastructure.DataAccess;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -18,21 +18,22 @@ namespace Din.Domain.BackgroundProcessing
     public class BackgroundContentQueueProcessor : BackgroundService
     {
         private readonly Container _container;
+        private readonly IHostApplicationLifetime _applicationLifetime;
 
-        public BackgroundContentQueueProcessor(Container container)
+        public BackgroundContentQueueProcessor(Container container, IHostApplicationLifetime applicationLifetime)
         {
             _container = container;
+            _applicationLifetime = applicationLifetime;
         }
 
         protected override Task ExecuteAsync(CancellationToken cancellationToken) => Task.Run(async () =>
         {
+            _applicationLifetime.ApplicationStarted.WaitHandle.WaitOne(-1);
+            
             var contentQueue = _container.GetInstance<ContentPollingQueue>();
 
             await using (AsyncScopedLifestyle.BeginScope(_container))
             {
-                var context = _container.GetInstance<DinContext>();
-                var repository = _container.GetInstance<IContentPollStatusRepository>();
-                
                 var plexHelper = _container.GetInstance<IPlexHelper>();
                 var posterHelper = _container.GetInstance<IPosterHelper>();
 
@@ -52,7 +53,7 @@ namespace Din.Domain.BackgroundProcessing
                         var getPosterTask = posterHelper.GetPoster(content, cancellationToken);
 
                         await Task.WhenAll(checkPlexTask, getPosterTask);
-                        await UpdateContent(context, repository, content, cancellationToken);
+                        await UpdateContent(_container, content, cancellationToken);
                     }
                     catch (Exception exception)
                     {
@@ -63,23 +64,25 @@ namespace Din.Domain.BackgroundProcessing
             }
         }, cancellationToken);
 
-        private async Task UpdateContent(
-            DinContext context,
-            IContentPollStatusRepository repository,
+        private static Task UpdateContent(
+            Container container,
             IEnumerable<IContent> content,
             CancellationToken cancellationToken)
         {
-            foreach (var item in content)
+            return container.WithRepository<IContentPollStatusRepository>(async repository =>
             {
-                context.Update(item);
+                foreach (var item in content)
+                {
+                    repository.Update(item);
                 
-                var status = await repository.GetPollStatusByContentIdAsync(item.Id, cancellationToken);
-                var now = DateTime.Now;
-                status.PlexUrlPolled = now;
-                status.PosterUrlPolled = now;
-            }
+                    var status = await repository.GetPollStatusByContentIdAsync(item.Id, cancellationToken);
+                    var now = DateTime.Now;
+                    status.PlexUrlPolled = now;
+                    status.PosterUrlPolled = now;
+                }
 
-            await context.SaveChangesAsync(cancellationToken);
+                await repository.SaveAsync(cancellationToken);
+            });
         }
     }
 }

@@ -5,7 +5,7 @@ using SimpleInjector;
 
 namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete;
 
-public class BackgroundTaskFactory : Dictionary<string, Type>, IBackgroundTaskFactory
+public class BackgroundTaskFactory : IBackgroundTaskFactory
 {
     private readonly Container _container;
 
@@ -14,8 +14,8 @@ public class BackgroundTaskFactory : Dictionary<string, Type>, IBackgroundTaskFa
         _container = container;
     }
     
-    public IBackgroundTask Create(string taskName)
+    public IBackgroundTask Create<T>() where T : class, IBackgroundTask
     {
-        return (IBackgroundTask) _container.GetInstance(this[taskName]);
+        return _container.GetInstance<T>();
     }
 }

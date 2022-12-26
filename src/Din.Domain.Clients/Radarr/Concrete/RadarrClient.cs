@@ -23,10 +23,10 @@ namespace Din.Domain.Clients.Radarr.Concrete
         {
             var request = new HttpRequestMessage
             (
-                HttpMethod.Get, 
+                HttpMethod.Get,
                 new Uri($"{_config.Url}api/v3/movie?apikey={_config.Key}")
             );
-
+            
             return SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
         }
 

@@ -21,33 +21,18 @@ namespace Din.Domain.Clients.Abstractions
         protected static HttpContent JsonContent<T>(T content) =>
             new StringContent(JsonConvert.SerializeObject(content), Encoding.Default, "application/json");
 
-        protected async Task SendRequest(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            using (var client = _clientFactory.CreateClient())
-            {
-                SetClientProperties(client);
-
-                var response = await Request(client, request, cancellationToken);
-
-                await CheckResponse(request, response);
-            }
-        }
-
         protected async Task<T> SendRequest<T>(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            using (var client = _clientFactory.CreateClient())
-            {
-                SetClientProperties(client);
+            using var client = _clientFactory.CreateClient();
 
-                var response = await Request(client, request, cancellationToken);
+            SetClientProperties(client);
+            var response = await Request(client, request, cancellationToken);
+            var responseBody = await CheckResponse(request, response);
 
-                await CheckResponse(request, response);
-
-                return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
-            }
+            return JsonConvert.DeserializeObject<T>(responseBody);
         }
 
-        private void SetClientProperties(HttpClient client)
+        private static void SetClientProperties(HttpClient client)
         {
             client.Timeout = TimeSpan.FromSeconds(10);
             client.DefaultRequestHeaders.Add("User-Agent", "DinApi");
@@ -63,7 +48,7 @@ namespace Din.Domain.Clients.Abstractions
             }
             catch (Exception exception)
             {
-                if (exception is TimeoutException || exception is TaskCanceledException)
+                if (exception is TimeoutException or TaskCanceledException)
                 {
                     throw new HttpClientException($"[{GetType().Name}]: Timeout", null);
                 }
@@ -72,17 +57,21 @@ namespace Din.Domain.Clients.Abstractions
             }
         }
 
-        private async Task CheckResponse(HttpRequestMessage request, HttpResponseMessage response)
+        private async Task<string> CheckResponse(HttpRequestMessage request, HttpResponseMessage response)
         {
-            if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.Created)
-            {
-                var path = $"{request.RequestUri.Scheme}://{request.RequestUri.Host}{request.RequestUri.AbsolutePath}";
+            var responseBody = await response.Content.ReadAsStringAsync();
 
-                throw new HttpClientException(
-                    $"[{GetType().Name}]: {request.Method} {path} [{response.StatusCode}]",
-                    await response.Content.ReadAsStringAsync()
-                );
+            if ((int)response.StatusCode is >= 200 and < 300)
+            {
+                return responseBody;
             }
+
+            var path = $"{request.RequestUri?.Scheme}://{request.RequestUri?.Host}{request.RequestUri?.AbsolutePath}";
+
+            throw new HttpClientException(
+                $"[{GetType().Name}]: {request.Method} {path} [{response.StatusCode}]",
+                responseBody
+            );
         }
     }
 }

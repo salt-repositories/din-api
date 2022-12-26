@@ -127,7 +127,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                 var storedEpisodes = await repository.GetTvShowEpisodes(tvShow.Id, cancellationToken);
                 var externalEpisodes = await sonarrClient.GetTvShowEpisodes(tvShow.SystemId, cancellationToken);
 
-                Parallel.ForEach(externalEpisodes, async externalEpisode =>
+                Parallel.ForEach(externalEpisodes, externalEpisode =>
                 {
                     var storedEpisode = GetStoredEpisode(storedEpisodes, externalEpisode, tvShow);
                     

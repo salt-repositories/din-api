@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +32,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
             {
                 CompleteProgress();
                 Logger.LogInformation("Nothing to archive");
+                return;
             }
 
             EnumerateAndDoWork(codes, code =>

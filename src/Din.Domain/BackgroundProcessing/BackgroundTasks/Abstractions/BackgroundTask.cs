@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Interfaces;
-using Din.Domain.Exceptions.Concrete;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -28,7 +27,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions
         
         public string Name { get; }
         
-        public BackgroundTaskStatus Status { get; protected set; }
+        public BackgroundTaskStatus Status { get; private set; }
         
         private double _progress;
         public double Progress => Math.Round(_progress / AmountOfWork * 100, 0);
@@ -54,24 +53,23 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions
         public Task ExecuteAsync(CancellationToken cancellationToken) => Task.Run(async () =>
         {
             _stopwatch.Start();
-
             Status = BackgroundTaskStatus.InProgress;
-            
-            await using var scope = AsyncScopedLifestyle.BeginScope(_container);
 
+            await using var scope = AsyncScopedLifestyle.BeginScope(_container);
+            
             try
             {
                 await OnExecuteAsync(scope, cancellationToken);
-                Logger.LogInformation($"{Name}: ExecutionTime = {ExecutionTime.Seconds}s");
+                _stopwatch.Stop();
                 Status = BackgroundTaskStatus.Completed;
+                Logger.LogInformation($"{Name}: ExecutionTime = {ExecutionTime.Seconds}s");
             }
             catch (Exception exception)
             {
-                Logger.LogError(exception, $"Unexpected exception in background task: {GetType().Name}");
+                _stopwatch.Stop();
                 Status = BackgroundTaskStatus.Failed;
+                Logger.LogError(exception, $"Unexpected exception in background task: {GetType().Name}");
             }
-
-            _stopwatch.Stop();
         }, cancellationToken);
 
         protected void IncreaseProgress(double increment)
