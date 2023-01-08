@@ -69,12 +69,14 @@ namespace Din.Domain.Clients.Radarr.Concrete
             return SendRequest<IEnumerable<RadarrMovie>>(request, cancellationToken);
         }
 
-        public Task<IEnumerable<RadarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<RadarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
                 new Uri($"{_config.Url}api/v3/queue?apikey={_config.Key}"));
 
-            return SendRequest<IEnumerable<RadarrQueue>>(request, cancellationToken);
+            var response = await SendRequest<PageResult<RadarrQueue>>(request, cancellationToken);
+
+            return response.Records;
         }
 
         public Task<IEnumerable<RadarrHistoryRecord>> GetMovieHistoryAsync(int id, CancellationToken cancellationToken)

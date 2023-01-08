@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Din.Application.WebAPI.Content.Responses;
 using Din.Application.WebAPI.Movies.Requests;
 using Din.Application.WebAPI.Movies.Responses;
 using Din.Application.WebAPI.Querying;
@@ -15,6 +16,7 @@ using Din.Domain.Models.Querying;
 using Din.Domain.Queries.Movies;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Din.Application.WebAPI.Movies
@@ -162,6 +164,15 @@ namespace Din.Application.WebAPI.Movies
             var result = await _bus.Send(query);
 
             return Ok(_mapper.Map<IEnumerable<MovieResponse>>(result));
+        }
+
+        [HttpGet("queue")]
+        [ProducesResponseType(typeof(IEnumerable<QueueResponse>), 200)]
+        public async Task<IActionResult> GetQueue()
+        {
+            var result = await _bus.Send(new GetMovieQueueQuery());
+
+            return Ok(_mapper.Map<IEnumerable<QueueResponse>>(result));
         }
 
         #endregion endpoints

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Din.Domain.Queries.Querying;
 
 namespace Din.Application.WebAPI.Querying
 {
@@ -12,5 +13,8 @@ namespace Din.Application.WebAPI.Querying
             Items = items;
             TotalCount = totalCount;
         }
+
+        public static implicit operator QueryResponse<T>(QueryResult<T> queryResult)
+            => new(queryResult.Items, queryResult.TotalCount);
     }
 }

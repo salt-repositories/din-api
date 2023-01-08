@@ -6,5 +6,6 @@ namespace Din.Domain.Clients.Sonarr.Responses
     public class SonarrQueue : Queue
     {
         [JsonProperty("series")] public SonarrTvShow TvShow { get; set; }
+        [JsonProperty("episode")] public SonarrEpisode Episode { get; set; }
     }
 }

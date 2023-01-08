@@ -5,6 +5,7 @@ using Din.Application.WebAPI.Injection.DotNet;
 using Din.Application.WebAPI.Injection.SimpleInjector;
 using Din.Application.WebAPI.Middleware;
 using Din.Domain.BackgroundProcessing;
+using Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete;
 using Din.Domain.Extensions;
 using Din.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Builder;
@@ -19,47 +20,50 @@ namespace Din.Application.WebAPI
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-        private readonly Container _container = new Container();
+        private readonly IHostEnvironment _environment;
+        private readonly IConfiguration _configuration;
+        private readonly Container _container;
 
         public Startup(IHostEnvironment environment)
         {
+            _environment = environment;
+            
             var builder = new ConfigurationBuilder();
             builder.AddJsonFile("appsettings.json");
             builder.AddVaultSecrets(environment);
             builder.AddEnvironmentVariables();
 
-            Configuration = builder.Build();
+            _configuration = builder.Build();
+            _container = new Container();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called first by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options => options.AddPolicy("Default", builder =>
             {
                 builder
-                    .WithOrigins(Configuration.GetSection("CorsOriginDomains").Get<string[]>())
+                    .WithOrigins(_configuration.GetSection("CorsOriginDomains").Get<string[]>())
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
             }));
             services.RegisterMvcComponents();
-            services.RegisterAuthentication(Configuration);
+            services.RegisterAuthentication(_configuration);
             services.RegisterSwagger();
             services.AddHttpClient();
             services.AddSignalR();
             services.RegisterSignalRCorePipeline(_container);
-            services.AddHostedService<BackgroundTaskProcessor>();
-            services.AddHostedService<BackgroundContentQueueProcessor>();
 
-            IntegrateSimpleInjector(services);
+            IntegrateSimpleInjector(services, _environment);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This method gets called second by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
-            InitializeContainer(app, env);
-            
+            app.UseSimpleInjector(_container);
+            _container.Verify();
+
             using (AsyncScopedLifestyle.BeginScope(_container))
             {
                 _container.GetService<DinContext>()?.Database.Migrate();
@@ -87,36 +91,38 @@ namespace Din.Application.WebAPI
             });
         }
 
-        private void IntegrateSimpleInjector(IServiceCollection services)
+        private void IntegrateSimpleInjector(IServiceCollection services, IHostEnvironment env)
         {
             _container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+            _container.Options.EnableAutoVerification = false;
 
             services.AddSimpleInjector(_container, options =>
             {
-                options.AddAspNetCore()
+                options
+                    .AddAspNetCore()
                     .AddControllerActivation();
+
+                // options.AddHostedService<TimedHostedService<ArchiveAuthorizationCodes>>();
+                // options.AddHostedService<TimedHostedService<UpdateMovieDatabase>>();
+                // options.AddHostedService<TimedHostedService<UpdateTvShowDatabase>>();
+                // options.AddHostedService<TimedHostedService<UpdateContentPlexUrl>>();
+                options.AddHostedService<TimedHostedService<UpdateContentPosterUrl>>();
+                options.AddHostedService<BackgroundContentQueueProcessor>();
             });
-        }
-
-        private void InitializeContainer(IApplicationBuilder app, IHostEnvironment env)
-        {
-            app.UseSimpleInjector(_container);
-
-            var assemblies = AppDomain.CurrentDomain.GetApplicationAssemblies();
             
+            var assemblies = AppDomain.CurrentDomain.GetApplicationAssemblies();
+
             _container.RegisterMediatr(assemblies);
-            _container.RegisterDbContext(Configuration, env);
+            _container.RegisterDbContext(_configuration, env);
             _container.RegisterContexts();
             _container.RegisterRepositories();
             _container.RegisterAutoMapper(assemblies);
-            _container.RegisterConfigurations(Configuration);
+            _container.RegisterConfigurations(_configuration);
             _container.RegisterClients();
             _container.RegisterStores();
             _container.RegisterHelpers();
             _container.RegisterBackgroundTasks();
             _container.RegisterHubTasks();
-
-            _container.Verify();
         }
     }
 }

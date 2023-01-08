@@ -60,12 +60,14 @@ namespace Din.Domain.Clients.Sonarr.Concrete
             return SendRequest<IEnumerable<SonarrCalendar>>(request, cancellationToken);
         }
 
-        public Task<IEnumerable<SonarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<SonarrQueue>> GetQueueAsync(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
                 new Uri($"{_config.Url}api/v3/queue?apikey={_config.Key}"));
 
-            return SendRequest<IEnumerable<SonarrQueue>>(request, cancellationToken);
+            var response = await SendRequest<PageResult<SonarrQueue>>(request, cancellationToken);
+
+            return response.Records;
         }
 
         public Task<IEnumerable<SonarrEpisode>> GetTvShowEpisodes(int id, CancellationToken cancellationToken)

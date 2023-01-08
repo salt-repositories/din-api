@@ -44,16 +44,11 @@ namespace Din.Domain.Commands.TvShows
         public async Task<TvShow> Handle(AddTvShowCommand request, CancellationToken cancellationToken)
         {
             var response = await _client.AddTvShowAsync(request.TvShow, cancellationToken);
-
-            Thread.Sleep(500);
-
-            response = await _client.GetTvShowByIdAsync(response.SystemId, cancellationToken);
-
             var tvShow = _tvShowRepository.Insert(_mapper.Map<TvShow>(response));
 
             _contentPollingQueue.Enqueue(tvShow);
 
-            var addedContentEntity = new AddedContent
+            _addedContentRepository.Insert(new AddedContent
             {
                 ForeignId = tvShow.TvdbId,
                 SystemId = tvShow.SystemId,
@@ -62,9 +57,7 @@ namespace Din.Domain.Commands.TvShows
                 Status = ContentStatus.Queued,
                 Account = await _accountRepository.GetAccountById(_context.GetIdentity(), cancellationToken),
                 Type = ContentType.TvShow
-            };
-
-            _addedContentRepository.Insert(addedContentEntity);
+            });
 
             return tvShow;
         }

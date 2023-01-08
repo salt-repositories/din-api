@@ -13,8 +13,10 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
     {
         private const int MaximumLifetimeInDays = 3;
 
-        public ArchiveAuthorizationCodes(Container container, ILogger<ArchiveAuthorizationCodes> logger) : base(
-            container, logger, nameof(ArchiveAuthorizationCodes))
+        public ArchiveAuthorizationCodes(
+            Container container,
+            ILogger<ArchiveAuthorizationCodes> logger
+        ) : base(container, logger, nameof(ArchiveAuthorizationCodes))
         {
         }
 
@@ -24,7 +26,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 
             var repository = scope.GetInstance<IAuthorizationCodeRepository>();
             var codes = (await repository
-                .GetAll(cancellationToken))
+                    .GetAll(cancellationToken))
                 .Where(code => DateTime.Now > code.Generated.AddDays(MaximumLifetimeInDays) && code.Active)
                 .ToList();
 
@@ -35,10 +37,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                 return;
             }
 
-            EnumerateAndDoWork(codes, code =>
-            {
-                code.Active = false;
-            });
+            EnumerateAndDoWork(codes, code => { code.Active = false; });
 
             await repository.SaveAsync(cancellationToken);
 

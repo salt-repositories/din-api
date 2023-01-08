@@ -5,10 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions;
 using Din.Domain.Configurations.Interfaces;
+using Din.Domain.Extensions;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
 using TMDbLib.Client;
 
 namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
@@ -29,18 +31,22 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
         {
             Logger.LogInformation("Polling for new posters");
 
-            var tvShowRepository = scope.GetInstance<ITvShowRepository>();
-            var movieRepository = scope.GetInstance<IMovieRepository>();
+            var tvShows = await scope.WithRepository<ITvShowRepository, List<TvShow>>(
+                repository => repository.GetTvShowsWithNoPoster(cancellationToken)
+            );
+            var movies = await scope.WithRepository<IMovieRepository, List<Movie>>(
+                repository => repository.GetMoviesWithNoPoster(cancellationToken)
+            );
 
-            var tvShowPosterTask = GetPosters(
-                await tvShowRepository.GetTvShowsWithNoPoster(cancellationToken),
-                tvShowRepository,
+            var tvShowPosterTask = GetPosters<ITvShowRepository>(
+                tvShows,
+                scope,
                 cancellationToken
             );
 
-            var moviePosterTask = GetPosters(
-                await movieRepository.GetMoviesWithNoPoster(cancellationToken),
-                movieRepository,
+            var moviePosterTask = GetPosters<IMovieRepository>(
+                movies,
+                scope,
                 cancellationToken
             );
 
@@ -48,36 +54,47 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
             Logger.LogInformation("Finished polling for new posters");
         }
 
-        private async Task GetPosters<TEntity, TRepository>(List<TEntity> content, TRepository repository,
+        private async Task GetPosters<TRepository>(
+            IEnumerable<IContent> content,
+            Scope scope,
             CancellationToken cancellationToken)
-            where TEntity : class, IContent
-            where TRepository : IBaseRepository
+            where TRepository : class, IBaseRepository
         {
-            await EnumerateAndDoWorkAsync(content.TakeWhile(item => string.IsNullOrEmpty(item.PosterPath)), async item =>
+            if (scope.Container == null)
             {
-                if (item.GetType() == typeof(Movie))
-                {
-                    var response = await _tmDbClient.SearchMovieAsync(item.Title, 0, false,
-                        Convert.ToInt32(item.Year),
-                        null,
-                        0,
-                        cancellationToken);
+                Logger.LogError("Scope has no parent container");
+                return;
+            }
+            
+            await using var innerScope = AsyncScopedLifestyle.BeginScope(scope.Container);
+            var repository = innerScope.GetInstance<TRepository>();
 
-                    if (response.Results.Any())
-                    {
-                        item.PosterPath = response.Results.First().PosterPath;
-                    }
-                }
-                else
+            await EnumerateAndDoWorkAsync(content.TakeWhile(item => string.IsNullOrEmpty(item.PosterPath)),
+                async item =>
                 {
-                    var response = await _tmDbClient.SearchTvShowAsync(item.Title, 0, false, 0, cancellationToken);
-
-                    if (response.Results.Any())
+                    if (item.GetType() == typeof(Movie))
                     {
-                        item.PosterPath = response.Results.First().PosterPath;
+                        var response = await _tmDbClient.SearchMovieAsync(item.Title, 0, false,
+                            Convert.ToInt32(item.Year),
+                            null,
+                            0,
+                            cancellationToken);
+
+                        if (response.Results.Any())
+                        {
+                            item.PosterPath = response.Results.First().PosterPath;
+                        }
                     }
-                }
-            });
+                    else
+                    {
+                        var response = await _tmDbClient.SearchTvShowAsync(item.Title, 0, false, 0, cancellationToken);
+
+                        if (response.Results.Any())
+                        {
+                            item.PosterPath = response.Results.First().PosterPath;
+                        }
+                    }
+                });
 
             await repository.SaveAsync(cancellationToken);
         }

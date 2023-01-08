@@ -3,19 +3,22 @@ using Din.Domain.Models.Entities;
 
 namespace Din.Application.WebAPI.Accounts.Responses
 {
-    public class AccountResponse
+    public record struct AccountResponse
     {
-        public Guid Id { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public AccountRole Role { get; set; }
-        public bool Active { get; set; }
-        public AccountResponseImage Image { get; set; }
+        public Guid Id { get; init; }
+        public string Username { get; init; }
+        public string Email { get; init; }
+        public AccountRole Role { get; init; }
+        public bool Active { get; init; }
+
+        public static implicit operator AccountResponse(Account account) => new()
+        {
+            Id = account.Id,
+            Username = account.Username,
+            Email = account.Email,
+            Role = account.Role,
+            Active = account.Active,
+        };
     }
 
-    public class AccountResponseImage
-    {
-        public string Name { get; set; }
-        public byte[] Data { get; set; }
-    }
 }

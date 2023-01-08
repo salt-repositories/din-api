@@ -13,6 +13,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Din.Application.WebAPI.Accounts
 {
@@ -59,6 +60,22 @@ namespace Din.Application.WebAPI.Accounts
         }
 
         /// <summary>
+        /// Get accounts V2
+        /// </summary>
+        /// <param name="queryParameters">Optional query parameters</param>
+        /// <returns>Collection containing all accounts</returns>
+        [HttpGet]
+        [ApiVersion(ApiVersions.V2)]
+        [ProducesResponseType(typeof(QueryResponse<AccountResponse>), 200)]
+        public async Task<IActionResult> GetAccountsV2([FromQuery] QueryParametersRequest queryParameters)
+        {
+            var query = new GetAccountsQuery(_mapper.Map<QueryParameters>(queryParameters));
+            var result = await _bus.Send(query);
+
+            return Ok<QueryResponse<Account>>(result);
+        }
+
+        /// <summary>
         /// Get account by ID
         /// </summary>
         /// <param name="id">Account ID</param>
@@ -69,8 +86,23 @@ namespace Din.Application.WebAPI.Accounts
         public async Task<IActionResult> GetAccountById([FromRoute] Guid id)
         {
             var query = new GetAccountQuery(id);
-
             return Ok(_mapper.Map<AccountResponse>(await _bus.Send(query)));
+            
+        }
+
+        /// <summary>
+        /// Get account by ID V2
+        /// </summary>
+        /// <param name="id">Account ID</param>
+        /// <returns>Single account</returns>
+        [HttpGet("{id}")]
+        [ApiVersion(ApiVersions.V2)]
+        [ProducesResponseType(typeof(AccountResponse), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetAccountByIdV2([FromRoute] Guid id)
+        {
+            var account = await _bus.Send(new GetAccountQuery(id));
+            return Ok<AccountResponse>(account);
         }
 
         /// <summary>
@@ -120,9 +152,9 @@ namespace Din.Application.WebAPI.Accounts
         /// <returns>Created account</returns>
         [HttpPost]
         [ProducesResponseType(typeof(AccountResponse), 201)]
-        public async Task<IActionResult> CreateAccount([FromBody] AccountRequest account)
+        public async Task<IActionResult> CreateAccount([FromBody] AccountRequest request)
         {
-            var command = new CreateAccountCommand(_mapper.Map<Account>(account), account.Password);
+            var command = new CreateAccountCommand(request, request.Password);
             var result = await _bus.Send(command);
 
             return Created("", _mapper.Map<AccountResponse>(result));
@@ -163,5 +195,7 @@ namespace Din.Application.WebAPI.Accounts
         }
 
         #endregion endpoints
+
+        private static OkObjectResult Ok<T>([ActionResultObjectValue] T value) => new(value);
     }
 }

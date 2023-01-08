@@ -2,11 +2,18 @@
 
 namespace Din.Application.WebAPI.Accounts.Requests
 {
-    public class AccountRequest
+    public record AccountRequest
     {
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public AccountRole Role { get; set; }
+        public string Username { get; init; }
+        public string Email { get; init; }
+        public string Password { get; init; }
+        public AccountRole Role { get; init; }
+
+        public static implicit operator Account(AccountRequest request) => new()
+        {
+            Username = request.Username,
+            Email = request.Email,
+            Role = request.Role
+        };
     }
 }
