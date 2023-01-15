@@ -1,50 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Din.Application.WebAPI.Content.Responses;
+using Din.Application.WebAPI.Controller;
+using Din.Application.WebAPI.Controller.Versioning;
 using Din.Application.WebAPI.Movies.Requests;
 using Din.Application.WebAPI.Movies.Responses;
 using Din.Application.WebAPI.Querying;
-using Din.Application.WebAPI.Versioning;
-using Din.Domain.Clients.Radarr.Requests;
-using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Commands.Movies;
 using Din.Domain.Models.Entities;
 using Din.Domain.Models.Querying;
 using Din.Domain.Queries.Movies;
+using Din.Domain.Queries.Querying;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Din.Application.WebAPI.Movies
 {
-    [ApiController]
     [ApiVersion(ApiVersions.V1)]
     [VersionedRoute("movies")]
     [ControllerName("Movies")]
-    [Produces("application/json")]
-    [Authorize]
-    public class MovieController : ControllerBase
+    public class MovieController : ApiController
     {
-        #region injectons
-
         private readonly IMediator _bus;
-        private readonly IMapper _mapper;
 
-        #endregion injections
-
-        #region constructors
-
-        public MovieController(IMediator bus, IMapper mapper)
+        public MovieController(IMediator bus)
         {
             _bus = bus;
-            _mapper = mapper;
         }
-
-        #endregion constructors
 
         #region endpoints
 
@@ -60,14 +45,10 @@ namespace Din.Application.WebAPI.Movies
             [FromQuery] MovieFilters filters
         )
         {
-            var query = new GetMoviesQuery
-            (
-                _mapper.Map<QueryParameters>(queryParameters),
-                filters
-            );
-            var result = await _bus.Send(query);
-
-            return Ok(_mapper.Map<QueryResponse<MovieResponse>>(result));
+            var result = await _bus.Send(new GetMoviesQuery(queryParameters, filters));
+            var response = ToMovieResponse(result);
+            
+            return Ok(response);
         }
 
         /// <summary>
@@ -78,18 +59,10 @@ namespace Din.Application.WebAPI.Movies
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(MovieResponse), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetMovieById
-        (
-            [FromRoute] string id
-        )
+        public async Task<IActionResult> GetMovieById([FromRoute] string id)
         {
-            var query = Guid.TryParse(id, out var guid)
-                ? (IRequest<Movie>) new GetMovieByIdQuery(guid)
-                : new GetMovieBySystemIdQuery(Convert.ToInt32(id));
-
-            var result = await _bus.Send(query);
-
-            return Ok(_mapper.Map<MovieResponse>(result));
+            var result = await _bus.Send(GetMovieRequest(id));
+            return Ok<MovieResponse>(result);
         }
 
         /// <summary>
@@ -98,14 +71,14 @@ namespace Din.Application.WebAPI.Movies
         /// <param name="id">system ID</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Collection of history</returns>
-        [HttpGet("{id}/history")]
+        [HttpGet("{id:int}/history")]
         [ProducesResponseType(typeof(IEnumerable<MovieHistoryResponse>), 200)]
         public async Task<IActionResult> GetMovieHistory([FromRoute] int id, CancellationToken cancellationToken)
         {
             var query = new GetMovieHistoryQuery(id);
             var result = await _bus.Send(query, cancellationToken);
 
-            return Ok(_mapper.Map<IEnumerable<MovieHistoryResponse>>(result));
+            return Ok(result.Select(record => (MovieHistoryResponse) record));
         }
 
         /// <summary>
@@ -123,10 +96,8 @@ namespace Din.Application.WebAPI.Movies
                 return BadRequest(new {message = "The search query can not be empty"});
             }
 
-            var requestQuery = new GetMovieFromTmdbQuery(query);
-            var result = await _bus.Send(requestQuery);
-
-            return Ok(_mapper.Map<IEnumerable<MovieSearchResponse>>(result));
+            var result = await _bus.Send(new GetMovieFromTmdbQuery(query));
+            return Ok(result.Select(searchMovie => (MovieSearchResponse) searchMovie));
         }
 
         /// <summary>
@@ -135,14 +106,12 @@ namespace Din.Application.WebAPI.Movies
         /// <param name="movie">Movie to add</param>
         /// <returns>Added movie</returns>
         [HttpPost]
-        [ProducesResponseType(typeof(RadarrMovie), 201)]
+        [ProducesResponseType(typeof(MovieResponse), 201)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddMovie([FromBody] MovieRequest movie)
         {
-            var command = new AddMovieCommand(_mapper.Map<RadarrMovieRequest>(movie));
-            var result = await _bus.Send(command);
-
-            return Created("", _mapper.Map<MovieResponse>(result));
+            var result = await _bus.Send(new AddMovieCommand(movie));
+            return Created<MovieResponse>(result);
         }
 
         /// <summary>
@@ -163,7 +132,7 @@ namespace Din.Application.WebAPI.Movies
             var query = new GetMovieCalendarQuery((DateTime.Parse(from), DateTime.Parse(till)));
             var result = await _bus.Send(query);
 
-            return Ok(_mapper.Map<IEnumerable<MovieResponse>>(result));
+            return Ok(result.Select(movie => (MovieResponse) movie));
         }
 
         [HttpGet("queue")]
@@ -171,10 +140,16 @@ namespace Din.Application.WebAPI.Movies
         public async Task<IActionResult> GetQueue()
         {
             var result = await _bus.Send(new GetMovieQueueQuery());
-
-            return Ok(_mapper.Map<IEnumerable<QueueResponse>>(result));
+            return Ok(result.Select(item => (QueueResponse) item));
         }
 
         #endregion endpoints
+        
+        private static QueryResponse<MovieResponse> ToMovieResponse(QueryResult<Movie> result) =>
+            new(result.Items.Select(item => (MovieResponse) item), result.TotalCount);
+        
+        private static IRequest<Movie> GetMovieRequest(string id) => Guid.TryParse(id, out var guid)
+            ? new GetMovieByIdQuery(guid)
+            : new GetMovieBySystemIdQuery(Convert.ToInt32(id));
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Din.Application.WebAPI.Serilization
+namespace Din.Application.WebAPI.Controller.Serilization
 {
     public static class SerializationSettings
     {

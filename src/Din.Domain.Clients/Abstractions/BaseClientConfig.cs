@@ -2,7 +2,7 @@
 {
     public abstract class BaseClientConfig
     {
-        public string Url { get; set; }
-        public string Key { get; set; }
+        public string Url { get; init; }
+        public string Key { get; init; }
     }
 }

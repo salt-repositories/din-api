@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions;
 using Din.Domain.Clients.Radarr.Interfaces;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Exceptions.Concrete;
+using Din.Domain.Mapping;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -20,14 +20,14 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
     public class UpdateMovieDatabase : BackgroundTask
     {
         private readonly ContentPollingQueue _contentPollingQueue;
-        private readonly IMapper _mapper;
 
-        public UpdateMovieDatabase(Container container, ILogger<UpdateMovieDatabase> logger,
-            ContentPollingQueue contentPollingQueue,
-            IMapper mapper) : base(container, logger, nameof(UpdateMovieDatabase))
+        public UpdateMovieDatabase(
+            Container container,
+            ILogger<UpdateMovieDatabase> logger,
+            ContentPollingQueue contentPollingQueue
+        ) : base(container, logger, nameof(UpdateMovieDatabase))
         {
             _contentPollingQueue = contentPollingQueue;
-            _mapper = mapper;
         }
 
         protected override async Task OnExecuteAsync(Scope scope, CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 
             var repository = scope.GetInstance<IMovieRepository>();
             var radarrClient = scope.GetInstance<IRadarrClient>();
-            
+
             IList<RadarrMovie> externalMovies;
 
             try
@@ -53,16 +53,16 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
             var moviesToAdd = new ConcurrentBag<Movie>();
 
             AmountOfWork = externalMovies.Count - 10;
-            
+
             Parallel.ForEach(externalMovies, movie =>
             {
                 var storedMovie = storedMovies.FirstOrDefault(m => m.SystemId.Equals(movie.SystemId));
-                
+
                 IncreaseProgress(1);
 
                 if (storedMovie == null)
                 {
-                    storedMovie = _mapper.Map<Movie>(movie);
+                    storedMovie = movie.ToEntity();
                     moviesToAdd.Add(storedMovie);
                     _contentPollingQueue.Enqueue(storedMovie);
 
@@ -83,7 +83,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                     cancellationToken
                 );
                 await repository.SaveAsync(cancellationToken);
-                
+
                 IncreaseProgress(10);
 
                 Logger.LogInformation($"Polled {moviesToAdd.Count} new movies");

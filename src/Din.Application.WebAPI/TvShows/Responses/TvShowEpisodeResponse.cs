@@ -1,8 +1,9 @@
 ﻿using System;
+using Din.Domain.Models.Entities;
 
 namespace Din.Application.WebAPI.TvShows.Responses
 {
-    public class TvShowEpisodeResponse
+    public record struct TvShowEpisodeResponse
     {
         public Guid Id { get; set; }
         public TvShowResponse TvShow { get; set; }
@@ -14,5 +15,19 @@ namespace Din.Application.WebAPI.TvShows.Responses
         public string Overview { get; set; }
         public bool HasFile { get; set; }
         public bool Monitored { get; set; }
+
+        public static implicit operator TvShowEpisodeResponse(Episode episode) => new()
+        {
+            Id = episode.Id,
+            TvShow = episode.TvShow,
+            TvShowId = episode.TvShowId,
+            SeasonNumber = episode.SeasonNumber,
+            EpisodeNumber = episode.EpisodeNumber,
+            Title = episode.Title,
+            AirDate = episode.AirDate,
+            Overview = episode.Overview,
+            HasFile = episode.HasFile,
+            Monitored = episode.Monitored
+        };
     }
 }

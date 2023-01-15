@@ -20,5 +20,4 @@ namespace Din.Application.WebAPI.Accounts.Responses
             Active = account.Active,
         };
     }
-
 }

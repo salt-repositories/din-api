@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Din.Domain.Clients.IpStack.Interfaces;
 using Din.Domain.Context;
 using Din.Domain.Logging.Loggers.Interfaces;
 using Din.Domain.Logging.Requests;
+using Din.Domain.Mapping;
 using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using UAParser;
@@ -18,15 +18,12 @@ namespace Din.Domain.Logging.Loggers.Concrete
         private readonly ILoginAttemptRepository _repository;
         private readonly IRequestContext _context;
         private readonly IIpStackClient _client;
-        private readonly IMapper _mapper;
 
-        public AuthenticationLogger(ILoginAttemptRepository repository, IRequestContext context, IIpStackClient client,
-            IMapper mapper)
+        public AuthenticationLogger(ILoginAttemptRepository repository, IRequestContext context, IIpStackClient client)
         {
             _repository = repository;
             _context = context;
             _client = client;
-            _mapper = mapper;
         }
 
         public async Task Log(TRequest request, TResponse response, CancellationToken cancellationToken)
@@ -38,7 +35,7 @@ namespace Din.Domain.Logging.Loggers.Concrete
             {
                 try
                 {
-                    location = _mapper.Map<LoginLocation>(await _client.GetLocationAsync(ipAddress, cancellationToken));
+                    location = (await _client.GetLocationAsync(ipAddress, cancellationToken)).ToEntity();
                     location = await _repository.FindLoginLocationByCoordinates(location.Latitude, location.Longitude) ?? location;
                 }
                 catch

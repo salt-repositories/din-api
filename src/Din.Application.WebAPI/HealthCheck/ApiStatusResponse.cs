@@ -2,17 +2,10 @@
 
 namespace Din.Application.WebAPI.HealthCheck
 {
-    public class ApiStatusResponse
+    public record struct ApiStatusResponse(HttpStatusCode Status, string Version, string Environment)
     {
-        public HttpStatusCode Status { get; }
-        public string Version { get; }
-        public string Environment { get; }
-
-        public ApiStatusResponse(HttpStatusCode status, string version, string environment)
-        {
-            Status = status;
-            Version = version;
-            Environment = environment;
-        }
+        public HttpStatusCode Status { get; init; } = Status;
+        public string Version { get; init; } = Version;
+        public string Environment { get; init; } = Environment;
     }
 }

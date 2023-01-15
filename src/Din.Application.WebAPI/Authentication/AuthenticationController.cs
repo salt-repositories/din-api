@@ -1,42 +1,27 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using Din.Application.WebAPI.Authentication.Requests;
 using Din.Application.WebAPI.Authentication.Responses;
-using Din.Application.WebAPI.Middleware;
-using Din.Application.WebAPI.Versioning;
+using Din.Application.WebAPI.Controller;
+using Din.Application.WebAPI.Controller.Versioning;
 using Din.Domain.Commands.Authentication;
-using Din.Domain.Models.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Din.Application.WebAPI.Authentication
 {
-    [ApiController]
     [ApiVersion(ApiVersions.V1)]
     [VersionedRoute("authentication")]
     [ControllerName("Authentication")]
-    [Produces("application/json")]
-    [Authorize]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : ApiController
     {
-        #region fields
-
         private readonly IMediator _bus;
-        private readonly IMapper _mapper;
 
-        #endregion fields
-
-        #region constructors
-
-        public AuthenticationController(IMediator bus, IMapper mapper)
+        public AuthenticationController(IMediator bus)
         {
             _bus = bus;
-            _mapper = mapper;
         }
-
-        #endregion constructors
 
         #region endpoints
 
@@ -50,10 +35,10 @@ namespace Din.Application.WebAPI.Authentication
         [ProducesResponseType(typeof(ErrorResponse),400)]
         public async Task<IActionResult> LoginAsync([FromBody] CredentialRequest credentials)
         {
-            var command = new GenerateTokenCommand(_mapper.Map<CredentialsDto>(credentials));
+            var command = new GenerateTokenCommand(credentials);
             var result = await _bus.Send(command);
 
-            return Ok(_mapper.Map<TokenResponse>(result));
+            return Ok<TokenResponse>(result);
         }
 
         /// <summary>
@@ -69,7 +54,7 @@ namespace Din.Application.WebAPI.Authentication
             var command = new RefreshTokenCommand(refreshToken, DateTime.Now);
             var result = await _bus.Send(command);
 
-            return Ok(_mapper.Map<TokenResponse>(result));
+            return Ok<TokenResponse>(result);
         }
 
         /// <summary>
@@ -82,9 +67,7 @@ namespace Din.Application.WebAPI.Authentication
         [ProducesResponseType(typeof(ErrorResponse), 404)]
         public async Task<IActionResult> RequestAuthorizationCode([FromQuery] string email)
         {
-            var command = new SendAuthorizationCodeCommand(email);
-            await _bus.Send(command);
-
+            await _bus.Send(new SendAuthorizationCodeCommand(email));
             return Ok();
         }
 
@@ -103,7 +86,6 @@ namespace Din.Application.WebAPI.Authentication
 
             return Ok();
         }
-
        
         #endregion endpoints
     }

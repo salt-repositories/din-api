@@ -1,11 +1,22 @@
-﻿namespace Din.Application.WebAPI.Media.Responses
+﻿using Din.Domain.Clients.Unsplash.Responses;
+
+namespace Din.Application.WebAPI.Media.Responses
 {
-    public class BackgroundResponse
+    public record struct BackgroundResponse
     {
-        public string Raw { get; set; }
-        public string Full { get; set; }
-        public string Regular { get; set; }
-        public string Small { get; set; }
-        public string Thumb { get; set; }
+        public string Raw { get; init; }
+        public string Full { get; init; }
+        public string Regular { get; init; }
+        public string Small { get; init; }
+        public string Thumb { get; init; }
+
+        public static implicit operator BackgroundResponse(UnsplashImage unsplashImage) => new()
+        {
+            Raw = unsplashImage.Urls.Raw,
+            Full = unsplashImage.Urls.Full,
+            Regular = unsplashImage.Urls.Regular,
+            Small = unsplashImage.Urls.Small,
+            Thumb = unsplashImage.Urls.Thumb
+        };
     }
 }

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using Din.Application.WebAPI.Content.Responses;
-using Din.Application.WebAPI.Serilization;
+using Din.Application.WebAPI.Controller.Serilization;
 using Din.Domain.Queries.Movies;
 using Din.Domain.Queries.TvShows;
 using MediatR;
@@ -29,19 +28,16 @@ namespace Din.Application.WebAPI.Content.HubTasks
         private readonly ILogger<CurrentQueueTimedTask> _logger;
         private readonly Container _container;
         private readonly IMediator _bus;
-        private readonly IMapper _mapper;
         private readonly ICollection<Connection> _connections;
 
         private Timer _timer;
         private bool _running;
 
-        public CurrentQueueTimedTask(ILogger<CurrentQueueTimedTask> logger, Container container, IMediator bus,
-            IMapper mapper)
+        public CurrentQueueTimedTask(ILogger<CurrentQueueTimedTask> logger, Container container, IMediator bus)
         {
             _logger = logger;
             _container = container;
             _bus = bus;
-            _mapper = mapper;
             _connections = new List<Connection>();
             _running = false;
         }
@@ -125,8 +121,9 @@ namespace Din.Application.WebAPI.Content.HubTasks
                 var movieQueue = await _bus.Send(movieQuery);
                 var tvShowQueue = await _bus.Send(tvShowQuery);
 
-                var collection = _mapper.Map<List<QueueResponse>>(movieQueue)
-                    .Concat(_mapper.Map<List<QueueResponse>>(tvShowQueue));
+                var collection = movieQueue
+                    .Select(movie => (QueueResponse) movie)
+                    .Concat(tvShowQueue.Select(tvShow => (QueueResponse) tvShow));
 
                 var response = JsonConvert.SerializeObject(
                     collection,

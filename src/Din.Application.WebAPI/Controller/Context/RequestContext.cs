@@ -6,7 +6,7 @@ using Din.Domain.Context;
 using Din.Domain.Models.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace Din.Application.WebAPI.Context
+namespace Din.Application.WebAPI.Controller.Context
 {
     public class RequestContext : IRequestContext
     {

@@ -1,47 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
+using Din.Application.WebAPI.Controller;
+using Din.Application.WebAPI.Controller.Versioning;
 using Din.Application.WebAPI.Querying;
 using Din.Application.WebAPI.TvShows.Requests;
 using Din.Application.WebAPI.TvShows.Responses;
-using Din.Application.WebAPI.Versioning;
-using Din.Domain.Clients.Sonarr.Requests;
 using Din.Domain.Clients.Sonarr.Responses;
 using Din.Domain.Commands.TvShows;
 using Din.Domain.Models.Entities;
 using Din.Domain.Models.Querying;
+using Din.Domain.Queries.Querying;
 using Din.Domain.Queries.TvShows;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Din.Application.WebAPI.TvShows
 {
-    [ApiController]
     [ApiVersion(ApiVersions.V1)]
     [VersionedRoute("tvshows")]
     [ControllerName("TvShows")]
-    [Produces("application/json")]
-    [Authorize]
-    public class TvShowController : ControllerBase
+    public class TvShowController : ApiController
     {
-        #region injections
-
         private readonly IMediator _bus;
-        private readonly IMapper _mapper;
 
-        #endregion injections
-
-        #region constructors
-
-        public TvShowController(IMediator bus, IMapper mapper)
+        public TvShowController(IMediator bus)
         {
             _bus = bus;
-            _mapper = mapper;
         }
-
-        #endregion constructors
 
         #region endpoints
 
@@ -57,13 +44,10 @@ namespace Din.Application.WebAPI.TvShows
             [FromQuery] TvShowFilters filters
         )
         {
-            var query = new GetTvShowsQuery(
-                _mapper.Map<QueryParameters>(queryParameters),
-                filters
-            );
-            var result = await _bus.Send(query);
-
-            return Ok(_mapper.Map<QueryResponse<TvShowResponse>>(result));
+            var result = await _bus.Send(new GetTvShowsQuery(queryParameters, filters));
+            var response = ToTvShowResponse(result);
+            
+            return Ok(response);
         }
 
         /// <summary>
@@ -85,7 +69,7 @@ namespace Din.Application.WebAPI.TvShows
 
             var result = await _bus.Send(query);
 
-            return Ok(result);
+            return Ok<TvShowResponse>(result);
         }
 
         /// <summary>
@@ -103,10 +87,8 @@ namespace Din.Application.WebAPI.TvShows
                 return BadRequest(new {message = "The search query can not be empty"});
             }
 
-            var requestQuery = new GetTvShowFromTmdbQuery(query);
-            var result = await _bus.Send(requestQuery);
-
-            return Ok(_mapper.Map<IEnumerable<TvShowSearchResponse>>(result));
+            var result = await _bus.Send(new GetTvShowFromTmdbQuery(query));
+            return Ok(result.Select(tvShow => (TvShowSearchResponse) tvShow));
         }
 
         /// <summary>
@@ -119,10 +101,9 @@ namespace Din.Application.WebAPI.TvShows
         [ProducesResponseType(400)]
         public async Task<IActionResult> AddTvShowAsync([FromBody] TvShowRequest tvShow)
         {
-            var command = new AddTvShowCommand(_mapper.Map<SonarrTvShowRequest>(tvShow));
-            var result = await _bus.Send(command);
+            var result = await _bus.Send(new AddTvShowCommand(tvShow));
 
-            return Created("", result);
+            return Created<TvShowResponse>(result);
         }
 
         /// <summary>
@@ -132,7 +113,7 @@ namespace Din.Application.WebAPI.TvShows
         /// <param name="till">Till date</param>
         /// <returns>Tv Show release calendar</returns>
         [HttpGet("calendar")]
-        [ProducesResponseType(typeof(IEnumerable<TvShowCalendarResponse>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<TvShowEpisodeResponse>), 200)]
         public async Task<IActionResult> GetCalendar([FromQuery] string from, [FromQuery] string till)
         {
             if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(till))
@@ -143,7 +124,7 @@ namespace Din.Application.WebAPI.TvShows
             var query = new GetTvShowCalendarQuery((DateTime.Parse(from), DateTime.Parse(till)));
             var result = await _bus.Send(query);
 
-            return Ok(_mapper.Map<IEnumerable<TvShowEpisodeResponse>>(result));
+            return Ok(result.Select(episode => (TvShowEpisodeResponse) episode));
         }
 
         /// <summary>
@@ -161,5 +142,8 @@ namespace Din.Application.WebAPI.TvShows
         }
 
         #endregion endpoints
+        
+        private static QueryResponse<TvShowResponse> ToTvShowResponse(QueryResult<TvShow> result) =>
+            new(result.Items.Select(item => (TvShowResponse) item), result.TotalCount);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using Din.Application.WebAPI.Serilization;
+using Din.Application.WebAPI.Controller.Serilization;
 using Din.Domain.Exceptions.Abstractions;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Din.Application.WebAPI.Middleware
+namespace Din.Application.WebAPI.Controller.Middleware
 {
     public class ExceptionMiddleware : IMiddleware
     {

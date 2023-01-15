@@ -1,12 +1,24 @@
-﻿namespace Din.Application.WebAPI.Media.Responses
+﻿using Din.Domain.Clients.Giphy.Responses;
+
+namespace Din.Application.WebAPI.Media.Responses
 {
-    public class GifResponse
+    public record struct GifResponse
     { 
-        public string Title { get; set; }
-        public string Url { get; set; }
-        public string Mp4Url { get; set; }
-        public int Frames { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public string Title { get; init; }
+        public string Url { get; init; }
+        public string Mp4Url { get; init; }
+        public int Frames { get; init; }
+        public int Width { get; init; }
+        public int Height { get; init; }
+
+        public static implicit operator GifResponse(Giphy giphy) => new()
+        {
+            Title = giphy.Data.Title,
+            Url = giphy.Data.Url,
+            Mp4Url = giphy.Data.Mp4Url,
+            Frames = giphy.Data.Frames,
+            Width = giphy.Data.Width,
+            Height = giphy.Data.Height
+        };
     }
 }

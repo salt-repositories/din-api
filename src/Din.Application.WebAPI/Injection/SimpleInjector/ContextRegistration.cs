@@ -1,4 +1,4 @@
-using Din.Application.WebAPI.Context;
+using Din.Application.WebAPI.Controller.Context;
 using Din.Domain.Context;
 using Din.Infrastructure.DataAccess;
 using Din.Infrastructure.DataAccess.Connections.Concrete;

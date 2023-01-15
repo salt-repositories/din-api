@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
-using FluentValidation.Results;
 using MediatR;
 using MediatR.Pipeline;
 using ValidationException = FluentValidation.ValidationException;
@@ -29,7 +27,7 @@ namespace Din.Domain.Middlewares.Mediatr
             var context = new ValidationContext<TRequest>(request);
             var failures = (await Task.WhenAll(_validators
                 .Select(validator => validator.ValidateAsync(context, cancellationToken))).ConfigureAwait(false))
-                .SelectMany(result => result.Errors as IEnumerable<ValidationFailure>)
+                .SelectMany(result => result.Errors)
                 .Where(failure => failure != null).ToList();
 
             if (failures.Any())

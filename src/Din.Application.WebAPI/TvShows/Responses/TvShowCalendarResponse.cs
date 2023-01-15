@@ -1,8 +1,9 @@
 ﻿using System;
+using Din.Domain.Clients.Sonarr.Responses;
 
 namespace Din.Application.WebAPI.TvShows.Responses
 {
-    public class TvShowCalendarResponse
+    public record struct TvShowCalendarResponse
     {
         public int Id { get; set; }
         public int TvShowId { get; set; }
@@ -15,5 +16,20 @@ namespace Din.Application.WebAPI.TvShows.Responses
         public bool HasFile { get; set; }
         public bool Monitored { get; set; }
         public TvShowResponse TvShow { get; set; }
+
+        public static implicit operator TvShowCalendarResponse(SonarrCalendar calendar) => new()
+        {
+            Id = calendar.Id,
+            TvShowId = calendar.TvShowId,
+            SeasonNumber = calendar.SeasonNumber,
+            EpisodeNumber = calendar.EpisodeNumber,
+            Title = calendar.Title,
+            Overview = calendar.Overview,
+            AirDateUtc = calendar.AirDateUtc,
+            AirDate = calendar.AirDate,
+            HasFile = calendar.HasFile,
+            Monitored = calendar.Monitored,
+            TvShow = (TvShowResponse) calendar.TvShow
+        };
     }
 }

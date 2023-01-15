@@ -1,4 +1,4 @@
-﻿namespace Din.Application.WebAPI.Versioning
+﻿namespace Din.Application.WebAPI.Controller.Versioning
 {
     public static class ApiVersions
     {

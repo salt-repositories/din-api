@@ -1,4 +1,4 @@
-﻿using Din.Application.WebAPI.Serilization;
+﻿using Din.Application.WebAPI.Controller.Serilization;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;

@@ -1,9 +1,9 @@
 ﻿using System;
 using Din.Application.WebAPI.ConfigurationProviders;
 using Din.Application.WebAPI.Content;
+using Din.Application.WebAPI.Controller.Middleware;
 using Din.Application.WebAPI.Injection.DotNet;
 using Din.Application.WebAPI.Injection.SimpleInjector;
-using Din.Application.WebAPI.Middleware;
 using Din.Domain.BackgroundProcessing;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete;
 using Din.Domain.Extensions;
@@ -102,10 +102,10 @@ namespace Din.Application.WebAPI
                     .AddAspNetCore()
                     .AddControllerActivation();
 
-                // options.AddHostedService<TimedHostedService<ArchiveAuthorizationCodes>>();
-                // options.AddHostedService<TimedHostedService<UpdateMovieDatabase>>();
-                // options.AddHostedService<TimedHostedService<UpdateTvShowDatabase>>();
-                // options.AddHostedService<TimedHostedService<UpdateContentPlexUrl>>();
+                options.AddHostedService<TimedHostedService<ArchiveAuthorizationCodes>>();
+                options.AddHostedService<TimedHostedService<UpdateMovieDatabase>>();
+                options.AddHostedService<TimedHostedService<UpdateTvShowDatabase>>();
+                options.AddHostedService<TimedHostedService<UpdateContentPlexUrl>>();
                 options.AddHostedService<TimedHostedService<UpdateContentPosterUrl>>();
                 options.AddHostedService<BackgroundContentQueueProcessor>();
             });
@@ -116,7 +116,6 @@ namespace Din.Application.WebAPI
             _container.RegisterDbContext(_configuration, env);
             _container.RegisterContexts();
             _container.RegisterRepositories();
-            _container.RegisterAutoMapper(assemblies);
             _container.RegisterConfigurations(_configuration);
             _container.RegisterClients();
             _container.RegisterStores();

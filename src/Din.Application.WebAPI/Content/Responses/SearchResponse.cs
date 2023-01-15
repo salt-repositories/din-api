@@ -2,15 +2,15 @@
 
 namespace Din.Application.WebAPI.Content.Responses
 {
-    public class SearchResponse
+    public record SearchResponse
     {
-        public int TmdbId { get; set; }
-        public string Overview { get; set; }
-        public string PosterPath { get; set; }
-        public IEnumerable<string> Genres { get; set; }
-        public string OriginalLanguage { get; set; }
-        public int VoteAverage { get; set; }
-        public int VoteCount { get; set; }
+        public int TmdbId { get; init; }
+        public string Overview { get; init; }
+        public string PosterPath { get; init; }
+        public IEnumerable<string> Genres { get; init; }
+        public string OriginalLanguage { get; init; }
+        public double VoteAverage { get; init; }
+        public int VoteCount { get; init; }
     }
 
     public enum TmdbGenre

@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Din.Application.WebAPI.Versioning;
+using Din.Application.WebAPI.Controller.Versioning;
 using Din.Infrastructure.DataAccess.Connections.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +20,7 @@ namespace Din.Application.WebAPI.HealthCheck
         private readonly IHealthCheckConnection _connection;
         private readonly IHostEnvironment _env;
 
-        private static readonly string AssemblyVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        private static readonly string AssemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString();
 
         public HealthCheckController(IHealthCheckConnection connection, IHostEnvironment env)
         {
