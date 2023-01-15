@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
@@ -18,6 +19,7 @@ namespace Din.Domain.Commands.Movies
         private readonly IAccountRepository _accountRepository;
         private readonly IAddedContentRepository _addedContentRepository;
         private readonly IMovieRepository _movieRepository;
+        private readonly IGenreRepository _genreRepository;
         private readonly ContentPollingQueue _contentPollingQueue;
 
         public AddMovieCommandHandler
@@ -27,6 +29,7 @@ namespace Din.Domain.Commands.Movies
             IAccountRepository accountRepository,
             IAddedContentRepository addedContentRepository,
             IMovieRepository movieRepository,
+            IGenreRepository genreRepository,
             ContentPollingQueue contentPollingQueue
         )
         {
@@ -35,6 +38,7 @@ namespace Din.Domain.Commands.Movies
             _accountRepository = accountRepository;
             _addedContentRepository = addedContentRepository;
             _movieRepository = movieRepository;
+            _genreRepository = genreRepository;
             _contentPollingQueue = contentPollingQueue;
         }
 
@@ -42,6 +46,19 @@ namespace Din.Domain.Commands.Movies
         {
             var response = await _client.AddMovieAsync(request.Movie, cancellationToken);
             var movie = _movieRepository.Insert(response.ToEntity());
+            
+            var genres = new List<MovieGenre>();
+            
+            foreach (var genre in response.Genres)
+            {
+                genres.Add(new MovieGenre
+                {
+                    Genre = await _genreRepository.GetGenreByNameAsync(genre, cancellationToken),
+                    Movie = movie
+                });
+            }
+
+            movie.Genres = genres;
 
             _contentPollingQueue.Enqueue(movie);
 

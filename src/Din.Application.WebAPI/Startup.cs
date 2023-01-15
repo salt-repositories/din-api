@@ -105,7 +105,7 @@ namespace Din.Application.WebAPI
                 options.AddHostedService<TimedHostedService<ArchiveAuthorizationCodes>>();
                 options.AddHostedService<TimedHostedService<UpdateMovieDatabase>>();
                 options.AddHostedService<TimedHostedService<UpdateTvShowDatabase>>();
-                options.AddHostedService<TimedHostedService<UpdateContentPlexUrl>>();
+                // options.AddHostedService<TimedHostedService<UpdateContentPlexUrl>>();
                 options.AddHostedService<TimedHostedService<UpdateContentPosterUrl>>();
                 options.AddHostedService<BackgroundContentQueueProcessor>();
             });

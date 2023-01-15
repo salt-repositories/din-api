@@ -15,7 +15,7 @@ namespace Din.Infrastructure.DataAccess
 
         public DinContext()
         {
-            _connectionString = "Server=127.0.0.1;Port=5656;Database=dev_din-api;Uid=root;Pwd=root;";
+            _connectionString = "Server=127.0.0.1;Port=3306;Database=dev_din-api;Uid=root;Pwd=root;";
         }
         
         public DinContext(string connectionString)
@@ -56,15 +56,16 @@ namespace Din.Infrastructure.DataAccess
             modelBuilder.ApplyConfiguration(new LoginLocationEntityConfiguration());
             modelBuilder.ApplyConfiguration(new RefreshTokenEntityConfiguration());
             modelBuilder.ApplyConfiguration(new MovieEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new MovieGenreRelationConfiguration());
             modelBuilder.ApplyConfiguration(new TvShowEntityConfiguration());
             modelBuilder.ApplyConfiguration(new SeasonEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new ContentGenreRelationConfiguration());
+            modelBuilder.ApplyConfiguration(new TvShowGenreRelationConfiguration());
             modelBuilder.ApplyConfiguration(new GenreEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ContentRatingEntityConfiguration());
             modelBuilder.ApplyConfiguration(new EpisodeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ContentPollStatusEntityConfiguration());
         }
-
+ 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

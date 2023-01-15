@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Din.Application.WebAPI.Content.Responses;
 using Din.Domain.Clients.Radarr.Responses;
 using Din.Domain.Models.Entities;
@@ -20,6 +21,7 @@ namespace Din.Application.WebAPI.Movies.Responses
             ImdbId = movie.ImdbId,
             Title = movie.Title,
             Overview = movie.Overview,
+            Genres = movie.Genres.Select(genre => genre.Genre.Name),
             Status = movie.Status,
             Downloaded = movie.Downloaded,
             HasFile = movie.HasFile,
@@ -41,6 +43,7 @@ namespace Din.Application.WebAPI.Movies.Responses
             ImdbId = radarrMovie.ImdbId,
             Title = radarrMovie.Title,
             Overview = radarrMovie.Overview,
+            Genres = radarrMovie.Genres,
             Status = radarrMovie.Status,
             Downloaded = radarrMovie.Downloaded,
             HasFile = radarrMovie.HasFile,

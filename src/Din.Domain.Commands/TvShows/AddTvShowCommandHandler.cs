@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundProcessing.BackgroundQueues.Concrete;
@@ -18,6 +19,7 @@ namespace Din.Domain.Commands.TvShows
         private readonly IAccountRepository _accountRepository;
         private readonly IAddedContentRepository _addedContentRepository;
         private readonly ITvShowRepository _tvShowRepository;
+        private readonly IGenreRepository _genreRepository;
         private readonly ContentPollingQueue _contentPollingQueue;
 
         public AddTvShowCommandHandler
@@ -27,6 +29,7 @@ namespace Din.Domain.Commands.TvShows
             IAccountRepository accountRepository,
             IAddedContentRepository addedContentRepository,
             ITvShowRepository tvShowRepository,
+            IGenreRepository genreRepository,
             ContentPollingQueue contentPollingQueue
         )
         {
@@ -35,6 +38,7 @@ namespace Din.Domain.Commands.TvShows
             _accountRepository = accountRepository;
             _addedContentRepository = addedContentRepository;
             _tvShowRepository = tvShowRepository;
+            _genreRepository = genreRepository;
             _contentPollingQueue = contentPollingQueue;
         }
 
@@ -42,6 +46,19 @@ namespace Din.Domain.Commands.TvShows
         {
             var response = await _client.AddTvShowAsync(request.TvShow, cancellationToken);
             var tvShow = _tvShowRepository.Insert(response.ToEntity());
+            
+            var genres = new List<TvShowGenre>();
+            
+            foreach (var genre in response.Genres)
+            {
+                genres.Add(new TvShowGenre
+                {
+                    Genre = await _genreRepository.GetGenreByNameAsync(genre, cancellationToken),
+                    TvShow = tvShow
+                });
+            }
+            
+            tvShow.Genres = genres;
 
             _contentPollingQueue.Enqueue(tvShow);
 

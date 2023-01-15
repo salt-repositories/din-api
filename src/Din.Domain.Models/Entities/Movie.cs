@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Din.Domain.Models.Entities
 {
@@ -17,6 +18,7 @@ namespace Din.Domain.Models.Entities
         public string PlexUrl { get; set; }
         public string PosterPath { get; set; }
         public ContentRating Ratings { get; set; }
+        public ICollection<MovieGenre> Genres { get; set; }
         public int TmdbId { get; set; }
         public string Studio { get; set; }
         public DateTime InCinemas { get; set; }
