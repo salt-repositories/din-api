@@ -1,4 +1,5 @@
-﻿using Din.Domain.Models.Entities;
+﻿using System;
+using Din.Domain.Models.Entities;
 using Din.Infrastructure.DataAccess.Configurations.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -82,6 +83,12 @@ namespace Din.Infrastructure.DataAccess.Configurations
                 .WithOne()
                 .HasForeignKey(s => s.TvShowId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            builder.Property(m => m.AlternativeTitles)
+                .HasColumnName("alternative_titles")
+                .HasConversion(
+                    x => string.Join(",", x),
+                    x => x.Split(",", StringSplitOptions.RemoveEmptyEntries));
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Din.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Din.Infrastructure.DataAccess.Migrations
 {
     [DbContext(typeof(DinContext))]
-    partial class DinContextModelSnapshot : ModelSnapshot
+    [Migration("20230116190929_movie_alternative_titles")]
+    partial class movie_alternative_titles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -577,10 +579,6 @@ namespace Din.Infrastructure.DataAccess.Migrations
                     b.Property<string>("AirTime")
                         .HasColumnType("longtext")
                         .HasColumnName("air_time");
-
-                    b.Property<string>("AlternativeTitles")
-                        .HasColumnType("longtext")
-                        .HasColumnName("alternative_titles");
 
                     b.Property<bool>("Downloaded")
                         .HasColumnType("tinyint(1)")

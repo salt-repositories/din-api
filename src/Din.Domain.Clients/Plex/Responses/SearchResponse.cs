@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Din.Domain.Clients.Plex.Responses
 {
@@ -10,8 +11,20 @@ namespace Din.Domain.Clients.Plex.Responses
 
     public class MediaContainer
     {
-        [JsonProperty("Metadata")]
-        public MetaData[] Metadata { get; set; }
+        [JsonProperty("hub")]
+        public IEnumerable<Hub> Hub { get; set; }
+    }
+
+    public class Hub
+    {
+        [JsonProperty("title")]
+        public string Title { get; set; }
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("hubIdentifier")]
+        public string HubIdentifier { get; set; }
+
+        [JsonProperty("Metadata")] public IEnumerable<MetaData> Metadata { get; set; } = new List<MetaData>();
     }
 
     public class MetaData
@@ -22,5 +35,7 @@ namespace Din.Domain.Clients.Plex.Responses
         public string Type { get; set; }
         [JsonProperty("title")]
         public string Title { get; set; }
+        [JsonProperty("year")]
+        public int Year { get; set; }
     }
 }

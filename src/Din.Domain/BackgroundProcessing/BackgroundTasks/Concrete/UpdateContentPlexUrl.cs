@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Din.Domain.BackgroundProcessing.BackgroundTasks.Abstractions;
+using Din.Domain.Extensions;
 using Din.Domain.Helpers.Interfaces;
 using Din.Infrastructure.DataAccess.Repositories.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -21,26 +23,24 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
             Logger.LogInformation("Update plex urls");
 
             var plexHelper = scope.GetInstance<IPlexHelper>();
-            var movieRepository = scope.GetInstance<IMovieRepository>();
-            var tvShowRepository = scope.GetInstance<ITvShowRepository>();
 
-            var updateMoviePlexUrls = Task.Run(async () =>
+            var updateMoviePlexUrls = scope.WithRepository<IMovieRepository>(async repository =>
             {
-                var movies = await movieRepository.GetMoviesWithNoPlexUrl(cancellationToken);
+                var movies = await repository.GetMoviesWithNoPlexUrl(cancellationToken);
                 await plexHelper.CheckIsOnPlex(movies, cancellationToken);
-            }, cancellationToken);
+                await repository.SaveAsync(cancellationToken);
+            }); 
+                
+       
+            // var updateTvShowPlexUrls = scope.WithRepository<ITvShowRepository>(async repository =>
+            // {
+            //     var tvShows = await repository.GetTvShowsWithNoPlexUrl(cancellationToken);
+            //     await plexHelper.CheckIsOnPlex(tvShows, cancellationToken);
+            //     await repository.SaveAsync(cancellationToken);
+            // });
 
-            var updateTvShowPlexUrls = Task.Run(async () =>
-            {
-                var tvShows = await tvShowRepository.GetTvShowsWithNoPlexUrl(cancellationToken);
-                await plexHelper.CheckIsOnPlex(tvShows, cancellationToken);
-            }, cancellationToken);
-
-            await Task.WhenAll(updateMoviePlexUrls, updateTvShowPlexUrls);
+            await Task.WhenAll(updateMoviePlexUrls);
             
-            await movieRepository.SaveAsync(cancellationToken);
-            await tvShowRepository.SaveAsync(cancellationToken);
-
             Logger.LogInformation("Finished updating plex urls");
         }
     }

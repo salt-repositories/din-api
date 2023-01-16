@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Din.Domain.Clients.Abstractions;
 using Newtonsoft.Json;
 

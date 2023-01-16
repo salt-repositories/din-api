@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Din.Domain.Clients.Abstractions
@@ -17,5 +18,19 @@ namespace Din.Domain.Clients.Abstractions
         [JsonProperty("year")] public string Year { get; set; }
         [JsonProperty("added")] public DateTime Added { get; set; }
         [JsonProperty("ratings")] public ContentRating Ratings { get; set; }
+        [JsonProperty("alternateTitles")] public IEnumerable<AlternativeTitle> AlternateTitles { get; set; }
+        public ICollection<string> AlternativeTitles =>
+            AlternateTitles.Where(x => x.Language.Name == "English").Select(x => x.Title).ToList();
+    }
+
+    public class AlternativeTitle
+    {
+        [JsonProperty("title")] public string Title { get; set; }
+        [JsonProperty("language")] public AlternativeTitleLanguage Language { get; set; }
+    }
+
+    public class AlternativeTitleLanguage
+    {
+        [JsonProperty("name")] public string Name { get; set; }
     }
 }

@@ -56,7 +56,7 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
 
             Parallel.ForEach(externalMovies, movie =>
             {
-                var storedMovie = storedMovies.FirstOrDefault(m => m.SystemId.Equals(movie.SystemId));
+                var storedMovie = storedMovies.SingleOrDefault(m => m.SystemId.Equals(movie.SystemId));
 
                 IncreaseProgress(1);
 
@@ -64,16 +64,21 @@ namespace Din.Domain.BackgroundProcessing.BackgroundTasks.Concrete
                 {
                     storedMovie = movie.ToEntity();
                     moviesToAdd.Add(storedMovie);
-                    _contentPollingQueue.Enqueue(storedMovie);
-
-                    return;
                 }
 
                 if (!storedMovie.Downloaded && movie.Downloaded)
                 {
                     storedMovie.Downloaded = true;
-                    _contentPollingQueue.Enqueue(storedMovie);
                 }
+
+                if (storedMovie.Title != movie.Title)
+                {
+                    storedMovie.Update(movie);
+                }
+                
+                storedMovie.Update(movie);
+
+                _contentPollingQueue.Enqueue(storedMovie);
             });
 
             try

@@ -24,5 +24,6 @@ namespace Din.Domain.Models.Entities
         public DateTime InCinemas { get; set; }
         public DateTime PhysicalRelease { get; set; }
         public string YoutubeTrailerId { get; set; }
+        public ICollection<string> AlternativeTitles { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Din.Domain.Models.Entities
 {
@@ -16,5 +17,6 @@ namespace Din.Domain.Models.Entities
         string PlexUrl { get; set; }
         string PosterPath { get; set; }
         ContentRating Ratings { get; set; }
+        ICollection<string> AlternativeTitles { get; set; }
     }
 }

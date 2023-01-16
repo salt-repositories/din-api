@@ -19,6 +19,7 @@ namespace Din.Domain.Models.Entities
         public string PlexUrl { get; set; }
         public string PosterPath { get; set; }
         public ContentRating Ratings { get; set; }
+        public ICollection<string> AlternativeTitles { get; set; }
         public int TvdbId { get; set; }
         public int SeasonCount { get; set; }
         public int TotalEpisodeCount { get; set; }

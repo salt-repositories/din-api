@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,6 +8,7 @@ using Din.Domain.Configurations.Interfaces;
 using Din.Domain.Extensions;
 using Din.Domain.Helpers.Interfaces;
 using Din.Domain.Models.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace Din.Domain.Helpers.Concrete
 {
@@ -14,27 +16,37 @@ namespace Din.Domain.Helpers.Concrete
     {
         private readonly IPlexClient _client;
         private readonly IPlexConfig _config;
+        private readonly ILogger<IPlexHelper> _logger;
 
-        public PlexHelper(IPlexClient client, IPlexConfig config)
+        public PlexHelper(IPlexClient client, IPlexConfig config, ILogger<PlexHelper> logger)
         {
             _client = client;
             _config = config;
+            _logger = logger;
         }
 
         public async Task CheckIsOnPlex(IContent content, CancellationToken cancellationToken)
         {
+            const double similar = 0.6;
+            
             if (!string.IsNullOrEmpty(content.PlexUrl))
             {
                 return;
             }
 
             var response = await _client.SearchByTitle(content.Title.ToLower(), cancellationToken);
+            var matches = response.MediaContainer.Hub
+                .Single(x => x.Type == content.GetType().Name.ToLower())
+                .Metadata
+                .Where(x => (x.Title.CalculateSimilarity(content.Title) > similar ||
+                             content.AlternativeTitles.Any(alt => alt.CalculateSimilarity(x.Title) > similar)) &&
+                            x.Year.MoreOrLessThen(Convert.ToInt32(content.Year), 2))
+                .ToList();
 
-            if (response.MediaContainer?.Metadata?.Length > 0 && response.MediaContainer.Metadata[0]
-                    .Title.CalculateSimilarity(content.Title) > 0.6)
+            if (matches.Any())
             {
-                content.PlexUrl =
-                    $"https://app.plex.tv/desktop#!/server/{_config.ServerGuid}/details?key={response.MediaContainer.Metadata[0].Key}";
+                _logger.LogInformation("found matches: {Select}", matches.Select(x => $"{x.Title} ({x.Type})"));
+                content.PlexUrl = $"https://app.plex.tv/desktop#!/server/{_config.ServerGuid}/details?key={matches.First().Key}";
             }
         }
 
